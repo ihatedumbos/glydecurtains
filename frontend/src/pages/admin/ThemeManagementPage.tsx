@@ -96,7 +96,7 @@ export default function ThemeManagementPage() {
   const fetchThemes = useCallback(async () => {
     setLoading(true);
     try {
-      const res = await axiosInstance.get('/api/cms/themes/all');
+      const res = await axiosInstance.get('/cms/themes/all');
       setThemes(res.data.data || []);
     } catch {
       setSnackbar({ open: true, message: 'Failed to load themes', severity: 'error' });
@@ -113,7 +113,7 @@ export default function ThemeManagementPage() {
 
   const handleActivate = async (id: number) => {
     try {
-      await axiosInstance.put(`/api/cms/themes/${id}/activate`);
+      await axiosInstance.put(`/cms/themes/${id}/activate`);
       setSnackbar({ open: true, message: 'Theme activated successfully', severity: 'success' });
       fetchThemes();
     } catch {
@@ -136,7 +136,7 @@ export default function ThemeManagementPage() {
     if (!editingThemeId) return;
     setSaving(true);
     try {
-      await axiosInstance.put(`/api/cms/themes/${editingThemeId}`, {
+      await axiosInstance.put(`/cms/themes/${editingThemeId}`, {
         config: JSON.stringify(editConfig),
       });
       setSnackbar({ open: true, message: 'Theme config updated', severity: 'success' });
@@ -151,7 +151,7 @@ export default function ThemeManagementPage() {
 
   const handlePreview = async (theme: ThemePreset) => {
     try {
-      const res = await axiosInstance.get(`/api/cms/themes/${theme.id}/preview`);
+      const res = await axiosInstance.get(`/cms/themes/${theme.id}/preview`);
       const data = res.data.data;
       setPreviewConfig(parseConfig(data.config));
       setPreviewName(data.name);

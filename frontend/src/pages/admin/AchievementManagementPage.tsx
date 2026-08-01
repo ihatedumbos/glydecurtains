@@ -101,7 +101,7 @@ export default function AchievementManagementPage() {
   const fetchAchievements = useCallback(async () => {
     setLoading(true);
     try {
-      const res = await axiosInstance.get('/api/achievements');
+      const res = await axiosInstance.get('/achievements');
       setAchievements(res.data.data || []);
     } catch {
       setSnackbar({ open: true, message: 'Failed to load achievements', severity: 'error' });
@@ -155,10 +155,10 @@ export default function AchievementManagementPage() {
       };
 
       if (editingId) {
-        await axiosInstance.put(`/api/achievements/${editingId}`, payload);
+        await axiosInstance.put(`/achievements/${editingId}`, payload);
         setSnackbar({ open: true, message: 'Achievement updated successfully', severity: 'success' });
       } else {
-        await axiosInstance.post('/api/achievements', payload);
+        await axiosInstance.post('/achievements', payload);
         setSnackbar({ open: true, message: 'Achievement created successfully', severity: 'success' });
       }
       handleCloseDialog();
@@ -178,7 +178,7 @@ export default function AchievementManagementPage() {
   const handleDelete = async () => {
     if (!deleteTarget) return;
     try {
-      await axiosInstance.delete(`/api/achievements/${deleteTarget.id}`);
+      await axiosInstance.delete(`/achievements/${deleteTarget.id}`);
       setSnackbar({ open: true, message: 'Achievement deleted', severity: 'success' });
       setDeleteDialogOpen(false);
       setDeleteTarget(null);
@@ -192,7 +192,7 @@ export default function AchievementManagementPage() {
 
   const handleToggle = async (achievement: Achievement) => {
     try {
-      await axiosInstance.put(`/api/achievements/${achievement.id}/toggle`, {
+      await axiosInstance.put(`/achievements/${achievement.id}/toggle`, {
         enabled: !achievement.isEnabled,
       });
       setAchievements((prev) =>
@@ -243,7 +243,7 @@ export default function AchievementManagementPage() {
     }));
 
     try {
-      await axiosInstance.put('/api/achievements/reorder', orders);
+      await axiosInstance.put('/achievements/reorder', orders);
       setSnackbar({ open: true, message: 'Order updated', severity: 'success' });
     } catch {
       setSnackbar({ open: true, message: 'Failed to update order', severity: 'error' });

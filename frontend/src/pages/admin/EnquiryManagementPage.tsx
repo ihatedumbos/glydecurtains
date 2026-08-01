@@ -133,7 +133,7 @@ export default function EnquiryManagementPage() {
       if (statusFilter) params.status = statusFilter;
       if (search) params.search = search;
 
-      const res = await axiosInstance.get('/api/enquiries', { params });
+      const res = await axiosInstance.get('/enquiries', { params });
       const data: PageResponse<Enquiry> = res.data.data;
       setEnquiries(data.content || []);
       setTotalPages(data.totalPages || 0);
@@ -156,7 +156,7 @@ export default function EnquiryManagementPage() {
     setDetail(null);
     setReplyMessage('');
     try {
-      const res = await axiosInstance.get(`/api/enquiries/${id}`);
+      const res = await axiosInstance.get(`/enquiries/${id}`);
       setDetail(res.data.data);
     } catch {
       setSnackbar({ open: true, message: 'Failed to load enquiry details', severity: 'error' });
@@ -172,7 +172,7 @@ export default function EnquiryManagementPage() {
     if (!detail) return;
     setUpdatingStatus(true);
     try {
-      await axiosInstance.put(`/api/enquiries/${detail.id}/status`, { status: newStatus });
+      await axiosInstance.put(`/enquiries/${detail.id}/status`, { status: newStatus });
       setDetail((prev) => (prev ? { ...prev, status: newStatus } : prev));
       setSnackbar({ open: true, message: 'Status updated successfully', severity: 'success' });
       fetchEnquiries();
@@ -189,11 +189,11 @@ export default function EnquiryManagementPage() {
     if (!detail || !replyMessage.trim()) return;
     setReplying(true);
     try {
-      await axiosInstance.post(`/api/enquiries/${detail.id}/reply`, { message: replyMessage.trim() });
+      await axiosInstance.post(`/enquiries/${detail.id}/reply`, { message: replyMessage.trim() });
       setSnackbar({ open: true, message: 'Reply sent successfully', severity: 'success' });
       setReplyMessage('');
       // Refresh detail to show new reply
-      const res = await axiosInstance.get(`/api/enquiries/${detail.id}`);
+      const res = await axiosInstance.get(`/enquiries/${detail.id}`);
       setDetail(res.data.data);
       fetchEnquiries();
     } catch {

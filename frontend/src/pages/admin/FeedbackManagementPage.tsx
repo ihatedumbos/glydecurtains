@@ -119,7 +119,7 @@ export default function FeedbackManagementPage() {
       };
       if (statusFilter) params.status = statusFilter;
 
-      const res = await axiosInstance.get('/api/feedback', { params });
+      const res = await axiosInstance.get('/feedback', { params });
       const data: PageResponse<Feedback> = res.data.data;
       let items = data.content || [];
 
@@ -149,7 +149,7 @@ export default function FeedbackManagementPage() {
 
   const handleApprove = async (id: number) => {
     try {
-      await axiosInstance.put(`/api/feedback/${id}/approve`);
+      await axiosInstance.put(`/feedback/${id}/approve`);
       setSnackbar({ open: true, message: 'Feedback approved', severity: 'success' });
       fetchFeedback();
     } catch {
@@ -159,7 +159,7 @@ export default function FeedbackManagementPage() {
 
   const handleReject = async (id: number) => {
     try {
-      await axiosInstance.put(`/api/feedback/${id}/reject`);
+      await axiosInstance.put(`/feedback/${id}/reject`);
       setSnackbar({ open: true, message: 'Feedback rejected', severity: 'success' });
       fetchFeedback();
     } catch {
@@ -177,7 +177,7 @@ export default function FeedbackManagementPage() {
     if (!replyFeedbackId || !replyText.trim()) return;
     setReplySubmitting(true);
     try {
-      await axiosInstance.post(`/api/feedback/${replyFeedbackId}/reply`, { reply: replyText.trim() });
+      await axiosInstance.post(`/feedback/${replyFeedbackId}/reply`, { reply: replyText.trim() });
       setSnackbar({ open: true, message: 'Reply sent successfully', severity: 'success' });
       setReplyDialogOpen(false);
       fetchFeedback();

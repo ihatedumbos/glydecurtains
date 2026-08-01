@@ -239,7 +239,7 @@ export default function ProductDetailPage() {
     if (!id) return;
 
     axiosInstance
-      .get(`/feedback/product/${id}`)
+      .get(`/feedback/products/${id}`)
       .then((res) => {
         const data = res.data?.data || res.data || [];
         setReviews(Array.isArray(data) ? data : []);
@@ -247,7 +247,7 @@ export default function ProductDetailPage() {
       .catch(() => {});
 
     axiosInstance
-      .get(`/feedback/product/${id}/rating`)
+      .get(`/feedback/products/${id}/rating`)
       .then((res) => {
         const rating = res.data?.data ?? res.data ?? 0;
         setAverageRating(typeof rating === 'number' ? rating : 0);
