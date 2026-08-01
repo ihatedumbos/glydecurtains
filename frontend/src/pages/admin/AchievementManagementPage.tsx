@@ -9,7 +9,6 @@ import {
   FormControl,
   InputLabel,
   Switch,
-  FormControlLabel,
   CircularProgress,
   Alert,
   Snackbar,

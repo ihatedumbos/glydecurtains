@@ -34,7 +34,7 @@ export interface MediaPickerProps {
   existingMedia?: MediaItem[];
   onReorder?: (order: number[]) => void;
   onDelete?: (mediaId: number) => void;
-  onReplace?: (mediaId: number, file: UploadedMedia) => void;
+  onReplace?: (mediaId: number) => void;
   disabled?: boolean;
 }
 

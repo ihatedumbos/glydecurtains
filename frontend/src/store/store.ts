@@ -6,7 +6,7 @@ import orderReducer from '@/store/slices/orderSlice';
 import wishlistReducer from '@/store/slices/wishlistSlice';
 import searchReducer from '@/store/slices/searchSlice';
 import cmsReducer from '@/store/slices/cmsSlice';
-import themeReducer, { ThemeState } from '@/store/slices/themeSlice';
+import themeReducer from '@/store/slices/themeSlice';
 import uiReducer from '@/store/slices/uiSlice';
 import employeeReducer from '@/store/slices/employeeSlice';
 import dashboardReducer from '@/store/slices/dashboardSlice';
@@ -19,7 +19,6 @@ import inventoryReducer from '@/store/slices/inventorySlice';
 import { LOGOUT_ACTION_TYPE } from '@/store/logoutAction';
 
 const AUTH_STORAGE_KEY = 'glyde_auth';
-const _THEME_STORAGE_KEY = 'glyde_theme'; // Theme persistence handled internally by themeSlice
 
 function loadAuthState(): Partial<AuthState> | undefined {
   try {
@@ -39,11 +38,6 @@ function loadAuthState(): Partial<AuthState> | undefined {
   }
 }
 
-function loadThemeState(): Partial<ThemeState> | undefined {
-  // Theme state persistence is handled internally by the themeSlice via its own localStorage key
-  return undefined;
-}
-
 function saveAuthState(state: AuthState): void {
   try {
     const serialized = JSON.stringify({
@@ -55,10 +49,6 @@ function saveAuthState(state: AuthState): void {
   } catch {
     // Silently ignore write errors
   }
-}
-
-function saveThemeState(_state: ThemeState): void {
-  // Theme state persistence is handled internally by the themeSlice
 }
 
 const appReducer = combineReducers({

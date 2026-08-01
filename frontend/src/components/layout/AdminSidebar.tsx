@@ -79,7 +79,7 @@ export default function AdminSidebar({ open, collapsed = false, onClose }: Admin
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
   const user = useAppSelector((state) => state.auth.user);
-  const { hasPermission, isSuperAdmin } = usePermissions();
+  const { hasPermission } = usePermissions();
 
   const userRole = user?.role;
 

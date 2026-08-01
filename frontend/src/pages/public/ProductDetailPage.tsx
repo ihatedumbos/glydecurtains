@@ -1,10 +1,10 @@
 import { useState, useEffect, useCallback, useRef, useMemo } from 'react';
+import Grid from '@mui/material/Grid2';
 import { useParams, Link } from 'react-router-dom';
 import {
   Box,
   Container,
   Typography,
-  Grid,
   Chip,
   Rating,
   Skeleton,
