@@ -2,8 +2,10 @@ package com.glydecurtains.controller;
 
 import com.glydecurtains.dto.request.ThemeConfigUpdateRequest;
 import com.glydecurtains.dto.response.ApiResponse;
+import com.glydecurtains.dto.response.HomepageSectionResponse;
 import com.glydecurtains.dto.response.ThemePresetResponse;
 import com.glydecurtains.security.RequiresPermission;
+import com.glydecurtains.service.CmsService;
 import com.glydecurtains.service.ThemeService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -19,7 +21,14 @@ public class CmsController {
 
     private final ThemeService themeService;
 
+    private final CmsService cmsService;
     // --- Theme endpoints ---
+
+    @GetMapping("/public/sections")
+    public ResponseEntity<ApiResponse<List<HomepageSectionResponse>>> getPublicSections(
+            @RequestHeader(value = "Accept-Language", required = false, defaultValue = "en") String language) {
+        return ResponseEntity.ok(ApiResponse.success(cmsService.getEnabledSections(language)));
+    }
 
     @GetMapping("/themes")
     public ResponseEntity<ApiResponse<ThemePresetResponse>> getActiveTheme() {

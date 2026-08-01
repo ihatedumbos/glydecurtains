@@ -47,14 +47,11 @@ export default function HomePage() {
   useEffect(() => {
     const fetchCmsData = async () => {
       try {
-        const [sectionsRes, bannersRes] = await Promise.all([
-          axiosInstance.get('/cms/sections'),
-          axiosInstance.get('/cms/banners'),
-        ]);
+        const sectionsRes = await axiosInstance.get('/cms/public/sections');
         const sectionsData = sectionsRes.data?.data || sectionsRes.data || [];
-        const bannersData = bannersRes.data?.data || bannersRes.data || [];
+
         setSections(sectionsData);
-        setBanners(bannersData);
+        setBanners(sectionsData.flatMap((section: HomepageSection & { banners?: Banner[] }) => section.banners || []));
       } catch {
         // Graceful fallback — render with empty data
         setSections([]);
