@@ -18,7 +18,8 @@ Open two PowerShell terminals.
 
 ```powershell
 cd C:\Users\ihate\IdeaProjects\Personal\GlydeCurtains\glydecurtains\backend
-.\mvnw.cmd -Dspring-boot.run.profiles=local-ui spring-boot:run
+$env:SPRING_PROFILES_ACTIVE = 'local-ui'
+.\mvnw.cmd spring-boot:run
 ```
 
 `local-ui` bypasses authentication and permissions only for local visual testing. Never use it in Docker, integration, or production.
