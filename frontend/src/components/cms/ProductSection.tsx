@@ -68,7 +68,7 @@ export default function ProductSection({ title, sectionType }: ProductSectionPro
   useEffect(() => {
     const params = getQueryParams(sectionType);
     axiosInstance
-      .get('/products', { params })
+     .get('/products/public', { params })
       .then((res) => {
         const data = res.data?.data?.content || res.data?.content || [];
         setProducts(data);

@@ -31,6 +31,19 @@ public class FeedbackController {
         return ResponseEntity.status(201).body(ApiResponse.created("Feedback submitted successfully", response));
     }
 
+    @GetMapping("/public")
+    public ResponseEntity<ApiResponse<PageResponse<FeedbackResponse>>> getPublicFeedback(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "6") int size) {
+        FeedbackFilterRequest filter = new FeedbackFilterRequest();
+        filter.setStatus(FeedbackStatus.APPROVED);
+
+        PageResponse<FeedbackResponse> response =
+                feedbackService.getFeedback(filter, PageRequest.of(page, size));
+
+        return ResponseEntity.ok(ApiResponse.success(response));
+    }
+
     @GetMapping("/products/{productId}")
     public ResponseEntity<ApiResponse<PageResponse<FeedbackResponse>>> getProductFeedback(
             @PathVariable Long productId,

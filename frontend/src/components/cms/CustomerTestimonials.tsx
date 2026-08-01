@@ -21,7 +21,7 @@ export default function CustomerTestimonials({ title }: CustomerTestimonialsProp
 
   useEffect(() => {
     axiosInstance
-      .get('/feedback', { params: { status: 'APPROVED', size: 6 } })
+      .get('/feedback/public', { params: { size: 6 } })
       .then((res) => {
         const data = res.data?.data?.content || res.data?.content || [];
         setTestimonials(data);
