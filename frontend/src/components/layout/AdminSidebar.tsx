@@ -47,8 +47,7 @@ interface NavItem {
 }
 
 const navItems: NavItem[] = [
-  { label: 'Dashboard', path: '/admin', icon: <DashboardIcon />, permissionEntity: 'dashboard' },
-  { label: 'Products', path: '/admin/products', icon: <ShoppingBagIcon />, permissionEntity: 'products' },
+ { label: 'Dashboard', path: '/admin/dashboard', icon: <DashboardIcon />, permissionEntity: 'dashboard' }, { label: 'Products', path: '/admin/products', icon: <ShoppingBagIcon />, permissionEntity: 'products' },
   { label: 'Categories', path: '/admin/categories', icon: <CategoryIcon />, permissionEntity: 'categories' },
   { label: 'Orders', path: '/admin/orders', icon: <ShoppingCartIcon />, permissionEntity: 'orders' },
   { label: 'Customers', path: '/admin/users', icon: <PeopleIcon />, roles: ['SUPER_ADMIN', 'ADMIN'], permissionEntity: 'users' },

@@ -4,6 +4,7 @@ import ProtectedRoute from '@/routes/ProtectedRoute';
 import AdminRoute from '@/routes/AdminRoute';
 import PageTransition from '@/components/common/PageTransition';
 import { PageSkeleton } from '@/components/common/SkeletonLoader';
+import AdminLayout from '@/components/layout/AdminLayout';
 
 // ---------- Public pages (lazy) ----------
 const HomePage = lazy(() => import('@/pages/public/HomePage'));
@@ -93,6 +94,7 @@ export default function AppRoutes() {
 
         {/* ===== Admin/Employee routes ===== */}
         <Route element={<AdminRoute />}>
+         <Route element={<AdminLayout />}>
           <Route path="/admin/dashboard" element={<DashboardPage />} />
           <Route path="/admin/products" element={<ProductManagementPage />} />
           <Route path="/admin/categories" element={<CategoryManagementPage />} />
@@ -110,6 +112,7 @@ export default function AppRoutes() {
           <Route path="/admin/invoices" element={<InvoiceManagementPage />} />
           <Route path="/admin/activity-logs" element={<ActivityLogPage />} />
           <Route path="/admin/inventory" element={<InventoryManagementPage />} />
+          </Route>
         </Route>
 
         {/* ===== Error routes ===== */}

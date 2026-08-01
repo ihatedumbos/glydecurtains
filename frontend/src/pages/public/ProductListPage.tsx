@@ -66,8 +66,8 @@ export default function ProductListPage() {
     const fetchFilterMeta = async () => {
       try {
         const [catRes, colRes] = await Promise.all([
-          axiosInstance.get('/categories/tree'),
-          axiosInstance.get('/collections'),
+          axiosInstance.get('/categories/public/tree'),
+          axiosInstance.get('/collections/public'),
         ]);
         const catData = catRes.data?.data || catRes.data || [];
         const colData = colRes.data?.data || colRes.data || [];

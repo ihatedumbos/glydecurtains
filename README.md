@@ -52,6 +52,26 @@ npm run dev
 
 The frontend starts on `http://localhost:5173`.
 
+### Local URLs
+
+| Page | URL |
+|------|-----|
+| Storefront | [http://localhost:5173](http://localhost:5173) |
+| Login | [http://localhost:5173/login](http://localhost:5173/login) |
+| Admin dashboard | [http://localhost:5173/admin/dashboard](http://localhost:5173/admin/dashboard) |
+
+### Local UI Preview Mode
+
+To preview the full UI without backend authorization checks, start the backend in the local-only `local-ui` profile:
+
+```powershell
+cd backend
+$env:SPRING_PROFILES_ACTIVE = 'local-ui'
+.\mvnw.cmd spring-boot:run
+```
+
+This mode bypasses backend authentication and permission checks only for local visual testing. Never use `local-ui` in Docker, integration, or production environments.
+
 ## Docker Deployment
 
 ### Build and run with Docker Compose

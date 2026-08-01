@@ -325,8 +325,8 @@ export default function ProductManagementPage() {
   const fetchReferenceData = useCallback(async () => {
     try {
       const [catRes, colRes] = await Promise.all([
-        axiosInstance.get('/categories/tree'),
-        axiosInstance.get('/collections'),
+        axiosInstance.get('/categories/public/tree'),
+        axiosInstance.get('/collections/public'),
       ]);
       const catTree = catRes.data.data || [];
       setCategories(catTree.map((c: { id: number; name: string }) => ({ id: c.id, name: c.name })));
