@@ -11,6 +11,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
+import org.springframework.beans.factory.annotation.Value;
 
 /**
  * AOP Aspect that intercepts methods annotated with {@link RequiresPermission}
@@ -28,12 +29,19 @@ public class PermissionAspect {
 
     private final PermissionEvaluator permissionEvaluator;
 
+    @Value("${app.security.authorization-enabled:true}")
+    private boolean authorizationEnabled;
+
     public PermissionAspect(PermissionEvaluator permissionEvaluator) {
         this.permissionEvaluator = permissionEvaluator;
     }
 
     @Around("@annotation(requiresPermission)")
     public Object checkPermission(ProceedingJoinPoint joinPoint, RequiresPermission requiresPermission) throws Throwable {
+        if (!authorizationEnabled) {
+            return joinPoint.proceed();
+        }
+
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
         if (authentication == null || !authentication.isAuthenticated()) {

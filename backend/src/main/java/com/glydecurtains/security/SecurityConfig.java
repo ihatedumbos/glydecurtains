@@ -2,6 +2,7 @@ package com.glydecurtains.security;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
@@ -24,6 +25,9 @@ public class SecurityConfig {
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
     private final RateLimitFilter rateLimitFilter;
 
+    @Value("${app.security.authorization-enabled:true}")
+    private boolean authorizationEnabled;
+
     public SecurityConfig(CorsConfigurationSource corsConfigurationSource,
                           JwtAuthenticationFilter jwtAuthenticationFilter,
                           RateLimitFilter rateLimitFilter) {
@@ -38,22 +42,27 @@ public class SecurityConfig {
                 .cors(cors -> cors.configurationSource(corsConfigurationSource))
                 .csrf(csrf -> csrf.disable())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/health").permitAll()
-                        .requestMatchers("/api/auth/**").permitAll()
-                        .requestMatchers("/h2-console/**").permitAll()
-                        .requestMatchers("/api/products/public/**").permitAll()
-                        .requestMatchers("/api/categories/public/**").permitAll()
-                        .requestMatchers("/api/search/**").permitAll()
-                        .requestMatchers("/api/stores/public/**").permitAll()
-                        .requestMatchers("/api/feedback/public/**").permitAll()
-                        .requestMatchers("/api/achievements/public/**").permitAll()
-                        .requestMatchers("/api/cms/public/**").permitAll()
-                        .requestMatchers("/api/pages/**").permitAll()
-                        .requestMatchers("/api/enquiries/public/**").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/api/achievements").permitAll()
-                        .anyRequest().authenticated()
-                )
+                .authorizeHttpRequests(auth -> {
+                    if (!authorizationEnabled) {
+                        auth.anyRequest().permitAll();
+                        return;
+                    }
+
+                    auth.requestMatchers("/api/health").permitAll()
+                            .requestMatchers("/api/auth/**").permitAll()
+                            .requestMatchers("/h2-console/**").permitAll()
+                            .requestMatchers("/api/products/public/**").permitAll()
+                            .requestMatchers("/api/categories/public/**").permitAll()
+                            .requestMatchers("/api/search/**").permitAll()
+                            .requestMatchers("/api/stores/public/**").permitAll()
+                            .requestMatchers("/api/feedback/public/**").permitAll()
+                            .requestMatchers("/api/achievements/public/**").permitAll()
+                            .requestMatchers("/api/cms/public/**").permitAll()
+                            .requestMatchers("/api/pages/**").permitAll()
+                            .requestMatchers("/api/enquiries/public/**").permitAll()
+                            .requestMatchers(HttpMethod.GET, "/api/achievements").permitAll()
+                            .anyRequest().authenticated();
+                })
                 .headers(headers -> headers
                         .frameOptions(frame -> frame.sameOrigin())
                         .contentTypeOptions(contentType -> {})
