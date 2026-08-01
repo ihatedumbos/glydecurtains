@@ -1,0 +1,18 @@
+{
+  "title": "शॉपिंग कार्ट",
+  "empty": "आपका कार्ट खाली है",
+  "continueShopping": "खरीदारी जारी रखें",
+  "checkout": "चेकआउट करें",
+  "subtotal": "उप-कुल",
+  "total": "कुल",
+  "quantity": "मात्रा",
+  "remove": "हटाएं",
+  "clearCart": "कार्ट खाली करें",
+  "itemAdded": "आइटम कार्ट में जोड़ा गया",
+  "itemRemoved": "आइटम कार्ट से हटाया गया",
+  "quantityUpdated": "मात्रा अपडेट की गई",
+  "cartCleared": "कार्ट खाली कर दिया गया",
+  "unavailableItems": "आपके कार्ट में कुछ आइटम अब उपलब्ध नहीं हैं",
+  "maxQuantity": "अधिकतम उपलब्ध मात्रा: {{max}}",
+  "orderSummary": "ऑर्डर सारांश"
+}

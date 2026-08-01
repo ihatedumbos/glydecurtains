@@ -1,0 +1,40 @@
+{
+  "dashboard": "ડેશબોર્ડ",
+  "manageProducts": "ઉત્પાદન વ્યવસ્થાપન",
+  "manageOrders": "ઓર્ડર વ્યવસ્થાપન",
+  "manageUsers": "વપરાશકર્તા વ્યવસ્થાપન",
+  "manageEmployees": "કર્મચારી વ્યવસ્થાપન",
+  "manageCategories": "શ્રેણી વ્યવસ્થાપન",
+  "manageCms": "સામગ્રી વ્યવસ્થાપન",
+  "managePermissions": "પરવાનગીઓ",
+  "manageStores": "સ્ટોર સ્થાનો",
+  "manageFeedback": "પ્રતિસાદ અને સમીક્ષાઓ",
+  "manageAchievements": "સિદ્ધિઓ",
+  "manageEnquiries": "પૂછપરછ",
+  "manageInvoices": "ઇન્વોઇસ",
+  "activityLogs": "પ્રવૃત્તિ લૉગ",
+  "reports": "અહેવાલ",
+  "settings": "સેટિંગ્સ",
+  "theme": "થીમ",
+  "users": {
+    "approve": "મંજૂર કરો",
+    "reject": "નકારો",
+    "suspend": "સસ્પેન્ડ કરો",
+    "activate": "સક્રિય કરો",
+    "deactivate": "નિષ્ક્રિય કરો",
+    "changeRole": "ભૂમિકા બદલો",
+    "resetPassword": "પાસવર્ડ રીસેટ કરો"
+  },
+  "products": {
+    "create": "ઉત્પાદન બનાવો",
+    "edit": "ઉત્પાદન ફેરફાર કરો",
+    "archive": "સંગ્રહિત કરો",
+    "activate": "સક્રિય કરો",
+    "deactivate": "નિષ્ક્રિય કરો"
+  },
+  "orders": {
+    "assign": "કર્મચારી નિયુક્ત કરો",
+    "updateStatus": "સ્થિતિ અપડેટ કરો",
+    "generateInvoice": "ઇન્વોઇસ બનાવો"
+  }
+}

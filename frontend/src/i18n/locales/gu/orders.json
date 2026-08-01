@@ -1,0 +1,28 @@
+{
+  "title": "મારા ઓર્ડર",
+  "orderNumber": "ઓર્ડર #{{number}}",
+  "placedOn": "ઓર્ડરની તારીખ",
+  "status": "સ્થિતિ",
+  "total": "કુલ",
+  "items": "આઇટમ",
+  "trackOrder": "ઓર્ડર ટ્રેક કરો",
+  "cancelOrder": "ઓર્ડર રદ કરો",
+  "reorder": "ફરીથી ઓર્ડર કરો",
+  "noOrders": "તમે હજી સુધી કોઈ ઓર્ડર આપ્યો નથી",
+  "orderPlaced": "ઓર્ડર સફળતાપૂર્વક આપવામાં આવ્યો!",
+  "orderCancelled": "ઓર્ડર રદ કરવામાં આવ્યો",
+  "statuses": {
+    "pending": "બાકી",
+    "confirmed": "પુષ્ટિ થઈ",
+    "packed": "પેક થયું",
+    "dispatched": "મોકલવામાં આવ્યું",
+    "delivered": "ડિલિવર થયું",
+    "cancelled": "રદ"
+  },
+  "details": {
+    "title": "ઓર્ડર વિગતો",
+    "shippingInfo": "શિપિંગ માહિતી",
+    "paymentInfo": "ચુકવણી માહિતી",
+    "orderHistory": "ઓર્ડર ઇતિહાસ"
+  }
+}

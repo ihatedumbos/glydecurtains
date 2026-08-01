@@ -1,0 +1,23 @@
+package com.glydecurtains.entity.enums;
+
+public enum SectionType {
+    HERO_BANNER,
+    PROMO_BANNER,
+    FEATURED,
+    LATEST,
+    NEW_ARRIVALS,
+    POPULAR_CATEGORIES,
+    PREMIUM_COLLECTIONS,
+    SEASONAL,
+    BEST_SELLING,
+    RECOMMENDED,
+    FEATURED_ACCESSORIES,
+    TRENDING,
+    RECENTLY_ADDED,
+    TESTIMONIALS,
+    BRAND_STORY,
+    ACHIEVEMENTS,
+    NEWSLETTER,
+    FOOTER,
+    SCROLLING_TICKER
+}

@@ -1,0 +1,43 @@
+{
+  "title": "उत्पाद",
+  "allProducts": "सभी उत्पाद",
+  "featured": "विशेष",
+  "trending": "ट्रेंडिंग",
+  "newArrivals": "नई आवक",
+  "bestSellers": "सबसे ज्यादा बिकने वाले",
+  "premium": "प्रीमियम",
+  "addToCart": "कार्ट में जोड़ें",
+  "addToWishlist": "विशलिस्ट में जोड़ें",
+  "removeFromWishlist": "विशलिस्ट से हटाएं",
+  "outOfStock": "स्टॉक में नहीं",
+  "inStock": "स्टॉक में उपलब्ध",
+  "lowStock": "कम स्टॉक",
+  "price": "कीमत",
+  "sku": "SKU",
+  "category": "श्रेणी",
+  "subCategory": "उप-श्रेणी",
+  "material": "सामग्री",
+  "color": "रंग",
+  "size": "आकार",
+  "dimensions": "आयाम",
+  "description": "विवरण",
+  "specifications": "विशिष्टताएं",
+  "reviews": "समीक्षाएं",
+  "relatedProducts": "संबंधित उत्पाद",
+  "similarProducts": "समान उत्पाद",
+  "noProducts": "कोई उत्पाद नहीं मिला",
+  "filters": {
+    "title": "फ़िल्टर",
+    "priceRange": "मूल्य सीमा",
+    "availability": "उपलब्धता",
+    "clearAll": "सभी फ़िल्टर साफ़ करें",
+    "apply": "फ़िल्टर लागू करें"
+  },
+  "sort": {
+    "popularity": "लोकप्रियता",
+    "newest": "नवीनतम पहले",
+    "priceLowHigh": "कीमत: कम से ज्यादा",
+    "priceHighLow": "कीमत: ज्यादा से कम",
+    "featured": "विशेष"
+  }
+}

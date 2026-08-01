@@ -1,0 +1,18 @@
+{
+  "title": "શોપિંગ કાર્ટ",
+  "empty": "તમારી કાર્ટ ખાલી છે",
+  "continueShopping": "ખરીદી ચાલુ રાખો",
+  "checkout": "ચેકઆઉટ કરો",
+  "subtotal": "ઉપ-કુલ",
+  "total": "કુલ",
+  "quantity": "જથ્થો",
+  "remove": "દૂર કરો",
+  "clearCart": "કાર્ટ ખાલી કરો",
+  "itemAdded": "આઇટમ કાર્ટમાં ઉમેરાઈ",
+  "itemRemoved": "આઇટમ કાર્ટમાંથી દૂર થઈ",
+  "quantityUpdated": "જથ્થો અપડેટ થયો",
+  "cartCleared": "કાર્ટ ખાલી કરવામાં આવી",
+  "unavailableItems": "તમારી કાર્ટમાં કેટલીક આઇટમ હવે ઉપલબ્ધ નથી",
+  "maxQuantity": "મહત્તમ ઉપલબ્ધ જથ્થો: {{max}}",
+  "orderSummary": "ઓર્ડર સારાંશ"
+}

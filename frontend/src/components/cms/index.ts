@@ -1,0 +1,9 @@
+export { default as ScrollingTicker } from './ScrollingTicker';
+export { default as HeroBannerSlider } from './HeroBannerSlider';
+export { default as PromotionalBanner } from './PromotionalBanner';
+export { default as ProductSection } from './ProductSection';
+export { default as PopularCategories } from './PopularCategories';
+export { default as CustomerTestimonials } from './CustomerTestimonials';
+export { default as BrandStory } from './BrandStory';
+export { default as AchievementsSection } from './AchievementsSection';
+export { default as NewsletterSection } from './NewsletterSection';

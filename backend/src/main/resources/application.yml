@@ -1,0 +1,41 @@
+server:
+  port: ${SERVER_PORT:8080}
+
+spring:
+  application:
+    name: glydecurtains
+
+  datasource:
+    url: jdbc:h2:mem:glydecurtains;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE;MODE=MySQL
+    driver-class-name: org.h2.Driver
+    username: sa
+    password:
+
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    show-sql: false
+    defer-datasource-initialization: true
+    properties:
+      hibernate:
+        format_sql: true
+
+  thymeleaf:
+    mode: HTML
+    encoding: UTF-8
+    cache: false
+
+  h2:
+    console:
+      enabled: true
+      path: /h2-console
+
+app:
+  jwt:
+    secret: ${JWT_SECRET:glydecurtains-default-secret-key-change-in-production-min-256-bits-long}
+    access-token-expiration-ms: 900000       # 15 minutes
+    refresh-token-expiration-ms: 86400000    # 24 hours
+    remember-me-expiration-ms: 2592000000    # 30 days
+
+  cors:
+    allowed-origins: ${CORS_ORIGINS:http://localhost:5173}

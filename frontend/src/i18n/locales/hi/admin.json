@@ -1,0 +1,40 @@
+{
+  "dashboard": "डैशबोर्ड",
+  "manageProducts": "उत्पाद प्रबंधन",
+  "manageOrders": "ऑर्डर प्रबंधन",
+  "manageUsers": "उपयोगकर्ता प्रबंधन",
+  "manageEmployees": "कर्मचारी प्रबंधन",
+  "manageCategories": "श्रेणी प्रबंधन",
+  "manageCms": "सामग्री प्रबंधन",
+  "managePermissions": "अनुमतियाँ",
+  "manageStores": "स्टोर स्थान",
+  "manageFeedback": "प्रतिक्रिया और समीक्षाएं",
+  "manageAchievements": "उपलब्धियाँ",
+  "manageEnquiries": "पूछताछ",
+  "manageInvoices": "चालान",
+  "activityLogs": "गतिविधि लॉग",
+  "reports": "रिपोर्ट",
+  "settings": "सेटिंग्स",
+  "theme": "थीम",
+  "users": {
+    "approve": "स्वीकृत करें",
+    "reject": "अस्वीकार करें",
+    "suspend": "निलंबित करें",
+    "activate": "सक्रिय करें",
+    "deactivate": "निष्क्रिय करें",
+    "changeRole": "भूमिका बदलें",
+    "resetPassword": "पासवर्ड रीसेट करें"
+  },
+  "products": {
+    "create": "उत्पाद बनाएं",
+    "edit": "उत्पाद संपादित करें",
+    "archive": "संग्रहित करें",
+    "activate": "सक्रिय करें",
+    "deactivate": "निष्क्रिय करें"
+  },
+  "orders": {
+    "assign": "कर्मचारी नियुक्त करें",
+    "updateStatus": "स्थिति अपडेट करें",
+    "generateInvoice": "चालान बनाएं"
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "required": "{{field}} is required",
+  "email": "Please enter a valid email address",
+  "minLength": "{{field}} must be at least {{min}} characters",
+  "maxLength": "{{field}} must not exceed {{max}} characters",
+  "passwordMismatch": "Passwords do not match",
+  "passwordStrength": "Password must contain at least 8 characters, one uppercase, one lowercase, one number, and one special character",
+  "invalidPhone": "Please enter a valid phone number",
+  "invalidPrice": "Please enter a valid price",
+  "invalidQuantity": "Please enter a valid quantity",
+  "fileTooLarge": "File size must not exceed {{max}}",
+  "invalidFileType": "Invalid file type. Allowed: {{types}}",
+  "duplicateEmail": "This email is already registered",
+  "invalidCredentials": "Invalid email or password"
+}

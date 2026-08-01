@@ -1,0 +1,18 @@
+# QA environment profile
+spring:
+  h2:
+    console:
+      enabled: false
+
+  jpa:
+    show-sql: false
+
+app:
+  cors:
+    allowed-origins: https://qa.glydecurtains.com
+  seed-data: true
+
+logging:
+  level:
+    root: INFO
+    com.glydecurtains: INFO

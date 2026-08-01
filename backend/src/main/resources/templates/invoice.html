@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Invoice</title>
+    <style>
+        @page {
+            size: A4;
+            margin: 20mm;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+            font-size: 12px;
+            color: #333333;
+            line-height: 1.5;
+        }
+
+        .invoice-container {
+            width: 100%;
+            max-width: 210mm;
+            padding: 10mm;
+        }
+
+        .header {
+            display: table;
+            width: 100%;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #2c3e50;
+            padding-bottom: 15px;
+        }
+
+        .header-left {
+            display: table-cell;
+            width: 50%;
+            vertical-align: top;
+        }
+
+        .header-right {
+            display: table-cell;
+            width: 50%;
+            vertical-align: top;
+            text-align: right;
+        }
+
+        .company-name {
+            font-size: 22px;
+            font-weight: bold;
+            color: #2c3e50;
+            margin-bottom: 5px;
+        }
+
+        .company-detail {
+            font-size: 11px;
+            color: #555555;
+            margin-bottom: 2px;
+        }
+
+        .invoice-title {
+            font-size: 28px;
+            font-weight: bold;
+            color: #2c3e50;
+            margin-bottom: 5px;
+        }
+
+        .invoice-number {
+            font-size: 14px;
+            color: #555555;
+        }
+
+        .invoice-date {
+            font-size: 11px;
+            color: #777777;
+        }
+
+        .info-section {
+            display: table;
+            width: 100%;
+            margin: 20px 0;
+        }
+
+        .info-block {
+            display: table-cell;
+            width: 50%;
+            vertical-align: top;
+        }
+
+        .info-label {
+            font-size: 10px;
+            font-weight: bold;
+            text-transform: uppercase;
+            color: #888888;
+            margin-bottom: 5px;
+        }
+
+        .info-value {
+            font-size: 12px;
+            color: #333333;
+            margin-bottom: 3px;
+        }
+
+        .items-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+
+        .items-table thead th {
+            background-color: #2c3e50;
+            color: #ffffff;
+            padding: 10px 8px;
+            font-size: 11px;
+            font-weight: bold;
+            text-align: left;
+            text-transform: uppercase;
+        }
+
+        .items-table thead th:last-child,
+        .items-table thead th:nth-child(3),
+        .items-table thead th:nth-child(4) {
+            text-align: right;
+        }
+
+        .items-table tbody td {
+            padding: 10px 8px;
+            border-bottom: 1px solid #eeeeee;
+            font-size: 11px;
+        }
+
+        .items-table tbody td:last-child,
+        .items-table tbody td:nth-child(3),
+        .items-table tbody td:nth-child(4) {
+            text-align: right;
+        }
+
+        .items-table tbody tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+
+        .totals-section {
+            width: 100%;
+            margin-top: 10px;
+        }
+
+        .totals-table {
+            width: 300px;
+            margin-left: auto;
+            border-collapse: collapse;
+        }
+
+        .totals-table td {
+            padding: 6px 10px;
+            font-size: 12px;
+        }
+
+        .totals-table .total-label {
+            text-align: right;
+            color: #555555;
+        }
+
+        .totals-table .total-value {
+            text-align: right;
+            font-weight: bold;
+        }
+
+        .totals-table .grand-total td {
+            border-top: 2px solid #2c3e50;
+            font-size: 14px;
+            font-weight: bold;
+            color: #2c3e50;
+            padding-top: 10px;
+        }
+
+        .terms-section {
+            margin-top: 30px;
+            padding-top: 15px;
+            border-top: 1px solid #dddddd;
+        }
+
+        .terms-title {
+            font-size: 11px;
+            font-weight: bold;
+            text-transform: uppercase;
+            color: #888888;
+            margin-bottom: 5px;
+        }
+
+        .terms-text {
+            font-size: 10px;
+            color: #666666;
+            line-height: 1.6;
+        }
+
+        .footer {
+            margin-top: 20px;
+            padding-top: 10px;
+            border-top: 1px solid #dddddd;
+            text-align: center;
+            font-size: 10px;
+            color: #999999;
+        }
+
+        .tax-info {
+            font-size: 10px;
+            color: #777777;
+            margin-top: 5px;
+        }
+    </style>
+</head>
+<body>
+<div class="invoice-container">
+    <!-- Header -->
+    <div class="header">
+        <div class="header-left">
+            <div class="company-name" th:text="${companyName}">Company Name</div>
+            <div class="company-detail" th:text="${companyAddress}">Company Address</div>
+            <div class="company-detail" th:text="'Phone: ' + ${companyPhone}">Phone</div>
+            <div class="company-detail" th:text="'Email: ' + ${companyEmail}">Email</div>
+            <div class="tax-info" th:if="${taxRegistrationNumber != null and !taxRegistrationNumber.isEmpty()}"
+                 th:text="'Tax Reg: ' + ${taxRegistrationNumber}">Tax Registration</div>
+        </div>
+        <div class="header-right">
+            <div class="invoice-title">INVOICE</div>
+            <div class="invoice-number" th:text="${invoiceNumber}">INV-00000001</div>
+            <div class="invoice-date" th:text="'Date: ' + ${invoiceDate}">Date</div>
+        </div>
+    </div>
+
+    <!-- Customer & Order Info -->
+    <div class="info-section">
+        <div class="info-block">
+            <div class="info-label">Bill To</div>
+            <div class="info-value" th:text="${customerName}">Customer Name</div>
+            <div class="info-value" th:text="${customerEmail}">customer@email.com</div>
+        </div>
+        <div class="info-block">
+            <div class="info-label">Order Details</div>
+            <div class="info-value" th:text="'Order #: ' + ${orderNumber}">Order Number</div>
+            <div class="info-value" th:text="'Order Date: ' + ${orderDate}">Order Date</div>
+            <div class="info-value" th:text="'Status: ' + ${orderStatus}">Status</div>
+        </div>
+    </div>
+
+    <!-- Line Items -->
+    <table class="items-table">
+        <thead>
+        <tr>
+            <th style="width: 5%;">#</th>
+            <th style="width: 45%;">Item Description</th>
+            <th style="width: 15%;">Qty</th>
+            <th style="width: 15%;">Unit Price</th>
+            <th style="width: 20%;">Subtotal</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="item, iterStat : ${items}">
+            <td th:text="${iterStat.count}">1</td>
+            <td>
+                <span th:text="${item.productName}">Product Name</span>
+                <span th:if="${item.variantInfo != null}" style="display: block; font-size: 10px; color: #777;"
+                      th:text="${item.variantInfo}">Variant details</span>
+            </td>
+            <td th:text="${item.quantity}">1</td>
+            <td th:text="${item.unitPrice}">0.00</td>
+            <td th:text="${item.subtotal}">0.00</td>
+        </tr>
+        </tbody>
+    </table>
+
+    <!-- Totals -->
+    <div class="totals-section">
+        <table class="totals-table">
+            <tr>
+                <td class="total-label">Subtotal:</td>
+                <td class="total-value" th:text="${subtotal}">0.00</td>
+            </tr>
+            <tr class="grand-total">
+                <td class="total-label">Grand Total:</td>
+                <td class="total-value" th:text="${grandTotal}">0.00</td>
+            </tr>
+        </table>
+    </div>
+
+    <!-- Terms -->
+    <div class="terms-section" th:if="${termsText != null and !termsText.isEmpty()}">
+        <div class="terms-title">Terms &amp; Conditions</div>
+        <div class="terms-text" th:text="${termsText}">Terms text here</div>
+    </div>
+
+    <!-- Footer -->
+    <div class="footer" th:if="${footerText != null and !footerText.isEmpty()}">
+        <span th:text="${footerText}">Thank you for your business!</span>
+    </div>
+</div>
+</body>
+</html>

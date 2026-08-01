@@ -1,0 +1,43 @@
+{
+  "title": "Products",
+  "allProducts": "All Products",
+  "featured": "Featured",
+  "trending": "Trending",
+  "newArrivals": "New Arrivals",
+  "bestSellers": "Best Sellers",
+  "premium": "Premium",
+  "addToCart": "Add to Cart",
+  "addToWishlist": "Add to Wishlist",
+  "removeFromWishlist": "Remove from Wishlist",
+  "outOfStock": "Out of Stock",
+  "inStock": "In Stock",
+  "lowStock": "Low Stock",
+  "price": "Price",
+  "sku": "SKU",
+  "category": "Category",
+  "subCategory": "Sub-Category",
+  "material": "Material",
+  "color": "Color",
+  "size": "Size",
+  "dimensions": "Dimensions",
+  "description": "Description",
+  "specifications": "Specifications",
+  "reviews": "Reviews",
+  "relatedProducts": "Related Products",
+  "similarProducts": "Similar Products",
+  "noProducts": "No products found",
+  "filters": {
+    "title": "Filters",
+    "priceRange": "Price Range",
+    "availability": "Availability",
+    "clearAll": "Clear All Filters",
+    "apply": "Apply Filters"
+  },
+  "sort": {
+    "popularity": "Popularity",
+    "newest": "Newest First",
+    "priceLowHigh": "Price: Low to High",
+    "priceHighLow": "Price: High to Low",
+    "featured": "Featured"
+  }
+}

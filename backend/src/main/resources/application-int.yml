@@ -1,0 +1,20 @@
+# Integration (INT) environment profile
+spring:
+  h2:
+    console:
+      enabled: true
+      path: /h2-console
+
+  jpa:
+    show-sql: true
+
+app:
+  cors:
+    allowed-origins: ${CORS_ORIGINS:http://localhost:5173,http://localhost:3000}
+  seed-data: true
+
+logging:
+  level:
+    root: INFO
+    com.glydecurtains: DEBUG
+    org.springframework.web: DEBUG

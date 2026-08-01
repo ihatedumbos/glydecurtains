@@ -1,0 +1,28 @@
+{
+  "title": "My Orders",
+  "orderNumber": "Order #{{number}}",
+  "placedOn": "Placed on",
+  "status": "Status",
+  "total": "Total",
+  "items": "Items",
+  "trackOrder": "Track Order",
+  "cancelOrder": "Cancel Order",
+  "reorder": "Reorder",
+  "noOrders": "You haven't placed any orders yet",
+  "orderPlaced": "Order placed successfully!",
+  "orderCancelled": "Order cancelled",
+  "statuses": {
+    "pending": "Pending",
+    "confirmed": "Confirmed",
+    "packed": "Packed",
+    "dispatched": "Dispatched",
+    "delivered": "Delivered",
+    "cancelled": "Cancelled"
+  },
+  "details": {
+    "title": "Order Details",
+    "shippingInfo": "Shipping Information",
+    "paymentInfo": "Payment Information",
+    "orderHistory": "Order History"
+  }
+}

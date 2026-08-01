@@ -1,0 +1,18 @@
+{
+  "title": "Shopping Cart",
+  "empty": "Your cart is empty",
+  "continueShopping": "Continue Shopping",
+  "checkout": "Proceed to Checkout",
+  "subtotal": "Subtotal",
+  "total": "Total",
+  "quantity": "Quantity",
+  "remove": "Remove",
+  "clearCart": "Clear Cart",
+  "itemAdded": "Item added to cart",
+  "itemRemoved": "Item removed from cart",
+  "quantityUpdated": "Quantity updated",
+  "cartCleared": "Cart cleared",
+  "unavailableItems": "Some items in your cart are no longer available",
+  "maxQuantity": "Maximum available quantity: {{max}}",
+  "orderSummary": "Order Summary"
+}

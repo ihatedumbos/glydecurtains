@@ -1,0 +1,40 @@
+{
+  "dashboard": "Dashboard",
+  "manageProducts": "Manage Products",
+  "manageOrders": "Manage Orders",
+  "manageUsers": "Manage Users",
+  "manageEmployees": "Manage Employees",
+  "manageCategories": "Manage Categories",
+  "manageCms": "Content Management",
+  "managePermissions": "Permissions",
+  "manageStores": "Store Locations",
+  "manageFeedback": "Feedback & Reviews",
+  "manageAchievements": "Achievements",
+  "manageEnquiries": "Enquiries",
+  "manageInvoices": "Invoices",
+  "activityLogs": "Activity Logs",
+  "reports": "Reports",
+  "settings": "Settings",
+  "theme": "Theme",
+  "users": {
+    "approve": "Approve",
+    "reject": "Reject",
+    "suspend": "Suspend",
+    "activate": "Activate",
+    "deactivate": "Deactivate",
+    "changeRole": "Change Role",
+    "resetPassword": "Reset Password"
+  },
+  "products": {
+    "create": "Create Product",
+    "edit": "Edit Product",
+    "archive": "Archive",
+    "activate": "Activate",
+    "deactivate": "Deactivate"
+  },
+  "orders": {
+    "assign": "Assign Employee",
+    "updateStatus": "Update Status",
+    "generateInvoice": "Generate Invoice"
+  }
+}

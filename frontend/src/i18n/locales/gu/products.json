@@ -1,0 +1,43 @@
+{
+  "title": "ઉત્પાદનો",
+  "allProducts": "બધા ઉત્પાદનો",
+  "featured": "વિશેષ",
+  "trending": "ટ્રેન્ડિંગ",
+  "newArrivals": "નવા આગમન",
+  "bestSellers": "સૌથી વધુ વેચાતા",
+  "premium": "પ્રીમિયમ",
+  "addToCart": "કાર્ટમાં ઉમેરો",
+  "addToWishlist": "વિશલિસ્ટમાં ઉમેરો",
+  "removeFromWishlist": "વિશલિસ્ટમાંથી દૂર કરો",
+  "outOfStock": "સ્ટૉકમાં નથી",
+  "inStock": "સ્ટૉકમાં ઉપલબ્ધ",
+  "lowStock": "ઓછો સ્ટૉક",
+  "price": "કિંમત",
+  "sku": "SKU",
+  "category": "શ્રેણી",
+  "subCategory": "ઉપ-શ્રેણી",
+  "material": "સામગ્રી",
+  "color": "રંગ",
+  "size": "કદ",
+  "dimensions": "પરિમાણ",
+  "description": "વર્ણન",
+  "specifications": "વિશિષ્ટતાઓ",
+  "reviews": "સમીક્ષાઓ",
+  "relatedProducts": "સંબંધિત ઉત્પાદનો",
+  "similarProducts": "સમાન ઉત્પાદનો",
+  "noProducts": "કોઈ ઉત્પાદન મળ્યા નથી",
+  "filters": {
+    "title": "ફિલ્ટર",
+    "priceRange": "કિંમત શ્રેણી",
+    "availability": "ઉપલબ્ધતા",
+    "clearAll": "બધા ફિલ્ટર સાફ કરો",
+    "apply": "ફિલ્ટર લાગુ કરો"
+  },
+  "sort": {
+    "popularity": "લોકપ્રિયતા",
+    "newest": "નવીનતમ પહેલા",
+    "priceLowHigh": "કિંમત: ઓછીથી વધુ",
+    "priceHighLow": "કિંમત: વધુથી ઓછી",
+    "featured": "વિશેષ"
+  }
+}
