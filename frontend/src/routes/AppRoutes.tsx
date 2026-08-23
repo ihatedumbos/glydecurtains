@@ -52,6 +52,7 @@ const EnquiryManagementPage = lazy(() => import('@/pages/admin/EnquiryManagement
 const InvoiceManagementPage = lazy(() => import('@/pages/admin/InvoiceManagementPage'));
 const ActivityLogPage = lazy(() => import('@/pages/admin/ActivityLogPage'));
 const InventoryManagementPage = lazy(() => import('@/pages/admin/InventoryManagementPage'));
+const ReportsPage = lazy(() => import('@/pages/admin/ReportsPage'));
 
 // ---------- Error pages (lazy) ----------
 const NotFoundPage = lazy(() => import('@/pages/NotFoundPage'));
@@ -112,6 +113,7 @@ export default function AppRoutes() {
           <Route path="/admin/invoices" element={<InvoiceManagementPage />} />
           <Route path="/admin/activity-logs" element={<ActivityLogPage />} />
           <Route path="/admin/inventory" element={<InventoryManagementPage />} />
+          <Route path="/admin/reports" element={<ReportsPage />} />
           </Route>
         </Route>
 
