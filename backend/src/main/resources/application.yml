@@ -32,7 +32,8 @@ spring:
 
 app:
   jwt:
-    secret: ${JWT_SECRET:glydecurtains-default-secret-key-change-in-production-min-256-bits-long}
+    # Retained only for inactive legacy token classes; JWT authorization is disabled.
+    secret: temporary-no-auth-signing-key-change-when-jwt-is-restored-2026
     access-token-expiration-ms: 900000       # 15 minutes
     refresh-token-expiration-ms: 86400000    # 24 hours
     remember-me-expiration-ms: 2592000000    # 30 days

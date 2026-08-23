@@ -7,7 +7,7 @@ A full-stack e-commerce platform for Glyde Curtains, featuring a Spring Boot bac
 ### Backend
 - Java 21
 - Spring Boot 3.4.x
-- Spring Security with JWT authentication
+- Spring Security (authentication is temporarily disabled)
 - Spring Data JPA with H2 embedded database
 - Maven build system
 
@@ -57,20 +57,11 @@ The frontend starts on `http://localhost:5173`.
 | Page | URL |
 |------|-----|
 | Storefront | [http://localhost:5173](http://localhost:5173) |
-| Login | [http://localhost:5173/login](http://localhost:5173/login) |
 | Admin dashboard | [http://localhost:5173/admin/dashboard](http://localhost:5173/admin/dashboard) |
 
-### Local UI Preview Mode
+### Temporary Security Status
 
-To preview the full UI without backend authorization checks, start the backend in the local-only `local-ui` profile:
-
-```powershell
-cd backend
-$env:SPRING_PROFILES_ACTIVE = 'local-ui'
-.\mvnw.cmd spring-boot:run
-```
-
-This mode bypasses backend authentication and permission checks only for local visual testing. Never use `local-ui` in Docker, integration, or production environments.
+JWT authentication and permission checks are temporarily disabled. No login is required, and all API and admin routes are public. Do not deploy this configuration to a public or production environment; restore authentication before deployment.
 
 ## Docker Deployment
 
@@ -90,29 +81,18 @@ docker build -t glydecurtains-backend:latest ./backend
 docker build -t glydecurtains-frontend:latest ./frontend
 ```
 
-## Default Credentials
-
-| Role        | Email                        | Password |
-|-------------|------------------------------|----------|
-| Super Admin | admin@glydecurtains.com      | admin123 |
-
-> **Warning**: Change default credentials immediately in production environments.
-
 ## Environment Configuration
 
 | Variable              | Description                     | Default              |
 |-----------------------|---------------------------------|----------------------|
 | `SERVER_PORT`         | Backend server port             | 8080                 |
-| `JWT_SECRET`          | JWT signing secret              | (configured in app)  |
-| `JWT_EXPIRATION`      | Access token TTL (ms)           | 900000 (15 min)      |
-| `SPRING_PROFILES`     | Active Spring profile           | dev                  |
+| `SPRING_PROFILES_ACTIVE` | Active Spring profile         | int                  |
 | `CORS_ORIGINS`        | Allowed CORS origins            | http://localhost:5173 |
-| `H2_DB_PATH`          | H2 database file path           | ./data/glydecurtains |
 
 ### Environment Files
 
 - `.env.example` — Template for local environment variables
-- Application profiles: `dev`, `staging`, `production`
+- Application profiles: `int`, `qa`, `prod`
 
 ## Branching Strategy
 
