@@ -44,6 +44,7 @@ public class ProductResponse {
     private Boolean isPremium;
     private List<String> tags;
     private String thumbnailBase64;
+    private String thumbnailUrl;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 }

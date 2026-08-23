@@ -559,6 +559,7 @@ public class ProductServiceImpl implements ProductService {
                 .isPremium(product.getIsPremium())
                 .tags(fromJson(product.getTags()))
                 .thumbnailBase64(thumbnailBase64)
+                .thumbnailUrl(thumbnailBase64 != null ? "data:image/jpeg;base64," + thumbnailBase64 : null)
                 .createdAt(product.getCreatedAt())
                 .updatedAt(product.getUpdatedAt())
                 .build();
