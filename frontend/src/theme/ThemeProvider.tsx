@@ -4,9 +4,11 @@ import {
   createTheme,
   CssBaseline,
 } from '@mui/material';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '@/store/store';
 import { ThemeConfig, ThemeMode } from './types';
+import { setThemeConfig } from '@/store/slices/themeSlice';
+import axiosInstance from '@/api/axiosInstance';
 
 function getShadow(intensity: ThemeConfig['shadowIntensity']): string {
   switch (intensity) {
@@ -120,7 +122,21 @@ interface ThemeProviderProps {
 }
 
 export function ThemeProvider({ children }: ThemeProviderProps) {
+  const dispatch = useDispatch();
   const { config, mode } = useSelector((state: RootState) => state.theme);
+
+  useEffect(() => {
+    axiosInstance.get('/cms/themes')
+      .then((response) => {
+        const storedConfig = response.data?.data?.config;
+        if (typeof storedConfig === 'string') {
+          dispatch(setThemeConfig(JSON.parse(storedConfig)));
+        }
+      })
+      .catch(() => {
+        // Retain the local preset while the backend is unavailable.
+      });
+  }, [dispatch]);
 
   useEffect(() => {
     injectCssVariables(config, mode);

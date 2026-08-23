@@ -1,4 +1,0 @@
-# Local visual-preview profile only. Never enable this profile outside your own machine.
-app:
-  security:
-    authorization-enabled: false

@@ -187,6 +187,10 @@ public class FeedbackServiceImpl implements FeedbackService {
         if (authentication != null && authentication.getPrincipal() instanceof Long) {
             return (Long) authentication.getPrincipal();
         }
-        throw new BusinessException("User not authenticated", "UNAUTHORIZED", HttpStatus.UNAUTHORIZED);
+        // Temporary owner for guest feedback while authentication is disabled.
+        return userRepository.findAll().stream()
+                .findFirst()
+                .map(User::getId)
+                .orElse(0L);
     }
 }

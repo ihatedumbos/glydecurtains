@@ -33,20 +33,10 @@ import {
   Close as CloseIcon,
 } from '@mui/icons-material';
 import axiosInstance from '@/api/axiosInstance';
+import { useTheme as useGlydeTheme } from '@/theme';
+import { ThemeConfig } from '@/theme/types';
 
 // ─── Types ──────────────────────────────────────────────────────────────────
-
-interface ThemeConfig {
-  primaryColor: string;
-  secondaryColor: string;
-  accentColor: string;
-  backgroundColor: string;
-  textColor: string;
-  borderRadius: string;
-  shadowIntensity: string;
-  glassmorphismOpacity: number;
-  animationSpeed: string;
-}
 
 interface ThemePreset {
   id: number;
@@ -73,6 +63,7 @@ const defaultConfig: ThemeConfig = {
 // ─── Component ──────────────────────────────────────────────────────────────
 
 export default function ThemeManagementPage() {
+  const { updateConfig } = useGlydeTheme();
   const [themes, setThemes] = useState<ThemePreset[]>([]);
   const [loading, setLoading] = useState(true);
   const [snackbar, setSnackbar] = useState<{ open: boolean; message: string; severity: 'success' | 'error' }>({
@@ -113,7 +104,8 @@ export default function ThemeManagementPage() {
 
   const handleActivate = async (id: number) => {
     try {
-      await axiosInstance.put(`/cms/themes/${id}/activate`);
+      const res = await axiosInstance.put(`/cms/themes/${id}/activate`);
+      updateConfig(parseConfig(res.data.data.config));
       setSnackbar({ open: true, message: 'Theme activated successfully', severity: 'success' });
       fetchThemes();
     } catch {
@@ -136,9 +128,12 @@ export default function ThemeManagementPage() {
     if (!editingThemeId) return;
     setSaving(true);
     try {
-      await axiosInstance.put(`/cms/themes/${editingThemeId}`, {
+      const res = await axiosInstance.put(`/cms/themes/${editingThemeId}`, {
         config: JSON.stringify(editConfig),
       });
+      if (themes.find((theme) => theme.id === editingThemeId)?.isActive) {
+        updateConfig(parseConfig(res.data.data.config));
+      }
       setSnackbar({ open: true, message: 'Theme config updated', severity: 'success' });
       handleEditClose();
       fetchThemes();
@@ -389,9 +384,11 @@ export default function ThemeManagementPage() {
                   <Select
                     label="Shadow Intensity"
                     value={editConfig.shadowIntensity}
-                    onChange={(e) => setEditConfig((c) => ({ ...c, shadowIntensity: e.target.value }))}
+                    onChange={(e) => setEditConfig((c) => ({
+                      ...c,
+                      shadowIntensity: e.target.value as ThemeConfig['shadowIntensity'],
+                    }))}
                   >
-                    <MenuItem value="none">None</MenuItem>
                     <MenuItem value="low">Low</MenuItem>
                     <MenuItem value="medium">Medium</MenuItem>
                     <MenuItem value="high">High</MenuItem>
@@ -424,7 +421,10 @@ export default function ThemeManagementPage() {
                   <Select
                     label="Animation Speed"
                     value={editConfig.animationSpeed}
-                    onChange={(e) => setEditConfig((c) => ({ ...c, animationSpeed: e.target.value }))}
+                    onChange={(e) => setEditConfig((c) => ({
+                      ...c,
+                      animationSpeed: e.target.value as ThemeConfig['animationSpeed'],
+                    }))}
                   >
                     <MenuItem value="slow">Slow</MenuItem>
                     <MenuItem value="normal">Normal</MenuItem>
