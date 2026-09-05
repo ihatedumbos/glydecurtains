@@ -13,8 +13,9 @@ export function resolveMediaUrl(url?: string | null): string {
     return normalizedUrl;
   }
 
-  const backendUrl = (import.meta.env.VITE_BACKEND_URL || import.meta.env.VITE_API_BASE_URL || 'http://localhost:8080').replace(/\/$/, '');
+  const backendUrl = (import.meta.env.VITE_BACKEND_URL || import.meta.env.VITE_API_BASE_URL || '').replace(/\/$/, '');
   const currentOrigin = typeof window !== 'undefined' ? window.location.origin : '';
+  const hasExplicitBackend = Boolean(backendUrl);
 
   if (normalizedUrl.startsWith('/')) {
     const assetLikePath =
@@ -23,13 +24,14 @@ export function resolveMediaUrl(url?: string | null): string {
       normalizedUrl.startsWith('/uploads/') ||
       normalizedUrl.startsWith('/static/') ||
       normalizedUrl.startsWith('/products/') ||
-      normalizedUrl.startsWith('/assets/');
+      normalizedUrl.startsWith('/assets/') ||
+      /\.(png|jpe?g|webp|gif|svg|avif|mp4|mov|webm|m4v)(?:\?.*)?$/i.test(normalizedUrl);
 
     if (assetLikePath) {
       return `${currentOrigin}${normalizedUrl}`;
     }
 
-    if (backendUrl.startsWith('http://') || backendUrl.startsWith('https://')) {
+    if (hasExplicitBackend) {
       return `${backendUrl}${normalizedUrl}`;
     }
 
@@ -41,7 +43,7 @@ export function resolveMediaUrl(url?: string | null): string {
     : normalizedUrl;
 
   if (relativePath.startsWith('/')) {
-    if (backendUrl.startsWith('http://') || backendUrl.startsWith('https://')) {
+    if (hasExplicitBackend) {
       return `${backendUrl}${relativePath}`;
     }
     return `${currentOrigin || ''}${relativePath}`;

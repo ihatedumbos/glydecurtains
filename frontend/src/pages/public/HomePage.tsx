@@ -92,6 +92,9 @@ export default function HomePage() {
 
   // Get ticker section config
   const tickerSection = enabledSections.find((s) => s.sectionType === 'SCROLLING_TICKER');
+  const fallbackTickerImages = tickerImages.length > 0
+    ? tickerImages
+    : ['/assets/logo/poster.png', '/assets/logo/poster.png', '/assets/logo/poster.png'];
 
   const renderSection = (section: HomepageSection) => {
     const { sectionType, id, title, config } = section;
@@ -153,11 +156,11 @@ export default function HomePage() {
       className="min-h-screen"
     >
       {/* Scrolling Ticker at the very top */}
-      {tickerSection && (
+      {(tickerSection || fallbackTickerImages.length > 0) && (
         <ScrollingTicker
-          content={tickerSection.config?.content as string | undefined}
-          speed={tickerSection.config?.speed as number | undefined}
-          images={tickerImages}
+          content={tickerSection?.config?.content as string | undefined}
+          speed={tickerSection?.config?.speed as number | undefined}
+          images={fallbackTickerImages}
         />
       )}
 

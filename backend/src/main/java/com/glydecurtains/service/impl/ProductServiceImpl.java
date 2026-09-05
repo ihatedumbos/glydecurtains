@@ -569,9 +569,22 @@ public class ProductServiceImpl implements ProductService {
         if (mediaData == null || mediaData.isBlank()) {
             return null;
         }
-        if (mediaData.startsWith("/") || mediaData.startsWith("http://") || mediaData.startsWith("https://") || mediaData.startsWith("data:")) {
+        if (mediaData.startsWith("http://") || mediaData.startsWith("https://") || mediaData.startsWith("data:")) {
             return mediaData;
         }
+
+        if (mediaData.startsWith("/api/") || mediaData.startsWith("/images/")
+                || mediaData.startsWith("/uploads/") || mediaData.startsWith("/static/")
+                || mediaData.startsWith("/products/") || mediaData.startsWith("/assets/")
+                || (mediaData.contains(".") && (mediaData.endsWith(".png") || mediaData.endsWith(".jpg")
+                || mediaData.endsWith(".jpeg") || mediaData.endsWith(".webp") || mediaData.endsWith(".gif") || mediaData.endsWith(".svg") || mediaData.endsWith(".avif")))) {
+            return mediaData;
+        }
+
+        if (mediaData.startsWith("/9j/") || mediaData.startsWith("/iVB") || mediaData.startsWith("/R0lG") || mediaData.startsWith("/UklGR")) {
+            return "data:" + mimeType + ";base64," + mediaData.substring(1);
+        }
+
         return "data:" + mimeType + ";base64," + mediaData;
     }
 

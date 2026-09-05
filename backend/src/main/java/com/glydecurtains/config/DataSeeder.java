@@ -1,5 +1,6 @@
 package com.glydecurtains.config;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.glydecurtains.entity.*;
 import com.glydecurtains.entity.enums.*;
 import com.glydecurtains.repository.*;
@@ -8,10 +9,13 @@ import jakarta.persistence.PersistenceContext;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.ResourceLoader;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -37,10 +41,14 @@ public class DataSeeder implements CommandLineRunner {
     private final AchievementRepository achievementRepository;
     private final OrderRepository orderRepository;
     private final ActivityLogRepository activityLogRepository;
+    private final EnquiryRepository enquiryRepository;
+    private final FeedbackRepository feedbackRepository;
 
     private final InvoiceSettingsRepository invoiceSettingsRepository;
     private final SiteSettingsRepository siteSettingsRepository;
     private final PasswordEncoder passwordEncoder;
+    private final ResourceLoader resourceLoader;
+    private final ObjectMapper objectMapper;
 
     @PersistenceContext
     private EntityManager entityManager;
@@ -58,6 +66,7 @@ public class DataSeeder implements CommandLineRunner {
         seedDemoEmployees();
         seedCategories();
         seedProducts();
+        seedSampleDataFile();
         seedDemoOrdersAndActivity();
         seedPermissions();
         seedHomepageSections();
@@ -89,6 +98,113 @@ public class DataSeeder implements CommandLineRunner {
         customer.setStatus(UserStatus.APPROVED);
         userRepository.save(customer);
         log.info("Demo customer account created.");
+    }
+
+    private void seedSampleDataFile() {
+        try {
+            Resource resource = resourceLoader.getResource("classpath:sample-data/demo-seed.json");
+            if (!resource.exists()) {
+                log.info("No sample data file found at classpath:sample-data/demo-seed.json");
+                return;
+            }
+
+            SampleSeedFile sampleSeed = objectMapper.readValue(resource.getInputStream(), SampleSeedFile.class);
+            if (sampleSeed == null) {
+                return;
+            }
+
+            if (sampleSeed.getEmployees() != null) {
+                for (SampleSeedUser employee : sampleSeed.getEmployees()) {
+                    if (employee == null || employee.getEmail() == null || employee.getEmail().isBlank()) {
+                        continue;
+                    }
+                    if (userRepository.existsByEmailIgnoreCase(employee.getEmail())) {
+                        continue;
+                    }
+                    User user = new User();
+                    user.setName(employee.getName());
+                    user.setEmail(employee.getEmail());
+                    user.setPassword(passwordEncoder.encode(employee.getPassword() == null ? "demo123" : employee.getPassword()));
+                    user.setRole(UserRole.EMPLOYEE);
+                    user.setStatus(UserStatus.APPROVED);
+                    userRepository.save(user);
+                }
+            }
+
+            if (sampleSeed.getStoreLocations() != null) {
+                for (SampleStoreLocation location : sampleSeed.getStoreLocations()) {
+                    if (location == null || location.getName() == null || location.getName().isBlank()) {
+                        continue;
+                    }
+                    boolean exists = storeLocationRepository.findAll().stream()
+                            .anyMatch(item -> item.getName().equalsIgnoreCase(location.getName()));
+                    if (exists) {
+                        continue;
+                    }
+                    StoreLocation storeLocation = new StoreLocation();
+                    storeLocation.setName(location.getName());
+                    storeLocation.setAddress(location.getAddress());
+                    storeLocation.setCity(location.getCity());
+                    storeLocation.setState(location.getState());
+                    storeLocation.setPhone(location.getPhone());
+                    storeLocation.setEmail(location.getEmail());
+                    storeLocation.setLatitude(location.getLatitude());
+                    storeLocation.setLongitude(location.getLongitude());
+                    storeLocation.setOperatingHours(location.getOperatingHours());
+                    storeLocation.setImageBase64(location.getImageBase64());
+                    storeLocation.setIsActive(true);
+                    storeLocationRepository.save(storeLocation);
+                }
+            }
+
+            if (sampleSeed.getEnquiries() != null) {
+                for (SampleEnquiry enquirySeed : sampleSeed.getEnquiries()) {
+                    if (enquirySeed == null || enquirySeed.getEmail() == null || enquirySeed.getEmail().isBlank()) {
+                        continue;
+                    }
+                    Enquiry enquiry = new Enquiry();
+                    enquiry.setName(enquirySeed.getName());
+                    enquiry.setEmail(enquirySeed.getEmail());
+                    enquiry.setPhone(enquirySeed.getPhone());
+                    enquiry.setSubject(enquirySeed.getSubject());
+                    enquiry.setMessage(enquirySeed.getMessage());
+                    enquiry.setStatus(enquirySeed.getStatus() == null ? EnquiryStatus.NEW : EnquiryStatus.valueOf(enquirySeed.getStatus()));
+                    enquiryRepository.save(enquiry);
+                }
+            }
+
+            if (sampleSeed.getFeedback() != null) {
+                for (SampleFeedback feedbackSeed : sampleSeed.getFeedback()) {
+                    if (feedbackSeed == null || feedbackSeed.getUserEmail() == null || feedbackSeed.getUserEmail().isBlank()) {
+                        continue;
+                    }
+                    User reviewer = userRepository.findByEmailIgnoreCase(feedbackSeed.getUserEmail()).orElse(null);
+                    Product product = feedbackSeed.getProductSku() == null ? null : productRepository.findBySku(feedbackSeed.getProductSku()).orElse(null);
+                    if (reviewer == null || product == null) {
+                        continue;
+                    }
+
+                    boolean duplicate = feedbackRepository.findAll().stream()
+                            .anyMatch(item -> item.getUserId().equals(reviewer.getId()) && item.getProductId() != null && item.getProductId().equals(product.getId()));
+                    if (duplicate) {
+                        continue;
+                    }
+
+                    Feedback feedback = new Feedback();
+                    feedback.setUserId(reviewer.getId());
+                    feedback.setProductId(product.getId());
+                    feedback.setRating(feedbackSeed.getRating());
+                    feedback.setTitle(feedbackSeed.getTitle());
+                    feedback.setComment(feedbackSeed.getComment());
+                    feedback.setStatus(feedbackSeed.getStatus() == null ? FeedbackStatus.APPROVED : FeedbackStatus.valueOf(feedbackSeed.getStatus()));
+                    feedbackRepository.save(feedback);
+                }
+            }
+
+            log.info("Sample data loaded from sample-data/demo-seed.json");
+        } catch (IOException e) {
+            log.warn("Unable to load sample seed file", e);
+        }
     }
 
     private void seedDemoEmployees() {
@@ -658,4 +774,111 @@ public class DataSeeder implements CommandLineRunner {
             + "CAABAAEDASIAAhEBAxEB/8QAFAABAAAAAAAAAAAAAAAAAAAACf/EABQQAQAAAAAAAAAAAAAAAAAA"
             + "AAD/xAAUAQEAAAAAAAAAAAAAAAAAAAAA/8QAFBEBAAAAAAAAAAAAAAAAAAAAAP/aAAwDAQACEQMR"
             + "AD8AKwA//9k=";
+
+    private static class SampleSeedFile {
+        private List<SampleSeedUser> employees;
+        private List<SampleStoreLocation> storeLocations;
+        private List<SampleEnquiry> enquiries;
+        private List<SampleFeedback> feedback;
+
+        public List<SampleSeedUser> getEmployees() { return employees; }
+        public void setEmployees(List<SampleSeedUser> employees) { this.employees = employees; }
+        public List<SampleStoreLocation> getStoreLocations() { return storeLocations; }
+        public void setStoreLocations(List<SampleStoreLocation> storeLocations) { this.storeLocations = storeLocations; }
+        public List<SampleEnquiry> getEnquiries() { return enquiries; }
+        public void setEnquiries(List<SampleEnquiry> enquiries) { this.enquiries = enquiries; }
+        public List<SampleFeedback> getFeedback() { return feedback; }
+        public void setFeedback(List<SampleFeedback> feedback) { this.feedback = feedback; }
+    }
+
+    private static class SampleSeedUser {
+        private String name;
+        private String email;
+        private String password;
+
+        public String getName() { return name; }
+        public void setName(String name) { this.name = name; }
+        public String getEmail() { return email; }
+        public void setEmail(String email) { this.email = email; }
+        public String getPassword() { return password; }
+        public void setPassword(String password) { this.password = password; }
+    }
+
+    private static class SampleStoreLocation {
+        private String name;
+        private String address;
+        private String city;
+        private String state;
+        private String phone;
+        private String email;
+        private Double latitude;
+        private Double longitude;
+        private String operatingHours;
+        private String imageBase64;
+
+        public String getName() { return name; }
+        public void setName(String name) { this.name = name; }
+        public String getAddress() { return address; }
+        public void setAddress(String address) { this.address = address; }
+        public String getCity() { return city; }
+        public void setCity(String city) { this.city = city; }
+        public String getState() { return state; }
+        public void setState(String state) { this.state = state; }
+        public String getPhone() { return phone; }
+        public void setPhone(String phone) { this.phone = phone; }
+        public String getEmail() { return email; }
+        public void setEmail(String email) { this.email = email; }
+        public Double getLatitude() { return latitude; }
+        public void setLatitude(Double latitude) { this.latitude = latitude; }
+        public Double getLongitude() { return longitude; }
+        public void setLongitude(Double longitude) { this.longitude = longitude; }
+        public String getOperatingHours() { return operatingHours; }
+        public void setOperatingHours(String operatingHours) { this.operatingHours = operatingHours; }
+        public String getImageBase64() { return imageBase64; }
+        public void setImageBase64(String imageBase64) { this.imageBase64 = imageBase64; }
+    }
+
+    private static class SampleEnquiry {
+        private String name;
+        private String email;
+        private String phone;
+        private String subject;
+        private String message;
+        private String status;
+
+        public String getName() { return name; }
+        public void setName(String name) { this.name = name; }
+        public String getEmail() { return email; }
+        public void setEmail(String email) { this.email = email; }
+        public String getPhone() { return phone; }
+        public void setPhone(String phone) { this.phone = phone; }
+        public String getSubject() { return subject; }
+        public void setSubject(String subject) { this.subject = subject; }
+        public String getMessage() { return message; }
+        public void setMessage(String message) { this.message = message; }
+        public String getStatus() { return status; }
+        public void setStatus(String status) { this.status = status; }
+    }
+
+    private static class SampleFeedback {
+        private String userEmail;
+        private String productSku;
+        private Integer rating;
+        private String title;
+        private String comment;
+        private String status;
+
+        public String getUserEmail() { return userEmail; }
+        public void setUserEmail(String userEmail) { this.userEmail = userEmail; }
+        public String getProductSku() { return productSku; }
+        public void setProductSku(String productSku) { this.productSku = productSku; }
+        public Integer getRating() { return rating; }
+        public void setRating(Integer rating) { this.rating = rating; }
+        public String getTitle() { return title; }
+        public void setTitle(String title) { this.title = title; }
+        public String getComment() { return comment; }
+        public void setComment(String comment) { this.comment = comment; }
+        public String getStatus() { return status; }
+        public void setStatus(String status) { this.status = status; }
+    }
 }
