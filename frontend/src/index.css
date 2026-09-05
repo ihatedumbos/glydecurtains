@@ -3,20 +3,17 @@
 
 /* ===== CSS Custom Properties ===== */
 :root {
-  --primary-color: #1a1a2e;
-  --secondary-color: #16213e;
-  --accent-color: #c9a96e;
-  --accent-light: #d4b87a;
-  --background-color: #0f0f23;
-  --text-color: #e0e0e0;
-  --text-muted: #9ca3af;
-  --border-radius: 8px;
-  --shadow-intensity: medium;
-  --glassmorphism-opacity: 0.15;
-  --animation-speed: normal;
+  --primary-color: #ffffff;
+  --secondary-color: #f1f5f9;
+  --accent-color: #1f2937;
+  --accent-light: #475569;
+  --background-color: #f8fafc;
+  --text-color: #111827;
+  --text-muted: #64748b;
+  --border-radius: 6px;
 
   /* Premium Typography Scale */
-  --font-display: 'Playfair Display', Georgia, serif;
+  --font-display: 'Inter', system-ui, -apple-system, sans-serif;
   --font-body: 'Inter', system-ui, -apple-system, sans-serif;
   --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
 
@@ -31,11 +28,9 @@
   --text-5xl: 3rem;
 
   /* Glow and Shadow tokens */
-  --glow-accent: 0 0 20px rgba(201, 169, 110, 0.3);
-  --glow-accent-strong: 0 0 30px rgba(201, 169, 110, 0.5);
-  --shadow-soft: 0 4px 20px rgba(0, 0, 0, 0.15);
-  --shadow-elevated: 0 8px 40px rgba(0, 0, 0, 0.25);
-  --shadow-glass: 0 8px 32px rgba(0, 0, 0, 0.12);
+  --shadow-soft: 0 1px 2px rgba(15, 23, 42, 0.06);
+  --shadow-elevated: 0 4px 12px rgba(15, 23, 42, 0.08);
+  --shadow-glass: 0 1px 3px rgba(15, 23, 42, 0.08);
 }
 
 /* ===== Base Reset & Typography ===== */
@@ -80,50 +75,37 @@ h6 { font-size: var(--text-lg); }
 .font-mono { font-family: var(--font-mono); }
 
 .text-gradient {
-  background: linear-gradient(135deg, var(--accent-color), var(--accent-light));
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+  color: var(--text-color);
 }
 
 /* ===== Glassmorphism Utilities ===== */
 .glass-card {
-  background: rgba(255, 255, 255, var(--glassmorphism-opacity));
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
   border-radius: var(--border-radius);
-  box-shadow: var(--shadow-glass);
-  transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  box-shadow: var(--shadow-soft);
 }
 
 .glass-card:hover {
-  background: rgba(255, 255, 255, 0.2);
-  border-color: rgba(201, 169, 110, 0.3);
-  box-shadow: var(--glow-accent), var(--shadow-elevated);
-  transform: translateY(-2px);
+  border-color: #cbd5e1;
 }
 
 .glass-panel {
-  background: rgba(26, 26, 46, 0.8);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
   border-radius: var(--border-radius);
 }
 
 .glass-input {
-  background: rgba(255, 255, 255, 0.05);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: #ffffff;
+  border: 1px solid #cbd5e1;
   border-radius: var(--border-radius);
   transition: all 0.2s ease;
 }
 
 .glass-input:focus {
-  border-color: var(--accent-color);
-  box-shadow: 0 0 0 3px rgba(201, 169, 110, 0.15);
+  border-color: #64748b;
+  box-shadow: 0 0 0 3px rgba(100, 116, 139, 0.12);
   outline: none;
 }
 
@@ -133,8 +115,7 @@ h6 { font-size: var(--text-lg); }
 }
 
 .hover-glow:hover {
-  box-shadow: var(--glow-accent);
-  transform: translateY(-1px);
+  box-shadow: var(--shadow-soft);
 }
 
 .hover-glow-strong {
@@ -142,8 +123,7 @@ h6 { font-size: var(--text-lg); }
 }
 
 .hover-glow-strong:hover {
-  box-shadow: var(--glow-accent-strong);
-  transform: translateY(-2px);
+  box-shadow: var(--shadow-elevated);
 }
 
 .hover-lift {
@@ -152,7 +132,6 @@ h6 { font-size: var(--text-lg); }
 }
 
 .hover-lift:hover {
-  transform: translateY(-4px);
   box-shadow: var(--shadow-elevated);
 }
 
@@ -180,13 +159,7 @@ h6 { font-size: var(--text-lg); }
 }
 
 .btn-glow::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  border-radius: inherit;
-  opacity: 0;
-  transition: opacity 0.3s ease;
-  box-shadow: inset 0 0 20px rgba(201, 169, 110, 0.3);
+  display: none;
 }
 
 .btn-glow:hover::before {
@@ -194,8 +167,7 @@ h6 { font-size: var(--text-lg); }
 }
 
 .btn-glow:hover {
-  box-shadow: var(--glow-accent);
-  transform: translateY(-1px);
+  box-shadow: none;
 }
 
 /* ===== Skeleton Loading Shimmer ===== */

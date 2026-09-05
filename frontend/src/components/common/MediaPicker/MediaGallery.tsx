@@ -14,7 +14,7 @@ import SwapHorizIcon from '@mui/icons-material/SwapHoriz';
 import DragIndicatorIcon from '@mui/icons-material/DragIndicator';
 import VideocamIcon from '@mui/icons-material/Videocam';
 import StarIcon from '@mui/icons-material/Star';
-import type { MediaItem } from './mediaTypes';
+import { mediaSource, type MediaItem } from './mediaTypes';
 
 interface MediaGalleryProps {
   items: MediaItem[];
@@ -102,6 +102,7 @@ export default function MediaGallery({
       >
         {items.map((item, index) => {
           const isVideo = item.mediaType === 'video';
+          const source = mediaSource(item.base64Data, item.mimeType);
           const isDragging = draggedIndex === index;
           const isDragOver = dragOverIndex === index;
 
@@ -145,7 +146,7 @@ export default function MediaGallery({
               >
                 {isVideo ? (
                   <video
-                    src={`data:${item.mimeType};base64,${item.base64Data}`}
+                    src={source}
                     style={{
                       width: '100%',
                       height: '100%',
@@ -158,7 +159,7 @@ export default function MediaGallery({
                 ) : (
                   <Box
                     component="img"
-                    src={`data:${item.mimeType};base64,${item.base64Data}`}
+                    src={source}
                     alt={item.originalFilename}
                     sx={{
                       width: '100%',

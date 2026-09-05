@@ -80,3 +80,10 @@ export const SUPPORTED_VIDEO_EXTENSIONS = '.mp4,.webm';
 export const DEFAULT_MAX_IMAGE_SIZE = 5 * 1024 * 1024; // 5MB
 export const DEFAULT_MAX_VIDEO_SIZE = 10 * 1024 * 1024; // 10MB
 export const DEFAULT_MAX_DURATION = 10; // 10 seconds
+
+export function mediaSource(base64Data: string, mimeType: string): string {
+  if (base64Data.startsWith('/') || base64Data.startsWith('http') || base64Data.startsWith('data:')) {
+    return base64Data;
+  }
+  return `data:${mimeType};base64,${base64Data}`;
+}

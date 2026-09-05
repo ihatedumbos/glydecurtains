@@ -44,7 +44,6 @@ const EmployeeManagementPage = lazy(() => import('@/pages/admin/EmployeeManageme
 const PermissionManagementPage = lazy(() => import('@/pages/admin/PermissionManagementPage'));
 const CmsManagementPage = lazy(() => import('@/pages/admin/CmsManagementPage'));
 const SiteSettingsPage = lazy(() => import('@/pages/admin/SiteSettingsPage'));
-const ThemeManagementPage = lazy(() => import('@/pages/admin/ThemeManagementPage'));
 const StoreManagementPage = lazy(() => import('@/pages/admin/StoreManagementPage'));
 const FeedbackManagementPage = lazy(() => import('@/pages/admin/FeedbackManagementPage'));
 const AchievementManagementPage = lazy(() => import('@/pages/admin/AchievementManagementPage'));
@@ -105,7 +104,6 @@ export default function AppRoutes() {
           <Route path="/admin/permissions" element={<PermissionManagementPage />} />
           <Route path="/admin/cms" element={<CmsManagementPage />} />
           <Route path="/admin/site-settings" element={<SiteSettingsPage />} />
-          <Route path="/admin/themes" element={<ThemeManagementPage />} />
           <Route path="/admin/stores" element={<StoreManagementPage />} />
           <Route path="/admin/feedback" element={<FeedbackManagementPage />} />
           <Route path="/admin/achievements" element={<AchievementManagementPage />} />

@@ -5,10 +5,8 @@ import com.glydecurtains.repository.ThemePresetRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
-import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
-@Component
 @RequiredArgsConstructor
 public class ThemeDataInitializer implements ApplicationRunner {
 

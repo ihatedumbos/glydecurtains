@@ -22,7 +22,6 @@ import EmojiEventsIcon from '@mui/icons-material/EmojiEvents';
 import MailIcon from '@mui/icons-material/Mail';
 import SettingsIcon from '@mui/icons-material/Settings';
 import WebIcon from '@mui/icons-material/Web';
-import PaletteIcon from '@mui/icons-material/Palette';
 import SecurityIcon from '@mui/icons-material/Security';
 import ReceiptIcon from '@mui/icons-material/Receipt';
 import HistoryIcon from '@mui/icons-material/History';
@@ -60,7 +59,6 @@ const navItems: NavItem[] = [
   { label: 'Reports', path: '/admin/reports', icon: <AssessmentIcon />, permissionEntity: 'reports' },
   { label: 'Inventory', path: '/admin/inventory', icon: <InventoryIcon />, permissionEntity: 'inventory' },
   { label: 'CMS', path: '/admin/cms', icon: <WebIcon />, permissionEntity: 'cms' },
-  { label: 'Themes', path: '/admin/themes', icon: <PaletteIcon />, permissionEntity: 'themes' },
   { label: 'Permissions', path: '/admin/permissions', icon: <SecurityIcon />, roles: ['SUPER_ADMIN', 'ADMIN'], permissionEntity: 'permissions' },
   { label: 'Activity Logs', path: '/admin/activity-logs', icon: <HistoryIcon />, roles: ['SUPER_ADMIN', 'ADMIN'], permissionEntity: 'activity-logs' },
   { label: 'Settings', path: '/admin/settings', icon: <SettingsIcon />, roles: ['SUPER_ADMIN'] },

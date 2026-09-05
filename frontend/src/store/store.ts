@@ -6,7 +6,6 @@ import orderReducer from '@/store/slices/orderSlice';
 import wishlistReducer from '@/store/slices/wishlistSlice';
 import searchReducer from '@/store/slices/searchSlice';
 import cmsReducer from '@/store/slices/cmsSlice';
-import themeReducer from '@/store/slices/themeSlice';
 import uiReducer from '@/store/slices/uiSlice';
 import employeeReducer from '@/store/slices/employeeSlice';
 import dashboardReducer from '@/store/slices/dashboardSlice';
@@ -59,7 +58,6 @@ const appReducer = combineReducers({
   wishlist: wishlistReducer,
   search: searchReducer,
   cms: cmsReducer,
-  theme: themeReducer,
   ui: uiReducer,
   employees: employeeReducer,
   dashboard: dashboardReducer,
@@ -73,7 +71,7 @@ const appReducer = combineReducers({
 
 /**
  * Root reducer that clears all user-specific state on logout.
- * Preserves theme, ui, cms, storeLocator, and products (public data).
+ * Preserves public data while clearing user-specific state.
  */
 const rootReducer: typeof appReducer = (state, action) => {
   if (action.type === LOGOUT_ACTION_TYPE) {
@@ -87,7 +85,6 @@ const rootReducer: typeof appReducer = (state, action) => {
         wishlist: undefined as unknown as ReturnType<typeof wishlistReducer>,
         search: state?.search,
         cms: state?.cms,
-        theme: state?.theme,
         ui: state?.ui,
         employees: undefined as unknown as ReturnType<typeof employeeReducer>,
         dashboard: undefined as unknown as ReturnType<typeof dashboardReducer>,

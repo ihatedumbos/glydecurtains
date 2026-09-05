@@ -13,7 +13,7 @@ import {
 } from '@mui/icons-material';
 import axiosInstance from '@/api/axiosInstance';
 import { MediaPicker } from '@/components/common/MediaPicker';
-import type { MediaItem, UploadedMedia } from '@/components/common/MediaPicker';
+import { mediaSource, type MediaItem, type UploadedMedia } from '@/components/common/MediaPicker';
 
 // ─── Types ──────────────────────────────────────────────────────────────────
 
@@ -384,7 +384,10 @@ export default function ProductManagementPage() {
       });
       setSpecs(p.specifications || []);
       setVariants(p.variants || []);
-      setMediaItems(p.images || []);
+      setMediaItems((p.images || []).map((media: MediaItem) => ({
+        ...media,
+        mediaType: media.mediaType.toLowerCase() as MediaItem['mediaType'],
+      })));
       setNewMedia([]);
       // Load translations
       if (p.translations) {
@@ -854,7 +857,7 @@ export default function ProductManagementPage() {
                           '&:hover': { opacity: 1 },
                         }}
                       >
-                        <img src={`data:${m.mimeType};base64,${m.base64Data}`}
+                        <img src={mediaSource(m.base64Data, m.mimeType)}
                           alt={m.originalFilename} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                       </Box>
                     ))}
