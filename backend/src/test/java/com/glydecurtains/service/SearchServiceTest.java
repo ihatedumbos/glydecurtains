@@ -97,8 +97,6 @@ class SearchServiceTest {
             when(productRepository.findByStatus(ProductStatus.ACTIVE))
                     .thenReturn(List.of(curtainProduct, blindProduct, premiumCurtainProduct));
             when(translatedContentRepository.findAll()).thenReturn(Collections.emptyList());
-            when(objectMapper.readValue(anyString(), any(TypeReference.class)))
-                    .thenReturn(Collections.emptyList());
 
             setupUnauthenticatedContext();
 
@@ -122,8 +120,6 @@ class SearchServiceTest {
             when(productRepository.findByStatus(ProductStatus.ACTIVE))
                     .thenReturn(List.of(curtainProduct, blindProduct, premiumCurtainProduct));
             when(translatedContentRepository.findAll()).thenReturn(Collections.emptyList());
-            when(objectMapper.readValue(anyString(), any(TypeReference.class)))
-                    .thenReturn(Collections.emptyList());
 
             setupUnauthenticatedContext();
 
@@ -145,8 +141,6 @@ class SearchServiceTest {
             when(productRepository.findByStatus(ProductStatus.ACTIVE))
                     .thenReturn(List.of(curtainProduct, blindProduct, premiumCurtainProduct));
             when(translatedContentRepository.findAll()).thenReturn(Collections.emptyList());
-            when(objectMapper.readValue(anyString(), any(TypeReference.class)))
-                    .thenReturn(Collections.emptyList());
 
             setupUnauthenticatedContext();
 
@@ -166,8 +160,6 @@ class SearchServiceTest {
 
             when(productRepository.findByStatus(ProductStatus.ACTIVE))
                     .thenReturn(List.of(curtainProduct, blindProduct, premiumCurtainProduct));
-            when(objectMapper.readValue(anyString(), any(TypeReference.class)))
-                    .thenReturn(Collections.emptyList());
 
             setupUnauthenticatedContext();
 
@@ -193,8 +185,6 @@ class SearchServiceTest {
 
             when(productRepository.findByStatus(ProductStatus.ACTIVE))
                     .thenReturn(List.of(curtainProduct, blindProduct, premiumCurtainProduct));
-            when(objectMapper.readValue(anyString(), any(TypeReference.class)))
-                    .thenReturn(Collections.emptyList());
 
             setupUnauthenticatedContext();
 
@@ -216,8 +206,6 @@ class SearchServiceTest {
 
             when(productRepository.findByStatus(ProductStatus.ACTIVE))
                     .thenReturn(List.of(curtainProduct, blindProduct, premiumCurtainProduct));
-            when(objectMapper.readValue(anyString(), any(TypeReference.class)))
-                    .thenReturn(Collections.emptyList());
 
             setupUnauthenticatedContext();
 
@@ -239,8 +227,6 @@ class SearchServiceTest {
 
             when(productRepository.findByStatus(ProductStatus.ACTIVE))
                     .thenReturn(List.of(curtainProduct, blindProduct, premiumCurtainProduct));
-            when(objectMapper.readValue(anyString(), any(TypeReference.class)))
-                    .thenReturn(Collections.emptyList());
 
             setupUnauthenticatedContext();
 
@@ -265,8 +251,6 @@ class SearchServiceTest {
 
             when(productRepository.findByStatus(ProductStatus.ACTIVE))
                     .thenReturn(List.of(curtainProduct, blindProduct, outOfStockProduct));
-            when(objectMapper.readValue(anyString(), any(TypeReference.class)))
-                    .thenReturn(Collections.emptyList());
 
             setupUnauthenticatedContext();
 
@@ -291,8 +275,6 @@ class SearchServiceTest {
             when(productRepository.findByStatus(ProductStatus.ACTIVE))
                     .thenReturn(List.of(curtainProduct, blindProduct, premiumCurtainProduct));
             when(translatedContentRepository.findAll()).thenReturn(Collections.emptyList());
-            when(objectMapper.readValue(anyString(), any(TypeReference.class)))
-                    .thenReturn(Collections.emptyList());
 
             setupUnauthenticatedContext();
 
@@ -360,8 +342,6 @@ class SearchServiceTest {
 
             when(productRepository.findByStatus(ProductStatus.ACTIVE))
                     .thenReturn(List.of(curtainProduct, blindProduct, premiumCurtainProduct));
-            when(objectMapper.readValue(anyString(), any(TypeReference.class)))
-                    .thenReturn(Collections.emptyList());
 
             setupUnauthenticatedContext();
 
@@ -385,8 +365,6 @@ class SearchServiceTest {
 
             when(productRepository.findByStatus(ProductStatus.ACTIVE))
                     .thenReturn(List.of(curtainProduct, blindProduct, premiumCurtainProduct));
-            when(objectMapper.readValue(anyString(), any(TypeReference.class)))
-                    .thenReturn(Collections.emptyList());
 
             setupUnauthenticatedContext();
 
@@ -409,8 +387,6 @@ class SearchServiceTest {
 
             when(productRepository.findByStatus(ProductStatus.ACTIVE))
                     .thenReturn(List.of(curtainProduct, blindProduct, premiumCurtainProduct));
-            when(objectMapper.readValue(anyString(), any(TypeReference.class)))
-                    .thenReturn(Collections.emptyList());
 
             setupUnauthenticatedContext();
 
@@ -431,8 +407,6 @@ class SearchServiceTest {
 
             when(productRepository.findByStatus(ProductStatus.ACTIVE))
                     .thenReturn(List.of(curtainProduct, blindProduct, premiumCurtainProduct));
-            when(objectMapper.readValue(anyString(), any(TypeReference.class)))
-                    .thenReturn(Collections.emptyList());
 
             setupUnauthenticatedContext();
 
@@ -451,8 +425,6 @@ class SearchServiceTest {
 
             when(productRepository.findByStatus(ProductStatus.ACTIVE))
                     .thenReturn(List.of(curtainProduct, blindProduct, premiumCurtainProduct));
-            when(objectMapper.readValue(anyString(), any(TypeReference.class)))
-                    .thenReturn(Collections.emptyList());
 
             setupUnauthenticatedContext();
 

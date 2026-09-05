@@ -134,7 +134,6 @@ class ImageServiceTest {
             MultipartFile file = mock(MultipartFile.class);
             when(file.isEmpty()).thenReturn(false);
             when(file.getContentType()).thenReturn("image/gif");
-            when(file.getSize()).thenReturn(1024L);
 
             assertThatThrownBy(() -> imageService.uploadImage(file, ENTITY_TYPE, ENTITY_ID))
                     .isInstanceOf(BusinessException.class)
@@ -222,7 +221,6 @@ class ImageServiceTest {
             when(file.getContentType()).thenReturn("image/webp");
             when(file.getSize()).thenReturn(4L);
             when(file.getBytes()).thenReturn(imageBytes);
-            when(file.getOriginalFilename()).thenReturn("broken.webp");
 
             when(imageCompressor.getDimensions(rawBase64)).thenReturn(new int[]{200, 200});
             when(imageCompressor.compress(rawBase64, "image/webp"))
@@ -249,7 +247,6 @@ class ImageServiceTest {
             when(file.getContentType()).thenReturn("image/jpeg");
             when(file.getSize()).thenReturn(3L);
             when(file.getBytes()).thenReturn(imageBytes);
-            when(file.getOriginalFilename()).thenReturn("tiny.jpg");
 
             when(imageCompressor.getDimensions(rawBase64))
                     .thenThrow(new ImageCompressor.ImageCompressionException(
