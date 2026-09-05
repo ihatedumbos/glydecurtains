@@ -6,13 +6,15 @@ services:
     plan: free
     buildCommand: ./mvnw clean package -DskipTests
     startCommand: java -Dserver.port=$PORT -jar target/*.jar
+    customDomains:
+      - api.glydecurtains.com
     envVars:
       - key: JAVA_VERSION
         value: 21
       - key: SPRING_PROFILES_ACTIVE
         value: prod
       - key: CORS_ORIGINS
-        value: https://glydecurtains.com
+        value: https://glydecurtains.com,https://www.glydecurtains.com
 
   - type: static_site
     name: glydecurtains-frontend
@@ -21,6 +23,9 @@ services:
     buildCommand: npm install && npm run build
     staticPublishPath: dist
     pullRequestPreviewsEnabled: true
+    customDomains:
+      - glydecurtains.com
+      - www.glydecurtains.com
     envVars:
       - key: VITE_API_BASE_URL
         value: https://api.glydecurtains.com
