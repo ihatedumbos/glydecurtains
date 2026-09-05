@@ -118,13 +118,15 @@ public class DataSeeder implements CommandLineRunner {
     }
 
     private Category createCategory(String name, String description, int sortOrder) {
-        Category cat = new Category();
-        cat.setName(name);
-        cat.setDescription(description);
-        cat.setSortOrder(sortOrder);
-        cat.setIsVisible(true);
-        cat.setIsActive(true);
-        return categoryRepository.save(cat);
+        return categoryRepository.findByNameIgnoreCase(name).orElseGet(() -> {
+            Category cat = new Category();
+            cat.setName(name);
+            cat.setDescription(description);
+            cat.setSortOrder(sortOrder);
+            cat.setIsVisible(true);
+            cat.setIsActive(true);
+            return categoryRepository.save(cat);
+        });
     }
 
     private SubCategory createSubCategory(String name, Long categoryId, int sortOrder) {
