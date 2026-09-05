@@ -102,7 +102,7 @@ export default function MainLayout({ categories: providedCategories, onLogout }:
         display: 'flex',
         flexDirection: 'column',
         minHeight: '100vh',
-        background: 'linear-gradient(180deg, #f8fafc 0%, #f3f4f6 100%)',
+        background: 'linear-gradient(180deg, #edf5ff 0%, #f8fbff 100%)',
       }}
     >
       <Header categories={categories} onLogout={onLogout} />

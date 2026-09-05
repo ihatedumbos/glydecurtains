@@ -207,13 +207,14 @@ export default function ProductDetailPage() {
     setError(null);
 
     axiosInstance
-      .get(`/products/${id}`)
+      .get(`/products/public/${id}`)
       .then((res) => {
         const data = res.data?.data || res.data;
         setProduct(data);
       })
       .catch((err) => {
-        setError(err.response?.data?.message || 'Failed to load product');
+        const fallbackError = err.response?.data?.message || 'Failed to load product';
+        setError(fallbackError);
       })
       .finally(() => setLoading(false));
   }, [id]);
