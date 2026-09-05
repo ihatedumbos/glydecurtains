@@ -149,20 +149,26 @@ export default function HomePage() {
       {/* Fallback: if no sections configured, show default layout */}
       {enabledSections.length === 0 && (
         <>
-          <section className="border-b border-slate-200 bg-white px-4 py-16 md:px-8 md:py-24">
-            <div className="mx-auto max-w-3xl text-center">
-              <p className="mb-3 text-sm font-semibold uppercase tracking-[0.18em] text-slate-500">Glyde Curtains</p>
-              <h1 className="text-4xl font-semibold tracking-tight text-slate-900 md:text-5xl">Curtain hardware, made simple.</h1>
-              <p className="mx-auto mt-5 max-w-2xl text-base leading-7 text-slate-600 md:text-lg">
-                Browse dependable runners, fittings, end caps and tapes for a clean, smooth curtain installation.
-              </p>
-              <a href="/products" className="mt-8 inline-flex rounded-md bg-slate-900 px-5 py-3 text-sm font-semibold text-white hover:bg-slate-700">
-                Shop accessories
-              </a>
+          <section className="overflow-hidden bg-[#102a43] px-4 py-14 text-white md:px-8 md:py-20">
+            <div className="mx-auto grid max-w-6xl items-center gap-10 md:grid-cols-[1.2fr_0.8fr]">
+              <div>
+                <p className="mb-3 text-xs font-semibold uppercase tracking-[0.22em] text-amber-200">Glyde Curtains · Accessories</p>
+                <h1 className="max-w-2xl text-4xl font-semibold leading-tight tracking-tight md:text-6xl">The hardware behind a smooth curtain finish.</h1>
+                <p className="mt-5 max-w-xl text-base leading-7 text-slate-200 md:text-lg">
+                  Reliable runners, ceiling fittings, wall brackets and end caps—ready for your next installation.
+                </p>
+                <a href="/products" className="mt-8 inline-flex rounded-md bg-amber-300 px-5 py-3 text-sm font-semibold text-slate-900 transition-colors hover:bg-amber-200">
+                  Explore accessories
+                </a>
+              </div>
+              <div className="grid grid-cols-2 gap-3 text-sm">
+                <div className="rounded-xl border border-white/15 bg-white/10 p-5 backdrop-blur-sm"><strong className="block text-2xl text-amber-200">14</strong><span className="mt-1 block text-slate-200">Accessory products</span></div>
+                <div className="rounded-xl border border-white/15 bg-white/10 p-5 backdrop-blur-sm"><strong className="block text-2xl text-amber-200">4</strong><span className="mt-1 block text-slate-200">Fitting categories</span></div>
+                <div className="col-span-2 rounded-xl border border-white/15 bg-white/10 p-5 text-slate-200">Product videos and close-up images are available on every product page.</div>
+              </div>
             </div>
           </section>
-          <PopularCategories title="Shop by category" />
-          <ProductSection title="Popular accessories" sectionType="FEATURED" />
+          <ProductSection title="Featured accessories" sectionType="FEATURED" />
         </>
       )}
     </motion.div>

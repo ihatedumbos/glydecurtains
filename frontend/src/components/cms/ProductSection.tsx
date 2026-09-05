@@ -101,16 +101,22 @@ export default function ProductSection({ title, sectionType }: ProductSectionPro
   if (products.length === 0) return null;
 
   return (
-    <section className="py-12 px-4 md:px-8">
+    <section className="bg-[#f7f8fa] py-12 px-4 md:px-8 md:py-16">
       <div className="max-w-7xl mx-auto">
-        <motion.h2
+        <div className="mb-8 flex items-end justify-between border-b border-slate-200 pb-4">
+          <div>
+            <p className="text-xs font-semibold uppercase tracking-[0.16em] text-slate-500">Glyde accessories</p>
+            <motion.h2
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          className="text-2xl md:text-3xl font-bold mb-8 text-center"
+          className="mt-1 text-2xl md:text-3xl font-semibold text-slate-900"
         >
           {displayTitle}
         </motion.h2>
+          </div>
+          <Link to="/products" className="text-sm font-semibold text-slate-700 hover:text-slate-950">View all →</Link>
+        </div>
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
           {products.map((product, idx) => (
             <motion.div
@@ -122,14 +128,14 @@ export default function ProductSection({ title, sectionType }: ProductSectionPro
             >
               <Link
                 to={`/products/${product.id}`}
-                className="block group rounded-xl overflow-hidden bg-white dark:bg-gray-800 shadow-md hover:shadow-xl transition-shadow"
+                className="block group overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm transition-all hover:-translate-y-0.5 hover:shadow-lg"
               >
-                <div className="relative h-64 bg-gray-100 dark:bg-gray-700 overflow-hidden">
+                <div className="relative h-60 overflow-hidden bg-[#eef1f4] p-3">
                   {product.thumbnailUrl ? (
                     <img
                       src={product.thumbnailUrl}
                       alt={product.name}
-                      className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+                      className="h-full w-full object-contain transition-transform duration-300 group-hover:scale-105"
                     />
                   ) : (
                     <div className="flex items-center justify-center h-full text-gray-400">
@@ -143,15 +149,15 @@ export default function ProductSection({ title, sectionType }: ProductSectionPro
                   )}
                 </div>
                 <div className="p-4">
-                  <h3 className="text-sm font-medium truncate text-gray-900 dark:text-gray-100">
+                  <h3 className="truncate text-sm font-semibold text-slate-900">
                     {product.name}
                   </h3>
                   <div className="mt-2 flex items-center gap-2">
-                    <span className="text-lg font-bold text-primary">
+                    <span className="text-lg font-bold text-slate-900">
                       ₹{product.offerPrice || product.basePrice}
                     </span>
                     {product.offerPrice && product.offerPrice < product.basePrice && (
-                      <span className="text-sm text-gray-400 line-through">₹{product.basePrice}</span>
+                      <span className="text-sm text-slate-400 line-through">₹{product.basePrice}</span>
                     )}
                   </div>
                 </div>
