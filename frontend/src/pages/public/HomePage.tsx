@@ -149,22 +149,52 @@ export default function HomePage() {
       {/* Fallback: if no sections configured, show default layout */}
       {enabledSections.length === 0 && (
         <>
-          <section className="overflow-hidden bg-[#102a43] px-4 py-14 text-white md:px-8 md:py-20">
-            <div className="mx-auto grid max-w-6xl items-center gap-10 md:grid-cols-[1.2fr_0.8fr]">
+          <section
+            className="relative overflow-hidden px-4 py-14 text-white md:px-8 md:py-20"
+            style={{
+              background:
+                'radial-gradient(circle at top, rgba(245, 158, 11, 0.22), rgba(17, 24, 39, 0.96) 30%, rgba(17, 24, 39, 1) 100%)',
+            }}
+          >
+            <div className="mx-auto grid max-w-6xl items-center gap-10 md:grid-cols-[1.1fr_0.9fr]">
               <div>
-                <p className="mb-3 text-xs font-semibold uppercase tracking-[0.22em] text-amber-200">Glyde Curtains · Accessories</p>
-                <h1 className="max-w-2xl text-4xl font-semibold leading-tight tracking-tight md:text-6xl">The hardware behind a smooth curtain finish.</h1>
-                <p className="mt-5 max-w-xl text-base leading-7 text-slate-200 md:text-lg">
-                  Reliable runners, ceiling fittings, wall brackets and end caps—ready for your next installation.
+                <p className="mb-3 text-xs font-semibold uppercase tracking-[0.22em] text-amber-200">
+                  Glyde Curtains • Premium Home Styling
                 </p>
-                <a href="/products" className="mt-8 inline-flex rounded-md bg-amber-300 px-5 py-3 text-sm font-semibold text-slate-900 transition-colors hover:bg-amber-200">
-                  Explore accessories
-                </a>
+                <h1 className="max-w-2xl text-4xl font-semibold leading-tight tracking-tight md:text-6xl">
+                  Beautiful curtains, hardware, and finishing touches for every room.
+                </h1>
+                <p className="mt-5 max-w-xl text-base leading-7 text-slate-200 md:text-lg">
+                  Discover elegant curtain styles, practical accessories, and designer-led essentials that blend function and comfort.
+                </p>
+                <div className="mt-8 flex flex-wrap gap-3">
+                  <a
+                    href="/products"
+                    className="inline-flex rounded-xl bg-amber-300 px-5 py-3 text-sm font-semibold text-slate-900 transition-colors hover:bg-amber-200"
+                  >
+                    Shop now
+                  </a>
+                  <a
+                    href="/about"
+                    className="inline-flex rounded-xl border border-white/20 bg-white/5 px-5 py-3 text-sm font-semibold text-white transition-colors hover:bg-white/10"
+                  >
+                    About us
+                  </a>
+                </div>
               </div>
-              <div className="grid grid-cols-2 gap-3 text-sm">
-                <div className="rounded-xl border border-white/15 bg-white/10 p-5 backdrop-blur-sm"><strong className="block text-2xl text-amber-200">14</strong><span className="mt-1 block text-slate-200">Accessory products</span></div>
-                <div className="rounded-xl border border-white/15 bg-white/10 p-5 backdrop-blur-sm"><strong className="block text-2xl text-amber-200">4</strong><span className="mt-1 block text-slate-200">Fitting categories</span></div>
-                <div className="col-span-2 rounded-xl border border-white/15 bg-white/10 p-5 text-slate-200">Product videos and close-up images are available on every product page.</div>
+
+              <div className="relative">
+                <div className="overflow-hidden rounded-[28px] border border-white/15 bg-white/10 p-3 shadow-[0_35px_80px_rgba(15,23,42,0.45)] backdrop-blur-sm">
+                  <img
+                    src="/assets/logo/poster.png"
+                    alt="Glyde Curtains premium collection"
+                    className="h-[420px] w-full rounded-[20px] object-cover"
+                  />
+                </div>
+                <div className="absolute -bottom-4 left-4 rounded-2xl border border-amber-200/30 bg-slate-900/80 px-4 py-3 shadow-lg backdrop-blur-sm">
+                  <div className="text-xs uppercase tracking-[0.2em] text-amber-200">New season</div>
+                  <div className="mt-1 text-lg font-semibold text-white">Premium curtain essentials</div>
+                </div>
               </div>
             </div>
           </section>
