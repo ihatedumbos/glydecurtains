@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import {
   AppBar,
   Toolbar,
@@ -36,9 +36,11 @@ interface HeaderProps {
 
 export default function Header({ categories = [], onLogout }: HeaderProps) {
   const navigate = useNavigate();
+  const location = useLocation();
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
 
+  const isAuthRoute = ['/login', '/register', '/forgot-password', '/reset-password'].includes(location.pathname);
   const { user, isAuthenticated } = useAppSelector((state) => state.auth);
   const cartItems = useAppSelector((state) => state.cart.items);
   const wishlistCount = useAppSelector((state) => state.wishlist.count);
@@ -101,7 +103,7 @@ export default function Header({ categories = [], onLogout }: HeaderProps) {
           />
 
           {/* Desktop Mega Menu trigger */}
-          {!isMobile && (
+          {!isMobile && !isAuthRoute && (
             <Box
               sx={{ position: 'relative', ml: 3 }}
               onMouseEnter={() => setMegaMenuOpen(true)}
