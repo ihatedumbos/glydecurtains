@@ -29,6 +29,9 @@ jobs:
           java-version: '21'
           distribution: 'temurin'
           cache: maven
+          
+      - name: Grant execute permission to Maven wrapper
+        run: chmod +x backend/mvnw
 
       - name: Build and test backend
         working-directory: backend
