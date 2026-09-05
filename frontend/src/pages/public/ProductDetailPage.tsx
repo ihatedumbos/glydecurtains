@@ -320,9 +320,11 @@ export default function ProductDetailPage() {
   // ─── Image helpers ─────────────────────────────────────────────────────
 
   const images = product?.images?.filter((img) => img.mediaType !== 'VIDEO') || [];
+  const videos = product?.images?.filter((img) => img.mediaType === 'VIDEO') || [];
   const mainImage = images[selectedImageIndex];
 
   const getImageSrc = (img: ProductImage) => {
+    if (img.base64Data.startsWith('/') || img.base64Data.startsWith('http')) return img.base64Data;
     if (img.base64Data.startsWith('data:')) return img.base64Data;
     return `data:${img.mimeType};base64,${img.base64Data}`;
   };
@@ -445,6 +447,22 @@ export default function ProductDetailPage() {
                   />
                 </Box>
               ))}
+            </Box>
+          )}
+
+          {videos.length > 0 && (
+            <Box sx={{ mt: 3 }}>
+              <Typography variant="subtitle1" sx={{ mb: 1, fontWeight: 600 }}>Product videos</Typography>
+              <Grid container spacing={1}>
+                {videos.map((video) => (
+                  <Grid key={video.id} size={{ xs: 12, sm: 6 }}>
+                    <video controls preload="metadata" style={{ width: '100%', display: 'block', borderRadius: 8 }}>
+                      <source src={getImageSrc(video)} type={video.mimeType} />
+                      Your browser does not support this video.
+                    </video>
+                  </Grid>
+                ))}
+              </Grid>
             </Box>
           )}
         </Grid>

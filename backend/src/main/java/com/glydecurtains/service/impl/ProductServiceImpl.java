@@ -559,10 +559,20 @@ public class ProductServiceImpl implements ProductService {
                 .isPremium(product.getIsPremium())
                 .tags(fromJson(product.getTags()))
                 .thumbnailBase64(thumbnailBase64)
-                .thumbnailUrl(thumbnailBase64 != null ? "data:image/jpeg;base64," + thumbnailBase64 : null)
+                .thumbnailUrl(toDisplayUrl(thumbnailBase64, "image/jpeg"))
                 .createdAt(product.getCreatedAt())
                 .updatedAt(product.getUpdatedAt())
                 .build();
+    }
+
+    private String toDisplayUrl(String mediaData, String mimeType) {
+        if (mediaData == null || mediaData.isBlank()) {
+            return null;
+        }
+        if (mediaData.startsWith("/") || mediaData.startsWith("http://") || mediaData.startsWith("https://") || mediaData.startsWith("data:")) {
+            return mediaData;
+        }
+        return "data:" + mimeType + ";base64," + mediaData;
     }
 
     private ProductDetailResponse mapToProductDetailResponse(Product product) {

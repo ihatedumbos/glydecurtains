@@ -42,6 +42,7 @@ Thumbs.db
 
 # Large media files
 *.mp4
+!backend/src/main/resources/static/products/**/*.mp4
 *.tiff
 *.avi
 *.flv
