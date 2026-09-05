@@ -82,6 +82,57 @@ public class CmsController {
         return ResponseEntity.ok(ApiResponse.success("Banner deleted successfully", null));
     }
 
+    @GetMapping("/settings")
+    @RequiresPermission(entity = "cms", operation = "READ")
+    public ResponseEntity<ApiResponse<SiteSettingsResponse>> getSiteSettings() {
+        SiteSettingsResponse response = cmsService.getSiteSettings();
+        return ResponseEntity.ok(ApiResponse.success(response));
+    }
+
+    @PutMapping("/settings")
+    @RequiresPermission(entity = "cms", operation = "UPDATE")
+    public ResponseEntity<ApiResponse<SiteSettingsResponse>> updateSiteSettings(@Valid @RequestBody SiteSettingsUpdateRequest request) {
+        SiteSettingsResponse response = cmsService.updateSiteSettings(request);
+        return ResponseEntity.ok(ApiResponse.success("Site settings updated successfully", response));
+    }
+
+    @GetMapping("/pages/slug/{slug}")
+    public ResponseEntity<ApiResponse<StaticPageResponse>> getPageBySlug(
+            @PathVariable String slug,
+            @RequestHeader(value = "Accept-Language", required = false, defaultValue = "en") String language) {
+        return ResponseEntity.ok(ApiResponse.success(cmsService.getPageBySlug(slug, language)));
+    }
+
+    @GetMapping("/pages")
+    @RequiresPermission(entity = "cms", operation = "READ")
+    public ResponseEntity<ApiResponse<List<StaticPageResponse>>> getAllPages(
+            @RequestHeader(value = "Accept-Language", required = false, defaultValue = "en") String language) {
+        return ResponseEntity.ok(ApiResponse.success(cmsService.getAllPages(language)));
+    }
+
+    @PostMapping("/pages")
+    @RequiresPermission(entity = "cms", operation = "CREATE")
+    public ResponseEntity<ApiResponse<StaticPageResponse>> createPage(@Valid @RequestBody StaticPageCreateRequest request) {
+        StaticPageResponse response = cmsService.createPage(request);
+        return ResponseEntity.ok(ApiResponse.success("Static page created successfully", response));
+    }
+
+    @PutMapping("/pages/{id}")
+    @RequiresPermission(entity = "cms", operation = "UPDATE")
+    public ResponseEntity<ApiResponse<StaticPageResponse>> updatePage(
+            @PathVariable Long id,
+            @Valid @RequestBody StaticPageUpdateRequest request) {
+        StaticPageResponse response = cmsService.updatePage(id, request);
+        return ResponseEntity.ok(ApiResponse.success("Static page updated successfully", response));
+    }
+
+    @DeleteMapping("/pages/{id}")
+    @RequiresPermission(entity = "cms", operation = "DELETE")
+    public ResponseEntity<ApiResponse<Void>> deletePage(@PathVariable Long id) {
+        cmsService.deletePage(id);
+        return ResponseEntity.ok(ApiResponse.success("Static page deleted successfully", null));
+    }
+
     @GetMapping("/themes")
     public ResponseEntity<ApiResponse<ThemePresetResponse>> getActiveTheme() {
         ThemePresetResponse response = themeService.getActiveTheme();

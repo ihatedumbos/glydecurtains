@@ -85,7 +85,7 @@ export default function ProductListPage() {
     if (filters.categoryId) {
       const fetchSubCats = async () => {
         try {
-          const res = await axiosInstance.get(`/categories/${filters.categoryId}/subcategories`);
+          const res = await axiosInstance.get(`/categories/public/${filters.categoryId}/sub-categories`);
           const data = res.data?.data || res.data || [];
           setSubCategories(data.map((s: { id: number; name: string }) => ({ id: s.id, name: s.name })));
         } catch {

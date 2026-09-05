@@ -69,6 +69,15 @@ function buildMuiTheme() {
         styleOverrides: {
           root: {
             backgroundImage: 'none',
+            color: '#0f172a',
+            backgroundColor: '#ffffff',
+          },
+        },
+      },
+      MuiMenuItem: {
+        styleOverrides: {
+          root: {
+            color: '#0f172a',
           },
         },
       },
@@ -102,6 +111,16 @@ function buildMuiTheme() {
           root: {
             boxShadow: '0 8px 24px rgba(29, 78, 216, 0.08)',
             backgroundImage: 'none',
+            backgroundColor: '#ffffff',
+            color: '#0f172a',
+          },
+        },
+      },
+      MuiDrawer: {
+        styleOverrides: {
+          paper: {
+            backgroundColor: '#ffffff',
+            color: '#0f172a',
           },
         },
       },

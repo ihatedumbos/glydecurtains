@@ -3,13 +3,13 @@
 
 /* ===== CSS Custom Properties ===== */
 :root {
-  --primary-color: #ffffff;
-  --secondary-color: #f1f5f9;
-  --accent-color: #1f2937;
-  --accent-light: #475569;
-  --background-color: #f8fafc;
-  --text-color: #111827;
-  --text-muted: #64748b;
+  --primary-color: #1d4ed8;
+  --secondary-color: #dbeafe;
+  --accent-color: #1d4ed8;
+  --accent-light: #60a5fa;
+  --background-color: #f4f8ff;
+  --text-color: #0f172a;
+  --text-muted: #475569;
   --border-radius: 6px;
 
   /* Premium Typography Scale */
@@ -45,9 +45,23 @@ body {
   font-size: var(--text-base);
   line-height: 1.6;
   color: var(--text-color);
+  background: linear-gradient(180deg, #eef5ff 0%, #f8fbff 100%);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-rendering: optimizeLegibility;
+}
+
+img {
+  max-width: 100%;
+  display: block;
+}
+
+button, input, textarea, select {
+  font: inherit;
+}
+
+a, button, [role="button"] {
+  color: inherit;
 }
 
 #root {

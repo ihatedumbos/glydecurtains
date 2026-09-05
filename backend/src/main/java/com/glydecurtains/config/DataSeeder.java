@@ -3,6 +3,8 @@ package com.glydecurtains.config;
 import com.glydecurtains.entity.*;
 import com.glydecurtains.entity.enums.*;
 import com.glydecurtains.repository.*;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.CommandLineRunner;
@@ -11,6 +13,9 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Component
 @RequiredArgsConstructor
@@ -30,10 +35,15 @@ public class DataSeeder implements CommandLineRunner {
     private final BannerRepository bannerRepository;
     private final StoreLocationRepository storeLocationRepository;
     private final AchievementRepository achievementRepository;
+    private final OrderRepository orderRepository;
+    private final ActivityLogRepository activityLogRepository;
 
     private final InvoiceSettingsRepository invoiceSettingsRepository;
     private final SiteSettingsRepository siteSettingsRepository;
     private final PasswordEncoder passwordEncoder;
+
+    @PersistenceContext
+    private EntityManager entityManager;
 
     @Override
     @Transactional
@@ -45,8 +55,10 @@ public class DataSeeder implements CommandLineRunner {
         log.info("Seeding database with initial data...");
         seedSuperAdmin();
         seedDemoCustomer();
+        seedDemoEmployees();
         seedCategories();
         seedProducts();
+        seedDemoOrdersAndActivity();
         seedPermissions();
         seedHomepageSections();
         seedStoreLocations();
@@ -77,6 +89,21 @@ public class DataSeeder implements CommandLineRunner {
         customer.setStatus(UserStatus.APPROVED);
         userRepository.save(customer);
         log.info("Demo customer account created.");
+    }
+
+    private void seedDemoEmployees() {
+        String[] names = {"Nisha Patel", "Rohan Mehta", "Aarav Shah", "Mira Joshi"};
+        for (int i = 0; i < names.length; i++) {
+            User employee = new User();
+            employee.setName(names[i]);
+            employee.setEmail("emp" + (i + 1) + "@glydecurtains.com");
+            employee.setPassword(passwordEncoder.encode("emp123"));
+            employee.setRole(UserRole.EMPLOYEE);
+            employee.setStatus(UserStatus.APPROVED);
+            employee = userRepository.save(employee);
+            setCreatedAtForTable("users", employee.getId(), LocalDateTime.now().minusDays(12 + i));
+        }
+        log.info("Demo employee accounts created.");
     }
 
     private void seedCategories() {
@@ -328,6 +355,109 @@ public class DataSeeder implements CommandLineRunner {
         productImageRepository.save(img);
     }
 
+    private void seedDemoOrdersAndActivity() {
+        if (orderRepository.count() > 0) {
+            return;
+        }
+
+        List<User> customers = userRepository.findAll().stream()
+                .filter(user -> user.getRole() == UserRole.CUSTOMER)
+                .toList();
+
+        List<User> employees = userRepository.findAll().stream()
+                .filter(user -> user.getRole() == UserRole.EMPLOYEE)
+                .toList();
+
+        List<Product> products = productRepository.findAll();
+        if (customers.isEmpty() || employees.isEmpty() || products.isEmpty()) {
+            return;
+        }
+
+        String[] orderNumbers = {
+                "GC-20260901-1001", "GC-20260903-1002", "GC-20260905-1003", "GC-20260907-1004",
+                "GC-20260909-1005", "GC-20260912-1006", "GC-20260914-1007", "GC-20260918-1008"
+        };
+
+        OrderStatus[] statuses = {
+                OrderStatus.DELIVERED, OrderStatus.DELIVERED, OrderStatus.PACKED,
+                OrderStatus.DISPATCHED, OrderStatus.DELIVERED, OrderStatus.CONFIRMED,
+                OrderStatus.DELIVERED, OrderStatus.PENDING
+        };
+
+        BigDecimal[] totals = {
+                new BigDecimal("4899.00"), new BigDecimal("3820.00"), new BigDecimal("2399.00"), new BigDecimal("7240.00"),
+                new BigDecimal("5680.00"), new BigDecimal("3190.00"), new BigDecimal("6499.00"), new BigDecimal("1980.00")
+        };
+
+        for (int i = 0; i < orderNumbers.length; i++) {
+            User customer = customers.get(i % customers.size());
+            User employee = employees.get(i % employees.size());
+            Product product = products.get(i % products.size());
+            Order order = new Order();
+            order.setOrderNumber(orderNumbers[i]);
+            order.setUserId(customer.getId());
+            order.setStatus(statuses[i]);
+            order.setSubtotal(totals[i]);
+            order.setGrandTotal(totals[i]);
+            order.setAssignedEmployeeId(employee.getId());
+
+            OrderItem item = new OrderItem();
+            item.setOrder(order);
+            item.setProductId(product.getId());
+            item.setProductName(product.getName());
+            item.setQuantity(1 + (i % 3));
+            item.setUnitPrice(product.getBasePrice());
+            item.setSubtotal(product.getBasePrice().multiply(BigDecimal.valueOf(item.getQuantity())));
+            order.getItems().add(item);
+
+            OrderStatusHistory history = new OrderStatusHistory();
+            history.setOrder(order);
+            history.setFromStatus(i == 0 ? null : statuses[Math.max(0, i - 1)]);
+            history.setToStatus(statuses[i]);
+            history.setChangedBy(employee.getId());
+            history.setNotes("Sample order seeded for demo dashboard");
+            history.setChangedAt(LocalDateTime.now().minusDays(12 - i).minusHours(i + 1));
+            order.getStatusHistory().add(history);
+
+            orderRepository.save(order);
+            setCreatedAtForTable("orders", order.getId(), LocalDateTime.now().minusDays(12 - i));
+
+            ActivityLog logEntry = ActivityLog.builder()
+                    .userId(customer.getId())
+                    .actionType("ORDER_PLACED")
+                    .entityType("order")
+                    .entityId(order.getId())
+                    .details("[DEMO] Order " + order.getOrderNumber() + " placed for Rs. " + totals[i])
+                    .ipAddress("10.0.0." + (i + 5))
+                    .timestamp(LocalDateTime.now().minusDays(12 - i).minusHours(2))
+                    .build();
+            activityLogRepository.save(logEntry);
+        }
+
+        List<User> seedUsers = new ArrayList<>(customers);
+        for (int i = 0; i < 10; i++) {
+            User customer = new User();
+            customer.setName("Sample Customer " + (i + 1));
+            customer.setEmail("samplecustomer" + (i + 1) + "@glydecurtains.com");
+            customer.setPassword(passwordEncoder.encode("demo123"));
+            customer.setRole(UserRole.CUSTOMER);
+            customer.setStatus(UserStatus.APPROVED);
+            customer = userRepository.save(customer);
+            setCreatedAtForTable("users", customer.getId(), LocalDateTime.now().minusDays(25 - i));
+            seedUsers.add(customer);
+        }
+
+        log.info("Demo order and activity seed data created for dashboard charts.");
+    }
+
+    private void setCreatedAtForTable(String tableName, Long entityId, LocalDateTime createdAt) {
+        entityManager.createNativeQuery(
+                        "UPDATE " + tableName + " SET created_at = :createdAt, updated_at = :createdAt WHERE id = :entityId")
+                .setParameter("createdAt", createdAt)
+                .setParameter("entityId", entityId)
+                .executeUpdate();
+    }
+
     private void seedPermissions() {
         String[] entities = {"products", "categories", "orders", "users", "employees",
                 "feedback", "enquiries", "cms", "store_locations", "achievements",
@@ -363,33 +493,18 @@ public class DataSeeder implements CommandLineRunner {
         int order = 1;
         HomepageSection hero = createSection(SectionType.HERO_BANNER, "Welcome to Glyde Curtains", order++);
         createSection(SectionType.SCROLLING_TICKER, "Announcements", order++);
-        createSection(SectionType.FEATURED, "Featured Products", order++);
         createSection(SectionType.POPULAR_CATEGORIES, "Popular Categories", order++);
-        createSection(SectionType.NEW_ARRIVALS, "New Arrivals", order++);
-        createSection(SectionType.BEST_SELLING, "Best Sellers", order++);
-        createSection(SectionType.TRENDING, "Trending Now", order++);
-        createSection(SectionType.PREMIUM_COLLECTIONS, "Premium Collections", order++);
-        createSection(SectionType.PROMO_BANNER, "Special Offers", order++);
-        createSection(SectionType.SEASONAL, "Seasonal Picks", order++);
-        createSection(SectionType.RECOMMENDED, "Recommended for You", order++);
-        createSection(SectionType.FEATURED_ACCESSORIES, "Featured Accessories", order++);
+        createSection(SectionType.FEATURED, "Featured Products", order++);
         createSection(SectionType.RECENTLY_ADDED, "Recently Added", order++);
-        createSection(SectionType.LATEST, "Latest Products", order++);
-        createSection(SectionType.TESTIMONIALS, "Customer Testimonials", order++);
-        createSection(SectionType.BRAND_STORY, "Our Story", order++);
-        createSection(SectionType.ACHIEVEMENTS, "Our Achievements", order++);
-        createSection(SectionType.NEWSLETTER, "Stay Updated", order++);
         createSection(SectionType.FOOTER, "Footer", order);
 
-        // Add sample banners to hero section
+        // Add a compact set of hero banners to keep the homepage polished and short.
         addBanner(hero, "Transform Your Space", "Premium curtains crafted for elegance and comfort",
                 SAMPLE_BANNER_IMAGE, "Shop Now", "/products", 1);
         addBanner(hero, "New Collection Arrived", "Discover our latest designer curtain range",
                 SAMPLE_BANNER_IMAGE, "Explore", "/products?filter=new", 2);
-        addBanner(hero, "Summer Sale - Up to 30% Off", "Limited time offer on selected items",
-                SAMPLE_BANNER_IMAGE, "View Offers", "/products?filter=sale", 3);
 
-        log.info("Homepage sections and banners seeded.");
+        log.info("Homepage sections and banners seeded with a compact storefront layout.");
     }
 
     private HomepageSection createSection(SectionType type, String title, int sortOrder) {

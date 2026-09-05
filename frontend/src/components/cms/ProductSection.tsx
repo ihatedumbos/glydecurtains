@@ -134,14 +134,16 @@ export default function ProductSection({ title, sectionType }: ProductSectionPro
                 <div className="relative h-60 overflow-hidden bg-[#eef1f4] p-3">
                   {product.thumbnailUrl ? (
                     <img
-                      src={resolveMediaUrl(product.thumbnailUrl)}
+                      src={resolveMediaUrl(product.thumbnailUrl) || '/assets/logo/poster.png'}
                       alt={product.name}
                       className="h-full w-full object-contain transition-transform duration-300 group-hover:scale-105"
                     />
                   ) : (
-                    <div className="flex items-center justify-center h-full text-gray-400">
-                      <span className="text-4xl">🪟</span>
-                    </div>
+                    <img
+                      src="/assets/logo/poster.png"
+                      alt={product.name}
+                      className="h-full w-full object-contain transition-transform duration-300 group-hover:scale-105"
+                    />
                   )}
                   {product.discountPercentage && product.discountPercentage > 0 && (
                     <span className="absolute top-2 left-2 bg-red-500 text-white text-xs font-bold px-2 py-1 rounded">

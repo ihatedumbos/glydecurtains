@@ -116,7 +116,7 @@ export default function ProductCard({ product, variants = [], onAddToCart, onCli
         <CardMedia
           component="img"
           height="220"
-          image={resolveMediaUrl(product.thumbnailUrl) || '/assets/placeholder-product.png'}
+          image={resolveMediaUrl(product.thumbnailUrl) || '/assets/logo/poster.png'}
           alt={product.name}
           sx={{ objectFit: 'cover' }}
           loading="lazy"

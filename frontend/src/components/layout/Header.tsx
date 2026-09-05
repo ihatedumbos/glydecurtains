@@ -24,6 +24,7 @@ import LogoutIcon from '@mui/icons-material/Logout';
 import DashboardIcon from '@mui/icons-material/Dashboard';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import { useAppSelector } from '@/store/hooks';
+import { useLogout } from '@/hooks/useLogout';
 import Logo from './Logo';
 import MegaMenu, { type Category } from './MegaMenu';
 import MobileDrawer from './MobileDrawer';
@@ -31,10 +32,9 @@ import LanguageSwitcher from '@/components/common/LanguageSwitcher';
 
 interface HeaderProps {
   categories?: Category[];
-  onLogout?: () => void;
 }
 
-export default function Header({ categories = [], onLogout }: HeaderProps) {
+export default function Header({ categories = [] }: HeaderProps) {
   const navigate = useNavigate();
   const location = useLocation();
   const theme = useTheme();
@@ -44,6 +44,7 @@ export default function Header({ categories = [], onLogout }: HeaderProps) {
   const { user, isAuthenticated } = useAppSelector((state) => state.auth);
   const cartItems = useAppSelector((state) => state.cart.items);
   const wishlistCount = useAppSelector((state) => state.wishlist.count);
+  const { logout } = useLogout();
 
   const [searchQuery, setSearchQuery] = useState('');
   const [megaMenuOpen, setMegaMenuOpen] = useState(false);
@@ -237,7 +238,7 @@ export default function Header({ categories = [], onLogout }: HeaderProps) {
                   <MenuItem
                     onClick={() => {
                       handleProfileMenuClose();
-                      onLogout?.();
+                      logout();
                     }}
                   >
                     <ListItemIcon>

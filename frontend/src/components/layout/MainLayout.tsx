@@ -41,13 +41,12 @@ const fallbackCategories: Category[] = [
 
 interface MainLayoutProps {
   categories?: Category[];
-  onLogout?: () => void;
 }
 
 /**
  * Main public/customer layout with sticky header and footer.
  */
-export default function MainLayout({ categories: providedCategories, onLogout }: MainLayoutProps) {
+export default function MainLayout({ categories: providedCategories }: MainLayoutProps) {
   const [categories, setCategories] = useState<Category[]>(providedCategories || fallbackCategories);
 
   useEffect(() => {
@@ -105,7 +104,7 @@ export default function MainLayout({ categories: providedCategories, onLogout }:
         background: 'linear-gradient(180deg, #edf5ff 0%, #f8fbff 100%)',
       }}
     >
-      <Header categories={categories} onLogout={onLogout} />
+      <Header categories={categories} />
       <Box component="main" sx={{ flex: 1, background: 'transparent' }}>
         <Outlet />
       </Box>

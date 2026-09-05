@@ -325,10 +325,12 @@ export default function ProductDetailPage() {
   const videos = product?.images?.filter((img) => img.mediaType === 'VIDEO') || [];
   const mainImage = images[selectedImageIndex];
 
-  const getImageSrc = (img: ProductImage) => {
-    if (img.base64Data.startsWith('/')) return resolveMediaUrl(img.base64Data);
+  const getImageSrc = (img?: Partial<ProductImage> | null) => {
+    const fallbackImage = '/assets/logo/poster.png';
+    if (!img || !img.base64Data) return fallbackImage;
+    if (img.base64Data.startsWith('/')) return resolveMediaUrl(img.base64Data) || fallbackImage;
     if (img.base64Data.startsWith('http') || img.base64Data.startsWith('data:')) return img.base64Data;
-    return `data:${img.mimeType};base64,${img.base64Data}`;
+    return `data:${img.mimeType || 'image/jpeg'};base64,${img.base64Data}`;
   };
 
   // ─── Loading state ─────────────────────────────────────────────────────

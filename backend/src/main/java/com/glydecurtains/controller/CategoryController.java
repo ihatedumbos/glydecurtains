@@ -93,6 +93,13 @@ public class CategoryController {
 
     // --- Sub-category endpoints ---
 
+    @GetMapping({"/categories/public/{categoryId}/sub-categories", "/categories/{categoryId}/subcategories"})
+    public ResponseEntity<ApiResponse<List<SubCategoryResponse>>> getPublicSubCategories(
+            @PathVariable Long categoryId) {
+        List<SubCategoryResponse> subCategories = categoryService.getSubCategories(categoryId);
+        return ResponseEntity.ok(ApiResponse.success(subCategories));
+    }
+
     @GetMapping("/categories/{categoryId}/sub-categories")
     @RequiresPermission(entity = "categories", operation = "READ")
     public ResponseEntity<ApiResponse<List<SubCategoryResponse>>> getSubCategories(
