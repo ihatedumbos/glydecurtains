@@ -16,9 +16,8 @@ services:
       - key: CORS_ORIGINS
         value: https://glydecurtains.com,https://www.glydecurtains.com
 
-  - type: static_site
-    name: glydecurtains-frontend
-    env: static
+static_sites:
+  - name: glydecurtains-frontend
     rootDir: frontend
     buildCommand: npm install && npm run build
     staticPublishPath: dist
