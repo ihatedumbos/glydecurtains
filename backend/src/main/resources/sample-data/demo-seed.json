@@ -1,0 +1,109 @@
+{
+  "employees": [
+    {
+      "name": "Nisha Patel",
+      "email": "nisha@glydecurtains.com",
+      "password": "emp123"
+    },
+    {
+      "name": "Rohan Mehta",
+      "email": "rohan@glydecurtains.com",
+      "password": "emp123"
+    },
+    {
+      "name": "Aarav Shah",
+      "email": "aarav@glydecurtains.com",
+      "password": "emp123"
+    }
+  ],
+  "storeLocations": [
+    {
+      "name": "Glyde Curtains - Ahmedabad Showroom",
+      "address": "Shop 12, Premium Mall, S.G. Highway",
+      "city": "Ahmedabad",
+      "state": "Gujarat",
+      "phone": "+91 79 2345 6789",
+      "email": "ahmedabad@glydecurtains.com",
+      "latitude": 23.0225,
+      "longitude": 72.5714,
+      "operatingHours": "Mon-Sat: 10:00 AM - 8:00 PM | Sun: 11:00 AM - 6:00 PM",
+      "imageBase64": ""
+    },
+    {
+      "name": "Glyde Curtains - Mumbai Studio",
+      "address": "Unit 5, Western Plaza, Andheri West",
+      "city": "Mumbai",
+      "state": "Maharashtra",
+      "phone": "+91 22 3456 7890",
+      "email": "mumbai@glydecurtains.com",
+      "latitude": 19.1364,
+      "longitude": 72.8296,
+      "operatingHours": "Mon-Sat: 10:00 AM - 8:00 PM | Sun: 11:00 AM - 6:00 PM",
+      "imageBase64": ""
+    },
+    {
+      "name": "Glyde Curtains - Delhi Experience Centre",
+      "address": "Block A, South Extension Part 2",
+      "city": "New Delhi",
+      "state": "Delhi",
+      "phone": "+91 11 4567 8901",
+      "email": "delhi@glydecurtains.com",
+      "latitude": 28.5721,
+      "longitude": 77.2218,
+      "operatingHours": "Mon-Sat: 10:00 AM - 8:00 PM | Sun: 11:00 AM - 6:00 PM",
+      "imageBase64": ""
+    }
+  ],
+  "enquiries": [
+    {
+      "name": "Priya Sharma",
+      "email": "priya.sharma@example.com",
+      "phone": "+91 98765 43210",
+      "subject": "Custom blackout curtain fitting",
+      "message": "I need a custom blackout curtain setup for a large bedroom window. Please share pricing and installation timing.",
+      "status": "NEW"
+    },
+    {
+      "name": "Vikram Sethi",
+      "email": "vikram.sethi@example.com",
+      "phone": "+91 99887 66554",
+      "subject": "Motorized curtain query",
+      "message": "Can you tell me about the smart motorized curtain system and whether it works with home automation?",
+      "status": "IN_PROGRESS"
+    },
+    {
+      "name": "Meera Desai",
+      "email": "meera.desai@example.com",
+      "phone": "+91 98111 23456",
+      "subject": "Office curtain sample request",
+      "message": "We are renovating the office and would like to receive fabric swatches for premium office curtains.",
+      "status": "RESOLVED"
+    }
+  ],
+  "feedback": [
+    {
+      "userEmail": "dk@glydecurtains.com",
+      "productSku": "GC-CUR-001",
+      "rating": 5,
+      "title": "Premium finish and perfect blackout",
+      "comment": "The royal velvet curtain looks fantastic in our bedroom. The blackout quality is excellent and the fabric feels luxurious.",
+      "status": "APPROVED"
+    },
+    {
+      "userEmail": "dk@glydecurtains.com",
+      "productSku": "GC-ROD-001",
+      "rating": 4,
+      "title": "Elegant look with easy installation",
+      "comment": "The brass rod adds a premium finish to the room. Installation was straightforward and the look is classy.",
+      "status": "APPROVED"
+    },
+    {
+      "userEmail": "dk@glydecurtains.com",
+      "productSku": "GC-TRK-001",
+      "rating": 5,
+      "title": "Smooth and silent operation",
+      "comment": "This ceiling track is very smooth and silent. It handles the heavier curtains perfectly and feels very durable.",
+      "status": "APPROVED"
+    }
+  ]
+}
