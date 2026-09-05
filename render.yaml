@@ -5,16 +5,14 @@ services:
     rootDir: backend
     plan: free
     buildCommand: ./mvnw clean package -DskipTests
-    startCommand: java -jar target/*.jar
+    startCommand: java -Dserver.port=$PORT -jar target/*.jar
     envVars:
       - key: JAVA_VERSION
         value: 21
-      - key: SERVER_PORT
-        value: 10000
       - key: SPRING_PROFILES_ACTIVE
         value: prod
       - key: CORS_ORIGINS
-        value: https://glydecurtains-frontend.onrender.com
+        value: https://glydecurtains.com
 
   - type: static_site
     name: glydecurtains-frontend
@@ -25,4 +23,4 @@ services:
     pullRequestPreviewsEnabled: true
     envVars:
       - key: VITE_API_BASE_URL
-        value: https://glydecurtains-backend.onrender.com
+        value: https://api.glydecurtains.com
