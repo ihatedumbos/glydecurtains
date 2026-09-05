@@ -1,48 +1,50 @@
-# Glyde Curtains E-Commerce Platform
+# Glyde Curtains
 
-A full-stack e-commerce platform for Glyde Curtains, featuring a Spring Boot backend and React frontend with comprehensive admin functionality, customer shopping experience, and employee management.
+This repository contains a full-stack e-commerce application for Glyde Curtains with a separate Spring Boot backend and a separate React + Vite frontend. It is a monorepo, not a single app package.
 
-## Tech Stack
+## Current implementation
 
 ### Backend
 - Java 21
 - Spring Boot 3.4.x
-- Spring Security (authentication is temporarily disabled)
-- Spring Data JPA with H2 embedded database
-- Maven build system
+- Spring Web, JPA, H2, security config, JWT support classes
+- Maven build
+- Embedded H2 database for local development
 
 ### Frontend
-- React 18 with TypeScript
-- Vite build tool
-- Redux Toolkit for state management
-- Material UI (MUI) component library
-- Tailwind CSS for utility styling
-- Framer Motion for animations
+- React 18
+- TypeScript
+- Vite
+- Redux Toolkit
+- Material UI
+- i18n support for English, Hindi, and Gujarati
 
-### Infrastructure
-- Docker with multi-stage builds
-- GitHub Actions CI/CD
-- H2 embedded database (file-based in production)
+### Deployment/runtime
+- Dockerfiles are present for both backend and frontend containers
+- `docker-compose.yml` runs backend and frontend together for local development
+- `render.yaml` is included for Render deployment configuration
 
-## Prerequisites
+## Important status
 
-- Java 21 (JDK)
-- Node.js 20+ and npm
-- Docker & Docker Compose (for containerized deployment)
-- Maven 3.9+ (or use included Maven wrapper)
+Authentication is intentionally disabled in the current backend security configuration:
+- `backend/src/main/java/com/glydecurtains/security/SecurityConfig.java`
+- `authorizeHttpRequests(auth -> auth.anyRequest().permitAll())`
 
-## Local Development Setup
+This means all routes are currently open in development and should not be treated as production security.
 
-### Backend
+## Local setup
+
+### 1) Backend
 
 ```bash
 cd backend
 ./mvnw spring-boot:run
 ```
 
-The backend starts on `http://localhost:8080`.
+Backend runs on:
+- `http://localhost:8080`
 
-### Frontend
+### 2) Frontend
 
 ```bash
 cd frontend
@@ -50,92 +52,63 @@ npm install
 npm run dev
 ```
 
-The frontend starts on `http://localhost:5173`.
+Frontend runs on:
+- `http://localhost:5173`
 
-### Local URLs
+### 3) Admin route
 
-| Page | URL |
-|------|-----|
-| Storefront | [http://localhost:5173](http://localhost:5173) |
-| Admin dashboard | [http://localhost:5173/admin/dashboard](http://localhost:5173/admin/dashboard) |
+The admin entry route is:
+- `http://localhost:5173/admin`
+- This redirects to `http://localhost:5173/admin/dashboard`
 
-### Temporary Security Status
+## Docker
 
-JWT authentication and permission checks are temporarily disabled. No login is required, and all API and admin routes are public. Do not deploy this configuration to a public or production environment; restore authentication before deployment.
-
-## Docker Deployment
-
-### Build and run with Docker Compose
+Build and run the stack:
 
 ```bash
 docker-compose up --build
 ```
 
-### Build individual images
+Dockerfiles in this repo:
+- `backend/Dockerfile`
+- `frontend/Dockerfile`
 
-```bash
-# Backend
-docker build -t glydecurtains-backend:latest ./backend
+## Project structure
 
-# Frontend
-docker build -t glydecurtains-frontend:latest ./frontend
-```
-
-## Environment Configuration
-
-| Variable              | Description                     | Default              |
-|-----------------------|---------------------------------|----------------------|
-| `SERVER_PORT`         | Backend server port             | 8080                 |
-| `SPRING_PROFILES_ACTIVE` | Active Spring profile         | int                  |
-| `CORS_ORIGINS`        | Allowed CORS origins            | http://localhost:5173 |
-
-### Environment Files
-
-- `.env.example` — Template for local environment variables
-- Application profiles: `int`, `qa`, `prod`
-
-## Branching Strategy
-
-This project follows **Git Flow**:
-
-| Branch          | Purpose                                      | Deploys To    |
-|-----------------|----------------------------------------------|---------------|
-| `main`          | Production-ready code                        | Production    |
-| `develop`       | Integration branch for features              | Integration   |
-| `feature/*`     | New features (branch from `develop`)         | —             |
-| `release/*`     | Release preparation and QA                   | QA            |
-| `hotfix/*`      | Critical production fixes (branch from `main`) | Production  |
-
-### Workflow
-
-1. Create feature branches from `develop`: `feature/add-wishlist`
-2. Open PR to `develop` when feature is complete
-3. CI runs tests automatically on all PRs
-4. Merge to `develop` triggers integration deployment
-5. Create `release/*` branch for QA validation
-6. Merge `release/*` to `main` for production (requires manual approval)
-
-## Project Structure
-
-```
+```text
 glydecurtains/
-├── backend/               # Spring Boot application
-│   ├── src/main/java/     # Java source code
-│   ├── src/main/resources/# Configuration files
-│   ├── src/test/          # Tests
-│   ├── Dockerfile         # Backend container
-│   └── pom.xml            # Maven configuration
-├── frontend/              # React application
-│   ├── src/               # TypeScript source code
-│   ├── public/            # Static assets
-│   ├── Dockerfile         # Frontend container
-│   └── package.json       # Node dependencies
-├── .github/workflows/     # CI/CD pipelines
-├── docker-compose.yml     # Multi-container orchestration
-├── VERSION                # Semantic version
-├── CHANGELOG.md           # Release history
-└── README.md              # This file
+├── backend/                    # Spring Boot API
+│   ├── src/main/java/          # Java source code
+│   ├── src/main/resources/     # App config, profiles, static files
+│   ├── src/test/               # Backend tests
+│   ├── Dockerfile              # Backend container image
+│   ├── mvnw                   # Maven wrapper
+│   └── pom.xml                # Maven config
+├── frontend/                   # React frontend
+│   ├── src/                   # React app source
+│   ├── public/                # Static assets
+│   ├── Dockerfile             # Frontend container image
+│   ├── vite.config.ts        # Vite config with proxy setup
+│   ├── package.json          # Frontend dependencies/scripts
+│   └── tsconfig*.json        # TypeScript config
+├── .github/                   # Repo automation and Copilot instructions
+├── docker-compose.yml         # Local multi-container setup
+├── docker-compose.prod.yml    # Production overrides
+├── render.yaml                # Render deployment config
+├── CHANGELOG.md               # Release notes
+├── LOCAL_DEVELOPMENT.md       # Local dev instructions
+├── README.md                  # Project overview
+├── VERSION                    # Version number
+├── .env.example               # Example environment variables
+├── .gitignore                 # Git exclusions
+└── Makefile                   # Common task commands
 ```
+
+## Notes
+
+- Product media and static backend assets are resolved from the frontend through the Vite proxy config and media helper utilities.
+- The project includes admin/customer storefront flows, CMS-like pages, and order/user management views.
+- The repository is intentionally kept aligned with the actual code in the current branch; stale Kiro specification files were removed.
 
 ## License
 

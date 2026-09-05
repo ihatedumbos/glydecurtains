@@ -128,7 +128,7 @@ export default function LoginPage() {
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
-        background: 'linear-gradient(135deg, #0f0c29 0%, #1a1a2e 50%, #16213e 100%)',
+        background: 'radial-gradient(circle at top, rgba(255,255,255,0.9) 0%, rgba(243,244,246,1) 35%, rgba(229,231,235,0.96) 100%)',
         padding: 2,
       }}
     >
@@ -136,12 +136,12 @@ export default function LoginPage() {
         sx={{
           width: '100%',
           maxWidth: 440,
-          background: 'rgba(255, 255, 255, 0.05)',
-          backdropFilter: 'blur(20px)',
-          WebkitBackdropFilter: 'blur(20px)',
-          border: '1px solid rgba(255, 255, 255, 0.1)',
-          borderRadius: 3,
-          boxShadow: '0 8px 32px rgba(0, 0, 0, 0.4)',
+          background: 'rgba(255, 255, 255, 0.82)',
+          backdropFilter: 'blur(18px)',
+          WebkitBackdropFilter: 'blur(18px)',
+          border: '1px solid rgba(15, 23, 42, 0.08)',
+          borderRadius: 4,
+          boxShadow: '0 24px 60px rgba(15, 23, 42, 0.09)',
         }}
       >
         <CardContent sx={{ p: { xs: 3, sm: 4 } }}>
@@ -156,7 +156,7 @@ export default function LoginPage() {
                 width: 'auto',
                 objectFit: 'contain',
                 borderRadius: 2,
-                filter: 'drop-shadow(0 2px 8px rgba(0,0,0,0.3))',
+                filter: 'drop-shadow(0 2px 8px rgba(17, 24, 39, 0.08))',
               }}
             />
           </Box>
@@ -169,17 +169,17 @@ export default function LoginPage() {
               textAlign: 'center',
               mb: 1,
               fontWeight: 700,
-              color: 'rgba(255, 255, 255, 0.95)',
+              color: 'text.primary',
             }}
           >
-            Welcome Back
+            Welcome back
           </Typography>
           <Typography
             variant="body2"
             sx={{
               textAlign: 'center',
               mb: 3,
-              color: 'rgba(255, 255, 255, 0.6)',
+              color: 'text.secondary',
             }}
           >
             Sign in to your account
@@ -191,10 +191,10 @@ export default function LoginPage() {
               severity="warning"
               sx={{
                 mb: 2,
-                backgroundColor: 'rgba(255, 152, 0, 0.15)',
-                color: '#ffb74d',
-                border: '1px solid rgba(255, 152, 0, 0.3)',
-                '& .MuiAlert-icon': { color: '#ffb74d' },
+                backgroundColor: 'rgba(245, 158, 11, 0.08)',
+                color: '#9a5b00',
+                border: '1px solid rgba(245, 158, 11, 0.2)',
+                '& .MuiAlert-icon': { color: '#b45309' },
               }}
             >
               <Typography variant="body2" fontWeight={600}>
@@ -212,10 +212,10 @@ export default function LoginPage() {
               severity="error"
               sx={{
                 mb: 2,
-                backgroundColor: 'rgba(244, 67, 54, 0.15)',
-                color: '#ef5350',
-                border: '1px solid rgba(244, 67, 54, 0.3)',
-                '& .MuiAlert-icon': { color: '#ef5350' },
+                backgroundColor: 'rgba(220, 38, 38, 0.05)',
+                color: '#991b1b',
+                border: '1px solid rgba(220, 38, 38, 0.15)',
+                '& .MuiAlert-icon': { color: '#b91c1c' },
               }}
             >
               <Typography variant="body2" fontWeight={600}>
@@ -233,10 +233,10 @@ export default function LoginPage() {
               severity="error"
               sx={{
                 mb: 2,
-                backgroundColor: 'rgba(244, 67, 54, 0.15)',
-                color: '#ef5350',
-                border: '1px solid rgba(244, 67, 54, 0.3)',
-                '& .MuiAlert-icon': { color: '#ef5350' },
+                backgroundColor: 'rgba(220, 38, 38, 0.05)',
+                color: '#991b1b',
+                border: '1px solid rgba(220, 38, 38, 0.15)',
+                '& .MuiAlert-icon': { color: '#b91c1c' },
               }}
             >
               {error}
@@ -263,25 +263,26 @@ export default function LoginPage() {
               sx={{
                 mb: 2.5,
                 '& .MuiOutlinedInput-root': {
-                  color: 'rgba(255, 255, 255, 0.9)',
+                  color: 'text.primary',
+                  backgroundColor: '#f9fafb',
                   '& fieldset': {
-                    borderColor: 'rgba(255, 255, 255, 0.2)',
+                    borderColor: 'rgba(148, 163, 184, 0.4)',
                   },
                   '&:hover fieldset': {
-                    borderColor: 'rgba(255, 255, 255, 0.4)',
+                    borderColor: 'rgba(15, 23, 42, 0.35)',
                   },
                   '&.Mui-focused fieldset': {
-                    borderColor: '#7c4dff',
+                    borderColor: '#111827',
                   },
                 },
                 '& .MuiInputLabel-root': {
-                  color: 'rgba(255, 255, 255, 0.5)',
+                  color: 'text.secondary',
                 },
                 '& .MuiInputLabel-root.Mui-focused': {
-                  color: '#7c4dff',
+                  color: '#111827',
                 },
                 '& .MuiFormHelperText-root': {
-                  color: '#ef5350',
+                  color: '#b91c1c',
                 },
               }}
             />
@@ -302,7 +303,7 @@ export default function LoginPage() {
                     <IconButton
                       onClick={() => setShowPassword((prev) => !prev)}
                       edge="end"
-                      sx={{ color: 'rgba(255, 255, 255, 0.5)' }}
+                      sx={{ color: 'text.secondary' }}
                       aria-label={showPassword ? 'Hide password' : 'Show password'}
                     >
                       {showPassword ? <VisibilityOff /> : <Visibility />}
@@ -313,25 +314,26 @@ export default function LoginPage() {
               sx={{
                 mb: 1.5,
                 '& .MuiOutlinedInput-root': {
-                  color: 'rgba(255, 255, 255, 0.9)',
+                  color: 'text.primary',
+                  backgroundColor: '#f9fafb',
                   '& fieldset': {
-                    borderColor: 'rgba(255, 255, 255, 0.2)',
+                    borderColor: 'rgba(148, 163, 184, 0.4)',
                   },
                   '&:hover fieldset': {
-                    borderColor: 'rgba(255, 255, 255, 0.4)',
+                    borderColor: 'rgba(15, 23, 42, 0.35)',
                   },
                   '&.Mui-focused fieldset': {
-                    borderColor: '#7c4dff',
+                    borderColor: '#111827',
                   },
                 },
                 '& .MuiInputLabel-root': {
-                  color: 'rgba(255, 255, 255, 0.5)',
+                  color: 'text.secondary',
                 },
                 '& .MuiInputLabel-root.Mui-focused': {
-                  color: '#7c4dff',
+                  color: '#111827',
                 },
                 '& .MuiFormHelperText-root': {
-                  color: '#ef5350',
+                  color: '#b91c1c',
                 },
               }}
             />
@@ -343,13 +345,13 @@ export default function LoginPage() {
                   <Checkbox
                     {...register('rememberMe')}
                     sx={{
-                      color: 'rgba(255, 255, 255, 0.4)',
-                      '&.Mui-checked': { color: '#7c4dff' },
+                      color: 'rgba(15, 23, 42, 0.4)',
+                      '&.Mui-checked': { color: '#111827' },
                     }}
                   />
                 }
                 label={
-                  <Typography variant="body2" sx={{ color: 'rgba(255, 255, 255, 0.7)' }}>
+                  <Typography variant="body2" sx={{ color: 'text.secondary' }}>
                     Remember me
                   </Typography>
                 }
@@ -358,8 +360,9 @@ export default function LoginPage() {
                 to="/forgot-password"
                 style={{
                   textDecoration: 'none',
-                  color: '#7c4dff',
+                  color: '#111827',
                   fontSize: '0.875rem',
+                  fontWeight: 600,
                 }}
               >
                 Forgot password?
@@ -378,16 +381,15 @@ export default function LoginPage() {
                 fontWeight: 600,
                 fontSize: '1rem',
                 textTransform: 'none',
-                background: 'linear-gradient(135deg, #7c4dff 0%, #651fff 100%)',
+                background: 'linear-gradient(135deg, #111827 0%, #374151 100%)',
                 borderRadius: 2,
-                boxShadow: '0 4px 15px rgba(124, 77, 255, 0.3)',
+                boxShadow: '0 10px 20px rgba(17, 24, 39, 0.12)',
                 '&:hover': {
-                  background: 'linear-gradient(135deg, #651fff 0%, #5200cc 100%)',
-                  boxShadow: '0 6px 20px rgba(124, 77, 255, 0.4)',
+                  background: 'linear-gradient(135deg, #1f2937 0%, #111827 100%)',
                 },
                 '&.Mui-disabled': {
-                  background: 'rgba(124, 77, 255, 0.3)',
-                  color: 'rgba(255, 255, 255, 0.5)',
+                  background: 'rgba(17, 24, 39, 0.25)',
+                  color: 'rgba(255, 255, 255, 0.75)',
                 },
               }}
             >
@@ -399,7 +401,7 @@ export default function LoginPage() {
               variant="body2"
               sx={{
                 textAlign: 'center',
-                color: 'rgba(255, 255, 255, 0.6)',
+                color: 'text.secondary',
               }}
             >
               Don&apos;t have an account?{' '}
@@ -407,8 +409,8 @@ export default function LoginPage() {
                 to="/register"
                 style={{
                   textDecoration: 'none',
-                  color: '#7c4dff',
-                  fontWeight: 600,
+                  color: '#111827',
+                  fontWeight: 700,
                 }}
               >
                 Sign up

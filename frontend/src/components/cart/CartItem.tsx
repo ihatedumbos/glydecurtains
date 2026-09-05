@@ -8,6 +8,7 @@ import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 import WarningAmberIcon from '@mui/icons-material/WarningAmber';
 import type { CartItem as CartItemType } from '@/store/slices/cartSlice';
 import QuantitySelector from '@/components/cart/QuantitySelector';
+import { resolveMediaUrl } from '@/utils/mediaUrl';
 
 interface CartItemProps {
   item: CartItemType;
@@ -40,7 +41,7 @@ export default function CartItemRow({ item, onQuantityChange, onRemove, disabled
       {/* Product image */}
       <Box
         component="img"
-        src={item.imageUrl || '/assets/placeholder-product.png'}
+        src={resolveMediaUrl(item.imageUrl) || '/assets/placeholder-product.png'}
         alt={item.productName}
         sx={{
           width: { xs: 64, md: 88 },

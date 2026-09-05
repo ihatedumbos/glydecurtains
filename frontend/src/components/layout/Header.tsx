@@ -72,14 +72,16 @@ export default function Header({ categories = [], onLogout }: HeaderProps) {
       <AppBar
         position="sticky"
         color="default"
-        elevation={1}
+        elevation={0}
         sx={{
-          bgcolor: 'background.paper',
+          bgcolor: 'rgba(255, 255, 255, 0.78)',
+          backdropFilter: 'blur(18px)',
+          WebkitBackdropFilter: 'blur(18px)',
           borderBottom: 1,
           borderColor: 'divider',
         }}
       >
-        <Toolbar sx={{ gap: 1, px: { xs: 1, md: 3 } }}>
+        <Toolbar sx={{ gap: 1, px: { xs: 1, md: 3 }, minHeight: { xs: 64, md: 72 } }}>
           {/* Mobile hamburger */}
           {isMobile && (
             <IconButton

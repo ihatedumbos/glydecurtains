@@ -4,6 +4,7 @@ import { motion } from 'framer-motion';
 import WishlistButton from '@/components/product/WishlistButton';
 import QuickViewPopup, { type ProductVariant } from '@/components/product/QuickViewPopup';
 import type { Product } from '@/store/slices/productSlice';
+import { resolveMediaUrl } from '@/utils/mediaUrl';
 
 interface ProductCardProps {
   product: Product;
@@ -115,7 +116,7 @@ export default function ProductCard({ product, variants = [], onAddToCart, onCli
         <CardMedia
           component="img"
           height="220"
-          image={product.thumbnailUrl || '/assets/placeholder-product.png'}
+          image={resolveMediaUrl(product.thumbnailUrl) || '/assets/placeholder-product.png'}
           alt={product.name}
           sx={{ objectFit: 'cover' }}
           loading="lazy"

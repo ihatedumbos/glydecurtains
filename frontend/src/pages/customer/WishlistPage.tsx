@@ -20,6 +20,7 @@ import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import { useWishlist } from '@/hooks/useWishlist';
 import wishlistService from '@/services/wishlistService';
+import { resolveMediaUrl } from '@/utils/mediaUrl';
 
 export default function WishlistPage() {
   const { wishlistItems, loading, fetchWishlist, toggleWishlist } = useWishlist();
@@ -122,7 +123,7 @@ export default function WishlistPage() {
                 <CardMedia
                   component="img"
                   height="200"
-                  image={item.thumbnailUrl || '/placeholder-product.png'}
+                  image={resolveMediaUrl(item.thumbnailUrl) || '/placeholder-product.png'}
                   alt={item.productName}
                   sx={{ objectFit: 'cover' }}
                 />

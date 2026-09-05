@@ -1,67 +1,73 @@
-# Local Development Commands
+# Local Development Guide
 
-Run all commands from PowerShell.
+This repo uses two separate apps in one repository:
+- `backend/` — Spring Boot API
+- `frontend/` — React + Vite storefront/admin client
 
-## First-time setup
+## Prerequisites
 
-```powershell
-cd C:\Users\ihate\IdeaProjects\Personal\GlydeCurtains\glydecurtains\frontend
+- Java 21
+- Maven or Maven wrapper
+- Node.js 20+
+- npm
+
+## Start backend
+
+From the repo root:
+
+```bash
+cd backend
+./mvnw spring-boot:run
+```
+
+The backend listens on:
+- `http://localhost:8080`
+
+## Start frontend
+
+From the repo root:
+
+```bash
+cd frontend
 npm install
-npm approve-scripts esbuild
-```
-
-## Start the application for a full UI preview
-
-Open two PowerShell terminals.
-
-### Terminal 1: Backend with local UI authorization bypass
-
-```powershell
-cd C:\Users\ihate\IdeaProjects\Personal\GlydeCurtains\glydecurtains\backend
-$env:SPRING_PROFILES_ACTIVE = 'local-ui'
-.\mvnw.cmd spring-boot:run
-```
-
-`local-ui` bypasses authentication and permissions only for local visual testing. Never use it in Docker, integration, or production.
-
-### Terminal 2: Frontend
-
-```powershell
-cd C:\Users\ihate\IdeaProjects\Personal\GlydeCurtains\glydecurtains\frontend
 npm run dev
 ```
 
-Open the storefront at http://localhost:5173.
+The frontend listens on:
+- `http://localhost:5173`
 
-## Start with normal security enabled
+## Admin route
 
-Use this backend command when testing login and real permissions:
+Open:
+- `http://localhost:5173/admin`
 
-```powershell
-cd C:\Users\ihate\IdeaProjects\Personal\GlydeCurtains\glydecurtains\backend
-.\mvnw.cmd spring-boot:run
+This redirects to:
+- `http://localhost:5173/admin/dashboard`
+
+## Docker local stack
+
+```bash
+docker-compose up --build
 ```
 
-The local seeded admin account is:
+This starts:
+- backend container on `http://localhost:8080`
+- frontend container on `http://localhost:80`
 
-- Email: `admin@glydecurtains.com`
-- Password: `admin123`
+## Important runtime note
 
-Change this password before any non-local use.
+Authentication is intentionally disabled in the current backend configuration. The security setup currently allows all requests (`permitAll()`) for local development. This is not a production-ready security configuration.
 
-## Verify frontend changes
+## Validate frontend build
 
-```powershell
-cd C:\Users\ihate\IdeaProjects\Personal\GlydeCurtains\glydecurtains\frontend
+```bash
+cd frontend
 npm run build
-npm run lint
 ```
 
-## Check dependency advisories
+## Validate backend build/tests
 
-```powershell
-cd C:\Users\ihate\IdeaProjects\Personal\GlydeCurtains\glydecurtains\frontend
-npm audit
+```bash
+cd backend
+./mvnw test
 ```
-
-Review audit results before running any automatic dependency upgrade.

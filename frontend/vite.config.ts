@@ -17,6 +17,18 @@ export default defineConfig({
         target: 'http://localhost:8080',
         changeOrigin: true,
       },
+      '/products': {
+        target: 'http://localhost:8080',
+        changeOrigin: true,
+      },
+      '/images': {
+        target: 'http://localhost:8080',
+        changeOrigin: true,
+      },
+      '/static': {
+        target: 'http://localhost:8080',
+        changeOrigin: true,
+      },
     },
   },
 });

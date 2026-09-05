@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useAppSelector, useAppDispatch } from '@/store/hooks';
 import { clearCart } from '@/store/slices/cartSlice';
 import axiosInstance from '@/api/axiosInstance';
+import { resolveMediaUrl } from '@/utils/mediaUrl';
 
 type CheckoutStep = 'confirm' | 'placing' | 'success';
 
@@ -103,7 +104,7 @@ export default function CheckoutPage() {
               <div key={item.id} className="p-4 flex items-center gap-4">
                 {item.imageUrl && (
                   <img
-                    src={item.imageUrl}
+                    src={resolveMediaUrl(item.imageUrl)}
                     alt={item.productName}
                     className="w-16 h-16 object-cover rounded"
                   />

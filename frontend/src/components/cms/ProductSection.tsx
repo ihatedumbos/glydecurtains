@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import axiosInstance from '@/api/axiosInstance';
+import { resolveMediaUrl } from '@/utils/mediaUrl';
 
 interface ProductItem {
   id: number;
@@ -133,7 +134,7 @@ export default function ProductSection({ title, sectionType }: ProductSectionPro
                 <div className="relative h-60 overflow-hidden bg-[#eef1f4] p-3">
                   {product.thumbnailUrl ? (
                     <img
-                      src={product.thumbnailUrl}
+                      src={resolveMediaUrl(product.thumbnailUrl)}
                       alt={product.name}
                       className="h-full w-full object-contain transition-transform duration-300 group-hover:scale-105"
                     />

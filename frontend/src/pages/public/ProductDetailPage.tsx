@@ -24,6 +24,7 @@ import {
 } from '@mui/material';
 import Breadcrumb, { BreadcrumbItem } from '@/components/layout/Breadcrumb';
 import axiosInstance from '@/api/axiosInstance';
+import { resolveMediaUrl } from '@/utils/mediaUrl';
 
 // ─── Types ──────────────────────────────────────────────────────────────────
 
@@ -324,8 +325,8 @@ export default function ProductDetailPage() {
   const mainImage = images[selectedImageIndex];
 
   const getImageSrc = (img: ProductImage) => {
-    if (img.base64Data.startsWith('/') || img.base64Data.startsWith('http')) return img.base64Data;
-    if (img.base64Data.startsWith('data:')) return img.base64Data;
+    if (img.base64Data.startsWith('/')) return resolveMediaUrl(img.base64Data);
+    if (img.base64Data.startsWith('http') || img.base64Data.startsWith('data:')) return img.base64Data;
     return `data:${img.mimeType};base64,${img.base64Data}`;
   };
 
@@ -735,7 +736,7 @@ export default function ProductDetailPage() {
 // ─── Product Card sub-component ─────────────────────────────────────────────
 
 function ProductCard({ product }: { product: RelatedProduct }) {
-  const imgSrc = product.thumbnailUrl || '';
+  const imgSrc = resolveMediaUrl(product.thumbnailUrl) || '';
 
   return (
     <Card variant="outlined" sx={{ borderRadius: 2, height: '100%' }}>

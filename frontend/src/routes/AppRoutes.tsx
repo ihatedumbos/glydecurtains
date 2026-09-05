@@ -1,5 +1,5 @@
 import { lazy, Suspense } from 'react';
-import { Routes, Route } from 'react-router-dom';
+import { Routes, Route, Navigate } from 'react-router-dom';
 import ProtectedRoute from '@/routes/ProtectedRoute';
 import AdminRoute from '@/routes/AdminRoute';
 import PageTransition from '@/components/common/PageTransition';
@@ -98,6 +98,7 @@ export default function AppRoutes() {
         {/* ===== Admin/Employee routes ===== */}
         <Route element={<AdminRoute />}>
          <Route element={<AdminLayout />}>
+          <Route path="/admin" element={<Navigate to="/admin/dashboard" replace />} />
           <Route path="/admin/dashboard" element={<DashboardPage />} />
           <Route path="/admin/products" element={<ProductManagementPage />} />
           <Route path="/admin/categories" element={<CategoryManagementPage />} />
@@ -107,6 +108,7 @@ export default function AppRoutes() {
           <Route path="/admin/permissions" element={<PermissionManagementPage />} />
           <Route path="/admin/cms" element={<CmsManagementPage />} />
           <Route path="/admin/site-settings" element={<SiteSettingsPage />} />
+          <Route path="/admin/settings" element={<SiteSettingsPage />} />
           <Route path="/admin/stores" element={<StoreManagementPage />} />
           <Route path="/admin/feedback" element={<FeedbackManagementPage />} />
           <Route path="/admin/achievements" element={<AchievementManagementPage />} />
