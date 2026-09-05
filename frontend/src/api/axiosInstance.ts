@@ -1,4 +1,4 @@
-import axios, { AxiosError, InternalAxiosRequestConfig } from 'axios';
+﻿import axios, { AxiosError, InternalAxiosRequestConfig } from 'axios';
 import { store } from '@/store/store';
 import { setAccessToken, logout } from '@/store/slices/authSlice';
 import { addToast } from '@/store/slices/uiSlice';
@@ -20,12 +20,18 @@ axiosInstance.interceptors.request.use(
     // Attach JWT access token from Redux store
     const { accessToken } = store.getState().auth;
     if (accessToken) {
-      config.headers.Authorization = `Bearer ${accessToken}`;
+      config.headers = {
+        ...config.headers,
+        Authorization: 'Bearer ' + accessToken,
+      } as any;
     }
 
     // Inject Accept-Language header based on current i18n language
     const currentLanguage = i18n.language || 'en';
-    config.headers['Accept-Language'] = currentLanguage;
+    config.headers = {
+      ...config.headers,
+      'Accept-Language': currentLanguage,
+    } as any;
 
     return config;
   },
@@ -75,8 +81,11 @@ axiosInstance.interceptors.response.use(
         return new Promise((resolve, reject) => {
           failedQueue.push({
             resolve: (token) => {
-              if (token) {
-                originalRequest.headers.Authorization = `Bearer ${token}`;
+              if (token && originalRequest.headers) {
+                originalRequest.headers = {
+                  ...originalRequest.headers,
+                  Authorization: 'Bearer ' + token,
+                } as any;
               }
               resolve(axiosInstance(originalRequest));
             },
@@ -107,7 +116,12 @@ axiosInstance.interceptors.response.use(
         processQueue(null, newAccessToken);
 
         // Retry original request with new token
-        originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
+        if (originalRequest.headers) {
+          originalRequest.headers = {
+            ...originalRequest.headers,
+            Authorization: 'Bearer ' + newAccessToken,
+          } as any;
+        }
         return axiosInstance(originalRequest);
       } catch (refreshError) {
         // Refresh failed - clear auth and redirect to login

@@ -40,3 +40,7 @@ app:
 
   cors:
     allowed-origins: ${CORS_ORIGINS:http://localhost:5173}
+
+  security:
+    # Enforce JWT auth by default; opt out only in explicitly local-only dev setups.
+    enable-auth: ${APP_SECURITY_ENABLE_AUTH:true}

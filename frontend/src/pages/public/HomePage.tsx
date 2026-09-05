@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import axiosInstance from '@/api/axiosInstance';
+import { resolveMediaUrl } from '@/utils/mediaUrl';
 import type { HomepageSection, Banner } from '@/store/slices/cmsSlice';
 import {
   ScrollingTicker,
@@ -186,7 +187,7 @@ export default function HomePage() {
               <div className="relative">
                 <div className="overflow-hidden rounded-[28px] border border-white/15 bg-white/10 p-3 shadow-[0_35px_80px_rgba(15,23,42,0.45)] backdrop-blur-sm">
                   <img
-                    src="/assets/logo/poster.png"
+                    src={resolveMediaUrl('/assets/logo/poster.png')}
                     alt="Glyde Curtains premium collection"
                     className="h-[420px] w-full rounded-[20px] object-cover"
                   />

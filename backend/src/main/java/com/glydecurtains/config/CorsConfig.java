@@ -19,9 +19,22 @@ public class CorsConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(Arrays.asList(allowedOrigins.split(",")));
+
+        // Support comma-separated list or wildcard pattern
+        List<String> origins = Arrays.stream(allowedOrigins.split(","))
+                .map(String::trim)
+                .filter(s -> !s.isEmpty())
+                .toList();
+
+        if (origins.size() == 1 && "*".equals(origins.get(0))) {
+            // Allow all origins via pattern while still allowing credentials
+            configuration.setAllowedOriginPatterns(List.of("*"));
+        } else {
+            configuration.setAllowedOrigins(origins);
+        }
+
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"));
-        configuration.setAllowedHeaders(List.of("*"));
+        configuration.setAllowedHeaders(List.of("*") );
         configuration.setExposedHeaders(Arrays.asList("Authorization", "Content-Type"));
         configuration.setAllowCredentials(true);
         configuration.setMaxAge(3600L);

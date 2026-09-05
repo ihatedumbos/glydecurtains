@@ -1,20 +1,31 @@
 export function resolveMediaUrl(url?: string | null): string {
   if (!url) return '';
 
+  const normalizedUrl = url.trim();
+
   if (
-    url.startsWith('data:') ||
-    url.startsWith('http://') ||
-    url.startsWith('https://') ||
-    url.startsWith('blob:') ||
-    url.startsWith('blob')
+    normalizedUrl.startsWith('data:') ||
+    normalizedUrl.startsWith('http://') ||
+    normalizedUrl.startsWith('https://') ||
+    normalizedUrl.startsWith('blob:') ||
+    normalizedUrl.startsWith('blob')
   ) {
-    return url;
+    return normalizedUrl;
   }
 
-  if (url.startsWith('/')) {
-    const backendUrl = (import.meta.env.VITE_BACKEND_URL || 'http://localhost:8080').replace(/\/$/, '');
-    return `${backendUrl}${url}`;
+  const backendUrl = (import.meta.env.VITE_BACKEND_URL || import.meta.env.VITE_API_BASE_URL || 'http://localhost:8080').replace(/\/$/, '');
+
+  if (normalizedUrl.startsWith('/')) {
+    return `${backendUrl}${normalizedUrl}`;
   }
 
-  return url;
+  const relativePath = normalizedUrl.startsWith('products/') || normalizedUrl.startsWith('images/') || normalizedUrl.startsWith('static/') || normalizedUrl.startsWith('assets/')
+    ? `/${normalizedUrl}`
+    : normalizedUrl;
+
+  if (relativePath.startsWith('/')) {
+    return `${backendUrl}${relativePath}`;
+  }
+
+  return relativePath;
 }

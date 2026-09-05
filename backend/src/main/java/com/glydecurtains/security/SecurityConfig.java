@@ -1,5 +1,6 @@
 package com.glydecurtains.security;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -22,12 +23,18 @@ public class SecurityConfig {
 
     private final CorsConfigurationSource corsConfigurationSource;
     private final RateLimitFilter rateLimitFilter;
+    private final JwtAuthenticationFilter jwtAuthenticationFilter;
 
     public SecurityConfig(CorsConfigurationSource corsConfigurationSource,
-                          RateLimitFilter rateLimitFilter) {
+                          RateLimitFilter rateLimitFilter,
+                          JwtAuthenticationFilter jwtAuthenticationFilter) {
         this.corsConfigurationSource = corsConfigurationSource;
         this.rateLimitFilter = rateLimitFilter;
+        this.jwtAuthenticationFilter = jwtAuthenticationFilter;
     }
+
+    @Value("${app.security.enable-auth:true}")
+    private boolean enableAuth;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -35,9 +42,6 @@ public class SecurityConfig {
                 .cors(cors -> cors.configurationSource(corsConfigurationSource))
                 .csrf(csrf -> csrf.disable())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                // Authentication is intentionally disabled while the application is in development.
-                // Reinstate explicit request matchers and JWT authentication before a production release.
-                .authorizeHttpRequests(auth -> auth.anyRequest().permitAll())
                 .headers(headers -> headers
                         .frameOptions(frame -> frame.sameOrigin())
                         .contentTypeOptions(contentType -> {})
@@ -49,8 +53,22 @@ public class SecurityConfig {
                         .contentSecurityPolicy(csp -> csp
                                 .policyDirectives("default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; frame-ancestors 'self'")
                         )
-                )
-                .addFilterBefore(rateLimitFilter, UsernamePasswordAuthenticationFilter.class);
+                );
+
+        // Rate limiter should always run
+        http.addFilterBefore(rateLimitFilter, UsernamePasswordAuthenticationFilter.class);
+
+        if (enableAuth) {
+            // Enforce JWT authentication in production-like environments
+            http.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
+                    .authorizeHttpRequests(auth -> auth
+                            .requestMatchers("/api/auth/**", "/h2-console/**", "/api/products/public/**", "/api/categories/public/**", "/api/stores/public/**", "/api/feedback/public/**", "/api/achievements/public/**", "/api/enquiries/public/**", "/api/cms/public/**", "/api/pages/**").permitAll()
+                            .anyRequest().authenticated()
+                    );
+        } else {
+            // Development mode - allow all requests (existing behavior)
+            http.authorizeHttpRequests(auth -> auth.anyRequest().permitAll());
+        }
 
         return http.build();
     }

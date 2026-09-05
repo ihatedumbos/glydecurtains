@@ -19,6 +19,7 @@ import { Visibility, VisibilityOff } from '@mui/icons-material';
 import { useAppDispatch, useAppSelector } from '@/store/hooks';
 import { setCredentials, setLoading, setError } from '@/store/slices/authSlice';
 import axiosInstance from '@/api/axiosInstance';
+import Logo from '@/components/layout/Logo';
 
 interface LoginFormData {
   email: string;
@@ -147,18 +148,10 @@ export default function LoginPage() {
         <CardContent sx={{ p: { xs: 3, sm: 4 } }}>
           {/* Logo */}
           <Box sx={{ display: 'flex', justifyContent: 'center', mb: 3 }}>
-            <Box
-              component="img"
-              src="/assets/logo/logo.jpg"
-              alt="Glyde Curtains"
-              sx={{
-                height: { xs: 80, sm: 100, md: 120 },
-                width: 'auto',
-                objectFit: 'contain',
-                borderRadius: 2,
-                filter: 'drop-shadow(0 2px 8px rgba(17, 24, 39, 0.08))',
-              }}
-            />
+            {/* Use central Logo component which prefers CMS/backend-hosted images */}
+            <Box sx={{ display: 'flex', justifyContent: 'center' }}>
+              <Logo variant="header" size="lg" />
+            </Box>
           </Box>
 
           {/* Title */}
