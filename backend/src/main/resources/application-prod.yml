@@ -8,21 +8,28 @@ server:
         same-site: strict
 
 spring:
-  h2:
-    console:
-      enabled: false
+datasource:
+  url: ${SPRING_DATASOURCE_URL:jdbc:h2:file:./data/glydecurtains-prod;MODE=MySQL;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE}
+  driver-class-name: ${SPRING_DATASOURCE_DRIVER_CLASS_NAME:org.h2.Driver}
+  username: ${SPRING_DATASOURCE_USERNAME:sa}
+  password: ${SPRING_DATASOURCE_PASSWORD:}
 
-  jpa:
-    show-sql: false
-    hibernate:
-      ddl-auto: validate
+h2:
+  console:
+    enabled: false
+
+jpa:
+  show-sql: false
+  hibernate:
+    ddl-auto: ${SPRING_JPA_HIBERNATE_DDL_AUTO:update}
 
 app:
-  cors:
-    allowed-origins: https://glydecurtains.com,https://www.glydecurtains.com
-  seed-data: false
+cors:
+  allowed-origins: https://glydecurtains.com,https://www.glydecurtains.com
+seed-data: false
+
 logging:
-  level:
-    root: WARN
-    com.glydecurtains: WARN
-    org.springframework.security: WARN
+level:
+  root: WARN
+  com.glydecurtains: WARN
+  org.springframework.security: WARN
