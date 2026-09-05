@@ -134,7 +134,6 @@ class ImageServiceTest {
             MultipartFile file = mock(MultipartFile.class);
             when(file.isEmpty()).thenReturn(false);
             when(file.getContentType()).thenReturn("image/gif");
-            when(file.getSize()).thenReturn(1024L);
 
             assertThatThrownBy(() -> imageService.uploadImage(file, ENTITY_TYPE, ENTITY_ID))
                     .isInstanceOf(BusinessException.class)
