@@ -5,6 +5,7 @@ import AdminRoute from '@/routes/AdminRoute';
 import PageTransition from '@/components/common/PageTransition';
 import { PageSkeleton } from '@/components/common/SkeletonLoader';
 import AdminLayout from '@/components/layout/AdminLayout';
+import MainLayout from '@/components/layout/MainLayout';
 
 // ---------- Public pages (lazy) ----------
 const HomePage = lazy(() => import('@/pages/public/HomePage'));
@@ -62,6 +63,7 @@ export default function AppRoutes() {
     <Suspense fallback={<PageSkeleton />}>
       <PageTransition>
         <Routes>
+        <Route element={<MainLayout />}>
         {/* ===== Public routes ===== */}
         <Route path="/" element={<HomePage />} />
         <Route path="/products" element={<ProductListPage />} />
@@ -90,6 +92,7 @@ export default function AppRoutes() {
           <Route path="/profile" element={<ProfilePage />} />
           <Route path="/change-password" element={<ChangePasswordPage />} />
           <Route path="/feedback" element={<FeedbackPage />} />
+        </Route>
         </Route>
 
         {/* ===== Admin/Employee routes ===== */}

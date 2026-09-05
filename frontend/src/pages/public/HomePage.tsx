@@ -148,12 +148,22 @@ export default function HomePage() {
 
       {/* Fallback: if no sections configured, show default layout */}
       {enabledSections.length === 0 && (
-        <div className="py-20 text-center">
-          <h1 className="text-4xl font-bold mb-4">Welcome to Glyde Curtains</h1>
-          <p className="text-gray-600 dark:text-gray-400 text-lg max-w-xl mx-auto">
-            Discover premium curtains, blinds, and accessories that transform your living spaces.
-          </p>
-        </div>
+        <>
+          <section className="border-b border-slate-200 bg-white px-4 py-16 md:px-8 md:py-24">
+            <div className="mx-auto max-w-3xl text-center">
+              <p className="mb-3 text-sm font-semibold uppercase tracking-[0.18em] text-slate-500">Glyde Curtains</p>
+              <h1 className="text-4xl font-semibold tracking-tight text-slate-900 md:text-5xl">Curtain hardware, made simple.</h1>
+              <p className="mx-auto mt-5 max-w-2xl text-base leading-7 text-slate-600 md:text-lg">
+                Browse dependable runners, fittings, end caps and tapes for a clean, smooth curtain installation.
+              </p>
+              <a href="/products" className="mt-8 inline-flex rounded-md bg-slate-900 px-5 py-3 text-sm font-semibold text-white hover:bg-slate-700">
+                Shop accessories
+              </a>
+            </div>
+          </section>
+          <PopularCategories title="Shop by category" />
+          <ProductSection title="Popular accessories" sectionType="FEATURED" />
+        </>
       )}
     </motion.div>
   );
