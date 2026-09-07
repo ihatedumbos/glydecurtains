@@ -41,7 +41,7 @@ export default function CartItemRow({ item, onQuantityChange, onRemove, disabled
       {/* Product image */}
       <Box
         component="img"
-        src={resolveMediaUrl(item.imageUrl) || '/assets/placeholder-product.png'}
+        src={resolveMediaUrl(item.imageUrl) || '/assets/logo/poster.png'}
         alt={item.productName}
         sx={{
           width: { xs: 64, md: 88 },

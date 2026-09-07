@@ -123,7 +123,7 @@ export default function WishlistPage() {
                 <CardMedia
                   component="img"
                   height="200"
-                  image={resolveMediaUrl(item.thumbnailUrl) || '/placeholder-product.png'}
+                  image={resolveMediaUrl(item.thumbnailUrl) || '/assets/logo/poster.png'}
                   alt={item.productName}
                   sx={{ objectFit: 'cover' }}
                 />

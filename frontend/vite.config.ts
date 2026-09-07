@@ -10,6 +10,13 @@ export default defineConfig({
       '@': fileURLToPath(new URL('./src', import.meta.url)),
     },
   },
+  build: {
+    // Vite's default build output dir is "assets", which collides with
+    // the "/assets/**" path nginx proxies to the backend for CMS-hosted
+    // static files (logo/poster). Rename it so the app's own JS/CSS
+    // bundle doesn't get routed to the backend.
+    assetsDir: 'app-assets',
+  },
   server: {
     port: 5173,
     proxy: {
@@ -26,6 +33,10 @@ export default defineConfig({
         changeOrigin: true,
       },
       '/static': {
+        target: 'http://localhost:8080',
+        changeOrigin: true,
+      },
+      '/assets': {
         target: 'http://localhost:8080',
         changeOrigin: true,
       },

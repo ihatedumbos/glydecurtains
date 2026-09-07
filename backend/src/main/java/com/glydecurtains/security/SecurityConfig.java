@@ -62,7 +62,8 @@ public class SecurityConfig {
             // Enforce JWT authentication in production-like environments
             http.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
                     .authorizeHttpRequests(auth -> auth
-                            .requestMatchers("/api/auth/**", "/h2-console/**", "/api/products/public/**", "/api/categories/public/**", "/api/stores/public/**", "/api/feedback/public/**", "/api/achievements/public/**", "/api/enquiries/public/**", "/api/cms/public/**", "/api/pages/**").permitAll()
+                            .requestMatchers("/api/auth/**", "/api/health", "/h2-console/**", "/api/products/public/**", "/api/categories/public/**", "/api/stores/public/**", "/api/feedback/public/**", "/api/achievements/public/**", "/api/enquiries/public/**", "/api/cms/public/**", "/api/pages/**").permitAll()
+                            .requestMatchers(HttpMethod.GET, "/api/images/**").permitAll()
                             .anyRequest().authenticated()
                     );
         } else {
