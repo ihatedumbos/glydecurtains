@@ -14,6 +14,7 @@ import {
   AchievementsSection,
   NewsletterSection,
 } from '@/components/cms';
+import TrustBar from '@/components/home/TrustBar';
 
 type ProductSectionType =
   | 'FEATURED'
@@ -33,6 +34,7 @@ const PRODUCT_SECTION_TYPES: string[] = [
 ];
 
 const PRIORITY_SECTION_TYPES: string[] = [
+  'HERO_BANNER',
   'POPULAR_CATEGORIES',
   'FEATURED',
   'RECENTLY_ADDED',
@@ -43,19 +45,30 @@ export default function HomePage() {
   const [banners, setBanners] = useState<Banner[]>([]);
   const [tickerImages, setTickerImages] = useState<string[]>([]);
   const [loading, setLoading] = useState(true);
+  const [cmsLoadFailed, setCmsLoadFailed] = useState(false);
+  const [retryToken, setRetryToken] = useState(0);
 
   useEffect(() => {
+    let cancelled = false;
+    setLoading(true);
+
     const fetchCmsData = async () => {
       try {
         const sectionsRes = await axiosInstance.get('/cms/public/sections');
         const sectionsData = sectionsRes.data?.data || sectionsRes.data || [];
 
+        if (cancelled) return;
         setSections(sectionsData);
         setBanners(sectionsData.flatMap((section: HomepageSection & { banners?: Banner[] }) => section.banners || []));
+        setCmsLoadFailed(false);
       } catch {
-        // Graceful fallback — render with empty data
+        // Genuine failure (network/server error) vs. a legitimately empty
+        // configuration - tracked separately so we can offer a retry instead
+        // of silently rendering a thinner page with no explanation.
+        if (cancelled) return;
         setSections([]);
         setBanners([]);
+        setCmsLoadFailed(true);
       }
     };
 
@@ -66,16 +79,20 @@ export default function HomePage() {
         const images = products
           .map((product: { thumbnailUrl?: string }) => product.thumbnailUrl)
           .filter((url: string | undefined): url is string => Boolean(url));
-        setTickerImages(images.slice(0, 3));
+        if (!cancelled) setTickerImages(images.slice(0, 3));
       } catch {
-        setTickerImages([]);
+        if (!cancelled) setTickerImages([]);
       }
     };
 
     Promise.allSettled([fetchCmsData(), fetchTickerImages()]).finally(() => {
-      setLoading(false);
+      if (!cancelled) setLoading(false);
     });
-  }, []);
+
+    return () => {
+      cancelled = true;
+    };
+  }, [retryToken]);
 
   // Keep the homepage concise and easier to browse.
   const enabledSections = sections
@@ -90,8 +107,10 @@ export default function HomePage() {
   const getBannersForSection = (sectionId: number) =>
     banners.filter((b) => b.sectionId === sectionId);
 
-  // Get ticker section config
-  const tickerSection = enabledSections.find((s) => s.sectionType === 'SCROLLING_TICKER');
+  // Get ticker section config. Looked up from the unfiltered, enabled section
+  // list rather than `enabledSections` (which only carries PRIORITY_SECTION_TYPES) -
+  // the ticker renders separately at the top regardless of that priority filter.
+  const tickerSection = sections.find((s) => s.isEnabled && s.sectionType === 'SCROLLING_TICKER');
   const fallbackTickerImages = tickerImages.length > 0
     ? tickerImages
     : ['/assets/logo/poster.png', '/assets/logo/poster.png', '/assets/logo/poster.png'];
@@ -155,6 +174,19 @@ export default function HomePage() {
       transition={{ duration: 0.3 }}
       className="min-h-screen"
     >
+      {cmsLoadFailed && (
+        <div className="flex flex-wrap items-center justify-center gap-3 bg-amber-50 px-4 py-2 text-center text-sm text-amber-900">
+          <span>Some homepage content couldn&apos;t load.</span>
+          <button
+            type="button"
+            onClick={() => setRetryToken((n) => n + 1)}
+            className="font-semibold underline underline-offset-2 hover:text-amber-950"
+          >
+            Try again
+          </button>
+        </div>
+      )}
+
       {/* Scrolling Ticker at the very top */}
       {(tickerSection || fallbackTickerImages.length > 0) && (
         <ScrollingTicker
@@ -167,37 +199,37 @@ export default function HomePage() {
       {/* Render all sections in CMS sort order */}
       {enabledSections.map((section) => renderSection(section))}
 
-      {/* Fallback: if no sections configured, show a compact royal-blue layout */}
+      {/* Trust module: real store network + trade/bulk-buyer entry point */}
+      {enabledSections.length > 0 && <TrustBar />}
+
+      {/* Fallback: if no sections configured, show a compact version of the workshop world */}
       {enabledSections.length === 0 && (
         <>
-          <section
-            className="relative overflow-hidden px-4 py-14 text-white md:px-8 md:py-16"
-            style={{
-              background:
-                'radial-gradient(circle at top, rgba(96,165,250,0.38), rgba(13,26,77,0.98) 38%, rgba(2,6,23,1) 100%)',
-            }}
-          >
+          <section className="relative overflow-hidden bg-[#f4ede1] px-4 py-14 md:px-8 md:py-16">
             <div className="mx-auto grid max-w-6xl items-center gap-8 md:grid-cols-[1.1fr_0.9fr]">
               <div>
-                <p className="mb-3 text-xs font-semibold uppercase tracking-[0.22em] text-blue-200">
-                  Glyde Curtains • Premium Home Styling
+                <p
+                  className="mb-3 text-2xl text-[#a06b3a]"
+                  style={{ fontFamily: 'var(--font-annotation)' }}
+                >
+                  Cut to fit, since day one.
                 </p>
-                <h1 className="max-w-2xl text-4xl font-semibold leading-tight tracking-tight md:text-5xl">
-                  Beautiful curtains, hardware, and finishing touches for every room.
+                <h1 className="max-w-2xl font-display text-4xl leading-[1.08] text-[#2c2c2c] md:text-5xl">
+                  Curtain track runners and fittings, made by us, backed by real stores.
                 </h1>
-                <p className="mt-5 max-w-xl text-base leading-7 text-blue-100 md:text-lg">
-                  Discover elegant curtain styles, practical accessories, and designer-led essentials that blend function and comfort.
+                <p className="mt-5 max-w-xl text-base leading-7 text-[#6b5d52] md:text-lg">
+                  Precision hardware for every home, plus direct bulk pricing for installers and dealers.
                 </p>
                 <div className="mt-8 flex flex-wrap gap-3">
                   <a
                     href="/products"
-                    className="inline-flex rounded-xl bg-white px-5 py-3 text-sm font-semibold text-blue-900 transition-colors hover:bg-blue-50"
+                    className="inline-flex rounded-sm bg-[#a06b3a] px-5 py-3 text-sm font-semibold text-white transition-colors hover:bg-[#7a4f28]"
                   >
                     Shop now
                   </a>
                   <a
                     href="/about"
-                    className="inline-flex rounded-xl border border-white/20 bg-white/5 px-5 py-3 text-sm font-semibold text-white transition-colors hover:bg-white/10"
+                    className="inline-flex rounded-sm border border-[#2c2c2c]/20 px-5 py-3 text-sm font-semibold text-[#2c2c2c] transition-colors hover:bg-[#2c2c2c]/5"
                   >
                     About us
                   </a>
@@ -205,11 +237,11 @@ export default function HomePage() {
               </div>
 
               <div className="relative">
-                <div className="overflow-hidden rounded-[28px] border border-white/15 bg-white/10 p-3 shadow-[0_35px_80px_rgba(37,99,235,0.35)] backdrop-blur-sm">
+                <div className="overflow-hidden rounded-sm border border-[#2c2c2c]/15 bg-[#faf5ea] p-3 shadow-[0_2px_10px_rgba(44,34,24,0.12)]">
                   <img
                     src={resolveMediaUrl('/assets/logo/poster.png')}
-                    alt="Glyde Curtains premium collection"
-                    className="h-[330px] w-full rounded-[20px] object-cover"
+                    alt="Glyde Curtains hardware collection"
+                    className="h-[330px] w-full rounded-[2px] object-cover"
                   />
                 </div>
               </div>
@@ -217,6 +249,7 @@ export default function HomePage() {
           </section>
           <ProductSection title="Featured Products" sectionType="FEATURED" />
           <ProductSection title="Recently Added" sectionType="RECENTLY_ADDED" />
+          <TrustBar />
         </>
       )}
     </motion.div>

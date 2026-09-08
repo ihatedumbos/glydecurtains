@@ -615,10 +615,12 @@ public class DataSeeder implements CommandLineRunner {
         createSection(SectionType.FOOTER, "Footer", order);
 
         // Add a compact set of hero banners to keep the homepage polished and short.
-        addBanner(hero, "Transform Your Space", "Premium curtains crafted for elegance and comfort",
-                SAMPLE_BANNER_IMAGE, "Shop Now", "/products", 1);
-        addBanner(hero, "New Collection Arrived", "Discover our latest designer curtain range",
-                SAMPLE_BANNER_IMAGE, "Explore", "/products?filter=new", 2);
+        // Images are paths to real seeded catalogue photos (not placeholder base64),
+        // resolved by the frontend the same way product images are.
+        addBanner(hero, "Manufacturer-Direct Curtain Hardware", "Precision track runners and fittings, backed by real Glyde stores",
+                "/products/accessories/SilentRunner/IMG_20260624_143142.jpg", "Shop Now", "/products", 1);
+        addBanner(hero, "Bulk Pricing for Trade & Installers", "Direct sourcing and support for dealers restocking hardware",
+                "/products/accessories/JumboRunner/IMG_20260624_143046.jpg", "Contact Us", "/contact", 2);
 
         log.info("Homepage sections and banners seeded with a compact storefront layout.");
     }

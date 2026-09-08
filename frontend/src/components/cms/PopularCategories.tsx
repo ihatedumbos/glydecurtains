@@ -61,17 +61,17 @@ export default function PopularCategories({ title }: PopularCategoriesProps) {
   };
 
   return (
-    <section className="py-12 px-4 md:px-8 bg-gradient-to-b from-blue-50 via-white to-blue-50">
-      <div className="max-w-7xl mx-auto">
+    <section className="bg-[#f4ede1] px-4 py-12 md:px-8">
+      <div className="mx-auto max-w-7xl">
         <motion.h2
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          className="text-2xl md:text-3xl font-bold mb-8 text-center text-blue-950"
+          className="mb-8 text-center font-display text-2xl text-[#2c2c2c] md:text-3xl"
         >
           {title || 'Popular Categories'}
         </motion.h2>
-        <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-6">
+        <div className="grid grid-cols-2 gap-6 md:grid-cols-4 lg:grid-cols-5">
           {categories.map((cat, idx) => {
             const categoryImage = getCategoryImageSrc(cat.imageBase64 || cat.iconBase64);
 
@@ -85,22 +85,22 @@ export default function PopularCategories({ title }: PopularCategoriesProps) {
               >
                 <Link
                   to={`/products?categoryId=${cat.id}`}
-                  className="flex flex-col items-center text-center group"
+                  className="group flex flex-col items-center text-center"
                 >
-                  <div className="w-28 h-28 rounded-[26px] bg-gradient-to-br from-blue-100 via-white to-blue-50 shadow-[0_12px_30px_rgba(37,99,235,0.12)] flex items-center justify-center overflow-hidden group-hover:shadow-[0_18px_36px_rgba(37,99,235,0.18)] transition-shadow border border-blue-100 group-hover:border-blue-200">
+                  <div className="flex h-28 w-28 items-center justify-center overflow-hidden rounded-full border-[1.5px] border-dashed border-[#a06b3a]/45 bg-[#faf5ea] shadow-[0_1px_2px_rgba(44,34,24,0.08)] transition-colors group-hover:border-[#a06b3a]">
                     {categoryImage ? (
                       <img
                         src={categoryImage}
                         alt={cat.name}
-                        className="w-full h-full object-cover"
+                        className="h-full w-full object-cover"
                       />
                     ) : (
-                      <div className="flex h-full w-full items-center justify-center bg-gradient-to-br from-blue-600 to-indigo-700 text-3xl text-white">
+                      <div className="flex h-full w-full items-center justify-center text-3xl font-display text-[#a06b3a]">
                         {cat.name.charAt(0).toUpperCase()}
                       </div>
                     )}
                   </div>
-                  <span className="mt-3 text-sm font-semibold text-blue-900 group-hover:text-blue-700 transition-colors">
+                  <span className="mt-3 text-sm font-semibold text-[#2c2c2c] transition-colors group-hover:text-[#a06b3a]">
                     {cat.name}
                   </span>
                 </Link>

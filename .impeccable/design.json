@@ -1,0 +1,117 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-09-09T00:00:00Z",
+  "title": "Design System: Glyde Curtains",
+  "extensions": {
+    "colorMeta": {
+      "signal-blue": { "role": "primary", "displayName": "Signal Blue", "canonical": "#0f4fe6", "tonalRamp": ["#0a1e5e", "#0b2e8a", "#0f4fe6", "#3766ec", "#5c8aff", "#8aa8ff", "#b8c8ff", "#e6ecff"] },
+      "signal-blue-light": { "role": "primary", "displayName": "Signal Blue Light", "canonical": "#5c8aff" },
+      "signal-blue-dark": { "role": "primary", "displayName": "Signal Blue Dark", "canonical": "#0b2e8a" },
+      "ledger-navy": { "role": "secondary", "displayName": "Ledger Navy", "canonical": "#1e3a8a", "tonalRamp": ["#0c1a3d", "#132968", "#1e3a8a", "#2e51ab", "#5578c9", "#8aa4de", "#c0d1f0", "#eaf0fb"] },
+      "pale-sky": { "role": "secondary", "displayName": "Pale Sky", "canonical": "#dbeafe" },
+      "ink-navy": { "role": "neutral", "displayName": "Ink Navy", "canonical": "#0f172a", "tonalRamp": ["#05070d", "#0f172a", "#1e293b", "#334155", "#475569", "#64748b", "#94a3b8", "#cbd5e1"] },
+      "slate-gray": { "role": "neutral", "displayName": "Slate Gray", "canonical": "#475569" },
+      "frost-bg": { "role": "neutral", "displayName": "Frost Background", "canonical": "#f4f8ff", "tonalRamp": ["#dfe9ff", "#e6efff", "#eef5ff", "#f2f7ff", "#f4f8ff", "#f7faff", "#fafcff", "#ffffff"] },
+      "paper-white": { "role": "neutral", "displayName": "Paper White", "canonical": "#ffffff" },
+      "hairline-blue": { "role": "neutral", "displayName": "Hairline Blue", "canonical": "#dfe7ff" },
+      "confirm-green": { "role": "semantic", "displayName": "Confirm Green", "canonical": "#16a34a" },
+      "alert-amber": { "role": "semantic", "displayName": "Alert Amber", "canonical": "#f59e0b" },
+      "stop-red": { "role": "semantic", "displayName": "Stop Red", "canonical": "#dc2626" },
+      "info-blue": { "role": "semantic", "displayName": "Info Blue", "canonical": "#2563eb" }
+    },
+    "typographyMeta": {
+      "display": { "displayName": "Display / H1-H3", "purpose": "Page and section headlines; bold, tight-tracked Inter." },
+      "title": { "displayName": "Title / H5-H6", "purpose": "Card titles, dialog titles, panel headers." },
+      "body": { "displayName": "Body", "purpose": "Default copy; relaxed 1.6 line-height for readability." },
+      "label": { "displayName": "Label", "purpose": "Button and form label text; never uppercase-transformed." }
+    },
+    "shadows": [
+      { "name": "ambient-soft", "value": "0 1px 2px rgba(15, 23, 42, 0.06)", "purpose": "Resting-state ambient shadow for subtle surfaces." },
+      { "name": "ambient-elevated", "value": "0 4px 12px rgba(15, 23, 42, 0.08)", "purpose": "Slightly raised resting surfaces." },
+      { "name": "appbar-resting", "value": "0 8px 24px rgba(29, 78, 216, 0.08)", "purpose": "AppBar resting shadow, tinted signal-blue." },
+      { "name": "card-resting", "value": "0 12px 36px rgba(37, 99, 235, 0.08)", "purpose": "Generic MuiCard resting shadow." },
+      { "name": "card-hover-lift", "value": "0 12px 40px rgba(0,0,0,0.12), 0 0 20px rgba(99,102,241,0.08)", "purpose": "Product card hover: dark ambient shadow plus signal-blue glow, paired with a 6px lift." }
+    ],
+    "motion": [
+      { "name": "fade-rise-in", "value": "opacity 0 -> 1, translateY 20px -> 0, 0.3s ease", "purpose": "Framer Motion entrance for cards/grid content on mount." },
+      { "name": "card-lift-transition", "value": "transform 0.3s ease, box-shadow 0.3s ease", "purpose": "Product card hover lift + shadow transition." }
+    ],
+    "breakpoints": [
+      { "name": "mobile", "value": "<768px" },
+      { "name": "tablet", "value": "768px" },
+      { "name": "laptop", "value": "992px" },
+      { "name": "desktop", "value": "1200px" },
+      { "name": "wide", "value": "1400px" }
+    ]
+  },
+  "components": [
+    {
+      "name": "Primary Button",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "Filled gradient primary action button; no default shadow, weight-based emphasis.",
+      "html": "<button class=\"ds-btn-primary\">Add to Cart</button>",
+      "css": ".ds-btn-primary { background: linear-gradient(135deg, #1d4ed8 0%, #2563eb 100%); color: #ffffff; font-weight: 600; letter-spacing: 0.01em; padding: 10px 24px; border: none; border-radius: 12px; cursor: pointer; transition: background 0.2s ease; } .ds-btn-primary:hover { background: linear-gradient(135deg, #1e40af 0%, #1d4ed8 100%); } .ds-btn-primary:focus-visible { outline: 3px solid rgba(37,99,235,0.35); outline-offset: 2px; }"
+    },
+    {
+      "name": "Product Card",
+      "kind": "card",
+      "refersTo": "card-product",
+      "description": "Hover-responsive product card: flat at rest, lifts with a dual ambient+glow shadow on hover.",
+      "html": "<div class=\"ds-card-product\"><div class=\"ds-card-badge\">-20%</div><div class=\"ds-card-media\"></div><div class=\"ds-card-body\"><div class=\"ds-card-title\">Jumbo Runner</div><div class=\"ds-card-price\">₹549.00</div></div></div>",
+      "css": ".ds-card-product { position: relative; background: #ffffff; border-radius: 16px; overflow: hidden; cursor: pointer; transition: transform 0.3s ease, box-shadow 0.3s ease; box-shadow: 0 12px 36px rgba(37,99,235,0.08); border: 1px solid rgba(96,165,250,0.18); } .ds-card-product:hover { transform: translateY(-6px); box-shadow: 0 12px 40px rgba(0,0,0,0.12), 0 0 20px rgba(99,102,241,0.08); } .ds-card-badge { position: absolute; top: 8px; left: 8px; z-index: 2; background: #dc2626; color: #fff; font-weight: 600; font-size: 12px; padding: 2px 8px; border-radius: 999px; } .ds-card-media { aspect-ratio: 1; background: #f4f8ff; } .ds-card-body { padding: 16px; } .ds-card-title { font-family: 'Inter', system-ui, sans-serif; font-weight: 600; color: #0f172a; margin-bottom: 4px; } .ds-card-price { font-family: 'Inter', system-ui, sans-serif; font-weight: 700; color: #0f4fe6; }"
+    },
+    {
+      "name": "Text Input",
+      "kind": "input",
+      "refersTo": "input-default",
+      "description": "Standard text field: white background, blue-tinted border, soft focus glow.",
+      "html": "<input class=\"ds-input\" type=\"text\" placeholder=\"Search products\" />",
+      "css": ".ds-input { background: #ffffff; border: 1px solid #cbd5e1; border-radius: 12px; padding: 10px 14px; font: 400 1rem 'Inter', system-ui, sans-serif; color: #0f172a; transition: border-color 0.2s ease, box-shadow 0.2s ease; } .ds-input:focus { border-color: #64748b; box-shadow: 0 0 0 3px rgba(100,116,139,0.12); outline: none; }"
+    },
+    {
+      "name": "Discount Chip",
+      "kind": "chip",
+      "refersTo": "chip-semantic",
+      "description": "Small filled semantic-colored chip; used for discount badges and status labels.",
+      "html": "<span class=\"ds-chip-error\">-20%</span>",
+      "css": ".ds-chip-error { display: inline-flex; align-items: center; background: #dc2626; color: #ffffff; font-weight: 600; font-size: 12px; line-height: 1; padding: 4px 10px; border-radius: 999px; }"
+    },
+    {
+      "name": "App Navigation Bar",
+      "kind": "nav",
+      "refersTo": "appbar-default",
+      "description": "White top nav bar with ink-navy text and a resting shadow tinted signal-blue.",
+      "html": "<header class=\"ds-appbar\"><div class=\"ds-appbar-logo\">GLYDE</div><nav class=\"ds-appbar-links\"><a href=\"#\">Products</a><a href=\"#\">Stores</a></nav></header>",
+      "css": ".ds-appbar { display: flex; align-items: center; justify-content: space-between; background: #ffffff; color: #0f172a; padding: 12px 24px; box-shadow: 0 8px 24px rgba(29,78,216,0.08); font-family: 'Inter', system-ui, sans-serif; } .ds-appbar-logo { font-weight: 700; letter-spacing: -0.02em; color: #0f4fe6; } .ds-appbar-links { display: flex; gap: 24px; } .ds-appbar-links a { color: #0f172a; font-weight: 600; text-decoration: none; } .ds-appbar-links a:hover { color: #0f4fe6; }"
+    }
+  ],
+  "narrative": {
+    "northStar": "By Ashish",
+    "overview": "Glyde Curtains sells its own curtain hardware direct to homeowners and trade buyers, backed by a real physical store network - the visual system's job is to read as precise, confident, and personally accountable, the way a manufacturer who stands behind their own product should. It is not trying to be a boutique fabric-and-drapery brand; it is a clean, blue-anchored, engineering-adjacent storefront where trust is communicated through consistency and restraint rather than ornament. The system is deliberately unfussy: one saturated signal-blue accent, white paper surfaces, soft ambient shadows at rest, and a single confident lift-plus-glow response on hover. Motion is used sparingly and purposefully (fade-and-rise entrances, a hover lift) rather than for decoration. This is the incumbent, committed identity of a live business - extend it, don't reinvent it.",
+    "keyCharacteristics": [
+      "Deep signal-blue (#0f4fe6) as the one recurring accent, carried mostly through gradient buttons and interactive states, not as a background wash.",
+      "Paper-white cards on a faint frost-blue page background (#f4f8ff), never fully white behind the fold.",
+      "Bold, tight-tracked Inter headlines (-0.02em letter-spacing, weight 700) against slate-gray body copy.",
+      "12px rounding as the system default; product cards go slightly rounder (16px) to feel more tactile.",
+      "Flat at rest, lifted-with-glow on hover - depth is a response to interaction, not a permanent decoration."
+    ],
+    "rules": [
+      { "name": "The One Accent Rule", "body": "Signal Blue is the only saturated hue allowed to carry brand meaning. Every other color in the system is a neutral, a tint of blue, or a semantic feedback color - never a second unrelated brand hue.", "section": "colors" },
+      { "name": "The No-Shout Rule", "body": "Buttons and labels never use uppercase transform. Emphasis comes from weight (600) and letter-spacing, not from shouting in caps.", "section": "typography" },
+      { "name": "The Response-Only Depth Rule", "body": "Shadows exist to signal 'this element just became interactive,' not to decorate a resting layout. A card, button, or panel with a permanent heavy shadow at rest is off-system.", "section": "elevation" }
+    ],
+    "dos": [
+      "Do keep Signal Blue as the only saturated accent hue; introduce new colors only as neutrals, blue tints, or semantic feedback colors.",
+      "Do use the fade-and-rise Framer Motion entrance (opacity 0->1, y: 20->0, 0.3s) for grid/card content appearing on mount.",
+      "Do reserve heavier shadows and glow for hover/active states; keep resting surfaces flat or near-flat.",
+      "Do keep button and label text un-transformed (no uppercase) - emphasis comes from weight, not case."
+    ],
+    "donts": [
+      "Don't add a second unrelated brand hue (e.g. an orange or green 'accent') outside the semantic feedback palette.",
+      "Don't give a resting card, button, or panel a permanent heavy shadow - depth is earned by interaction, not applied at rest.",
+      "Don't fabricate store locations, achievement metrics, or review content anywhere in the UI - per PRODUCT.md, these must stay real, business-supplied figures.",
+      "Don't mix in a second display typeface; hierarchy is carried entirely by Inter's weight and size range."
+    ]
+  }
+}

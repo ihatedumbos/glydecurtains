@@ -1,4 +1,10 @@
 import { motion } from 'framer-motion';
+import WindowOutlinedIcon from '@mui/icons-material/WindowOutlined';
+
+interface BrandStoryStat {
+  value: string;
+  label: string;
+}
 
 interface BrandStoryProps {
   title?: string;
@@ -9,8 +15,11 @@ export default function BrandStory({ title, config }: BrandStoryProps) {
   const heading = title || 'Our Story';
   const description =
     (config?.description as string) ||
-    'At Glyde Curtains, we bring elegance and comfort to your living spaces. With years of expertise in premium window furnishings, we curate the finest curtains, blinds, and accessories that transform your home.';
+    'Glyde Curtains manufactures curtain track runners, ceiling and wall fittings, and finishing hardware direct from our own facilities, backed by a real network of stores where you can see the product before you buy.';
   const imageBase64 = config?.imageBase64 as string | undefined;
+  // Stats are shown only when a real figure was supplied via CMS config -
+  // never a hardcoded placeholder number (PRODUCT.md: never fabricate business figures).
+  const stats = Array.isArray(config?.stats) ? (config.stats as BrandStoryStat[]) : [];
 
   return (
     <section className="py-16 px-4 md:px-8">
@@ -24,20 +33,16 @@ export default function BrandStory({ title, config }: BrandStoryProps) {
           >
             <h2 className="text-3xl md:text-4xl font-bold mb-6">{heading}</h2>
             <p className="text-gray-600 dark:text-gray-400 leading-relaxed text-lg">{description}</p>
-            <div className="mt-8 flex gap-8">
-              <div>
-                <div className="text-2xl font-bold text-primary">10+</div>
-                <div className="text-sm text-gray-500">Years Experience</div>
+            {stats.length > 0 && (
+              <div className="mt-8 flex gap-8">
+                {stats.map((stat) => (
+                  <div key={stat.label}>
+                    <div className="text-2xl font-bold text-primary">{stat.value}</div>
+                    <div className="text-sm text-gray-500">{stat.label}</div>
+                  </div>
+                ))}
               </div>
-              <div>
-                <div className="text-2xl font-bold text-primary">5000+</div>
-                <div className="text-sm text-gray-500">Happy Customers</div>
-              </div>
-              <div>
-                <div className="text-2xl font-bold text-primary">1000+</div>
-                <div className="text-sm text-gray-500">Products</div>
-              </div>
-            </div>
+            )}
           </motion.div>
           <motion.div
             initial={{ opacity: 0, x: 40 }}
@@ -54,7 +59,7 @@ export default function BrandStory({ title, config }: BrandStoryProps) {
               />
             ) : (
               <div className="rounded-2xl bg-gradient-to-br from-primary/20 to-primary/5 w-full h-80 flex items-center justify-center">
-                <span className="text-6xl opacity-50">🪟</span>
+                <WindowOutlinedIcon sx={{ fontSize: 64, opacity: 0.35, color: 'primary.main' }} />
               </div>
             )}
           </motion.div>

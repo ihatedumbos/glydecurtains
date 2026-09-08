@@ -14,18 +14,18 @@ import Logo from './Logo';
 const quickLinks = [
   { label: 'About Us', path: '/pages/about-us' },
   { label: 'Contact Us', path: '/contact' },
-  { label: 'Store Locator', path: '/store-locator' },
+  { label: 'Store Locator', path: '/stores' },
   { label: 'Privacy Policy', path: '/pages/privacy-policy' },
   { label: 'Terms & Conditions', path: '/pages/terms-and-conditions' },
   { label: 'Shipping & Returns', path: '/pages/shipping-returns' },
 ];
 
 const categoryLinks = [
-  { label: 'Curtains', path: '/categories/curtains' },
-  { label: 'Curtain Rods', path: '/categories/curtain-rods' },
-  { label: 'Tracks', path: '/categories/tracks' },
-  { label: 'Accessories', path: '/categories/accessories' },
-  { label: 'Blinds Accessories', path: '/categories/blinds-accessories' },
+  { label: 'Track Runners', path: '/categories/accessories/track-runners' },
+  { label: 'Ceiling Fittings', path: '/categories/accessories/ceiling-fittings' },
+  { label: 'Wall Fittings', path: '/categories/accessories/wall-fittings' },
+  { label: 'End Caps', path: '/categories/accessories/end-caps' },
+  { label: 'Curtain Tapes', path: '/categories/accessories/curtain-tapes' },
 ];
 
 const socialIcons: Record<string, React.ReactNode> = {
@@ -60,7 +60,7 @@ export default function Footer() {
               <Logo variant="footer" size="sm" onClick={() => navigate('/')} />
             </Box>
             <Typography variant="body2" color="text.secondary" sx={{ mb: 2, maxWidth: 240 }}>
-              Premium curtains, blinds, and window treatments for every home. Quality craftsmanship since 2010.
+              Manufacturer-direct curtain hardware and fittings, backed by real stores you can visit.
             </Typography>
             {/* Social links */}
             <Stack direction="row" spacing={0.5}>

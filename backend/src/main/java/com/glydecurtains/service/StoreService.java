@@ -20,5 +20,7 @@ public interface StoreService {
 
     List<StoreResponse> searchStores(String query);
 
+    List<StoreResponse> listActiveStores();
+
     StoreResponse getStore(Long id);
 }

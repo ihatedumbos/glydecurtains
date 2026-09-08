@@ -1,20 +1,31 @@
 @import "tailwindcss";
 @import "./styles/responsive.css";
 
+@theme {
+  --color-primary: #a06b3a;
+  --color-primary-light: #c99a5f;
+  --color-primary-dark: #7a4f28;
+  --color-paper: #faf5ea;
+  --color-ink: #2c2c2c;
+  --font-display: "Lora", Georgia, serif;
+  --font-annotation: "Caveat", cursive;
+}
+
 /* ===== CSS Custom Properties ===== */
 :root {
-  --primary-color: #1d4ed8;
-  --secondary-color: #dbeafe;
-  --accent-color: #1d4ed8;
-  --accent-light: #60a5fa;
-  --background-color: #f4f8ff;
-  --text-color: #0f172a;
-  --text-muted: #475569;
-  --border-radius: 6px;
+  --primary-color: #a06b3a;
+  --secondary-color: #8a6d5a;
+  --accent-color: #a06b3a;
+  --accent-light: #c99a5f;
+  --background-color: #f4ede1;
+  --text-color: #2c2c2c;
+  --text-muted: #6b5d52;
+  --border-radius: 8px;
 
-  /* Premium Typography Scale */
-  --font-display: 'Inter', system-ui, -apple-system, sans-serif;
-  --font-body: 'Inter', system-ui, -apple-system, sans-serif;
+  /* Workshop Typography Scale */
+  --font-display: 'Lora', Georgia, serif;
+  --font-body: 'IBM Plex Sans', system-ui, -apple-system, sans-serif;
+  --font-annotation: 'Caveat', cursive;
   --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
 
   --text-xs: 0.75rem;
@@ -27,10 +38,10 @@
   --text-4xl: 2.25rem;
   --text-5xl: 3rem;
 
-  /* Glow and Shadow tokens */
-  --shadow-soft: 0 1px 2px rgba(15, 23, 42, 0.06);
-  --shadow-elevated: 0 4px 12px rgba(15, 23, 42, 0.08);
-  --shadow-glass: 0 1px 3px rgba(15, 23, 42, 0.08);
+  /* Paper-grain shadow tokens: soft and shallow, depth comes from texture, not chrome */
+  --shadow-soft: 0 1px 2px rgba(44, 34, 24, 0.08);
+  --shadow-elevated: 0 2px 8px rgba(44, 34, 24, 0.1);
+  --shadow-glass: 0 1px 3px rgba(44, 34, 24, 0.08);
 }
 
 /* ===== Base Reset & Typography ===== */
@@ -45,7 +56,7 @@ body {
   font-size: var(--text-base);
   line-height: 1.6;
   color: var(--text-color);
-  background: linear-gradient(180deg, #eef5ff 0%, #f8fbff 100%);
+  background-color: var(--background-color);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-rendering: optimizeLegibility;
@@ -68,12 +79,12 @@ a, button, [role="button"] {
   min-height: 100vh;
 }
 
-/* ===== Premium Typography Hierarchy ===== */
+/* ===== Workshop Typography Hierarchy ===== */
 h1, h2, h3, h4, h5, h6 {
   font-family: var(--font-display);
-  font-weight: 700;
-  line-height: 1.2;
-  letter-spacing: -0.02em;
+  font-weight: 600;
+  line-height: 1.15;
+  letter-spacing: -0.01em;
   color: var(--text-color);
 }
 
@@ -92,34 +103,34 @@ h6 { font-size: var(--text-lg); }
   color: var(--text-color);
 }
 
-/* ===== Glassmorphism Utilities ===== */
+/* ===== Paper Surface Utilities ===== */
 .glass-card {
-  background: #ffffff;
-  border: 1px solid #e2e8f0;
+  background: #faf5ea;
+  border: 1px solid rgba(44, 34, 24, 0.12);
   border-radius: var(--border-radius);
   box-shadow: var(--shadow-soft);
 }
 
 .glass-card:hover {
-  border-color: #cbd5e1;
+  border-color: rgba(44, 34, 24, 0.22);
 }
 
 .glass-panel {
-  background: #ffffff;
-  border: 1px solid #e2e8f0;
+  background: #faf5ea;
+  border: 1px solid rgba(44, 34, 24, 0.12);
   border-radius: var(--border-radius);
 }
 
 .glass-input {
-  background: #ffffff;
-  border: 1px solid #cbd5e1;
+  background: #faf5ea;
+  border: 1px solid rgba(44, 34, 24, 0.2);
   border-radius: var(--border-radius);
   transition: all 0.2s ease;
 }
 
 .glass-input:focus {
-  border-color: #64748b;
-  box-shadow: 0 0 0 3px rgba(100, 116, 139, 0.12);
+  border-color: #a06b3a;
+  box-shadow: 0 0 0 3px rgba(160, 107, 58, 0.15);
   outline: none;
 }
 
@@ -266,7 +277,7 @@ h6 { font-size: var(--text-lg); }
   height: 8px;
   background: var(--accent-color);
   border-radius: 50%;
-  box-shadow: 0 0 8px rgba(201, 169, 110, 0.5);
+  box-shadow: 0 0 8px rgba(160, 107, 58, 0.5);
 }
 
 /* ===== Scrollbar Styling ===== */
@@ -276,16 +287,16 @@ h6 { font-size: var(--text-lg); }
 }
 
 ::-webkit-scrollbar-track {
-  background: rgba(255, 255, 255, 0.03);
+  background: rgba(44, 34, 24, 0.04);
 }
 
 ::-webkit-scrollbar-thumb {
-  background: rgba(201, 169, 110, 0.3);
+  background: rgba(160, 107, 58, 0.35);
   border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(201, 169, 110, 0.5);
+  background: rgba(160, 107, 58, 0.55);
 }
 
 /* ===== Focus Styles for Accessibility ===== */
@@ -297,8 +308,8 @@ h6 { font-size: var(--text-lg); }
 
 /* ===== Selection Styling ===== */
 ::selection {
-  background: rgba(201, 169, 110, 0.3);
-  color: #fff;
+  background: rgba(160, 107, 58, 0.25);
+  color: #2c2c2c;
 }
 
 /* ===== Responsive Typography & Layout Adjustments ===== */

@@ -115,6 +115,13 @@ public class StoreServiceImpl implements StoreService {
     }
 
     @Override
+    public List<StoreResponse> listActiveStores() {
+        return storeLocationRepository.findByIsActiveTrueOrderByNameAsc().stream()
+                .map(this::mapToResponse)
+                .collect(Collectors.toList());
+    }
+
+    @Override
     @Transactional(readOnly = true)
     public StoreResponse getStore(Long id) {
         StoreLocation store = storeLocationRepository.findById(id)

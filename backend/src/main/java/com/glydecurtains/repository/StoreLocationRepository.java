@@ -15,6 +15,8 @@ public interface StoreLocationRepository extends JpaRepository<StoreLocation, Lo
 
     Page<StoreLocation> findAllByOrderByNameAsc(Pageable pageable);
 
+    List<StoreLocation> findByIsActiveTrueOrderByNameAsc();
+
     @Query("SELECT s FROM StoreLocation s WHERE s.isActive = true AND " +
            "(LOWER(s.city) LIKE LOWER(CONCAT('%', :query, '%')) OR " +
            "LOWER(s.state) LIKE LOWER(CONCAT('%', :query, '%')) OR " +

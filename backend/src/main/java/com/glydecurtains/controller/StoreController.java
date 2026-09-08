@@ -70,4 +70,10 @@ public class StoreController {
         List<StoreResponse> response = storeService.searchStores(query);
         return ResponseEntity.ok(ApiResponse.success(response));
     }
+
+    @GetMapping("/public")
+    public ResponseEntity<ApiResponse<List<StoreResponse>>> listPublicStores() {
+        List<StoreResponse> response = storeService.listActiveStores();
+        return ResponseEntity.ok(ApiResponse.success(response));
+    }
 }

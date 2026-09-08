@@ -77,9 +77,7 @@ export default function Header({ categories = [] }: HeaderProps) {
         color="default"
         elevation={0}
         sx={{
-          bgcolor: 'rgba(255, 255, 255, 0.78)',
-          backdropFilter: 'blur(18px)',
-          WebkitBackdropFilter: 'blur(18px)',
+          bgcolor: 'background.paper',
           borderBottom: 1,
           borderColor: 'divider',
         }}
@@ -109,9 +107,22 @@ export default function Header({ categories = [] }: HeaderProps) {
               sx={{ position: 'relative', ml: 3 }}
               onMouseEnter={() => setMegaMenuOpen(true)}
               onMouseLeave={() => setMegaMenuOpen(false)}
+              onBlur={(e) => {
+                if (!e.currentTarget.contains(e.relatedTarget as Node)) {
+                  setMegaMenuOpen(false);
+                }
+              }}
+              onKeyDown={(e) => {
+                if (e.key === 'Escape') setMegaMenuOpen(false);
+              }}
             >
               <Box
                 component="button"
+                type="button"
+                aria-haspopup="true"
+                aria-expanded={megaMenuOpen}
+                onFocus={() => setMegaMenuOpen(true)}
+                onClick={() => setMegaMenuOpen((open) => !open)}
                 sx={{
                   background: 'none',
                   border: 'none',
