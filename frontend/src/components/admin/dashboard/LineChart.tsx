@@ -5,7 +5,7 @@ interface LineChartProps {
   height?: number;
 }
 
-export default function LineChart({ labels, data, color = '#10b981', height = 200 }: LineChartProps) {
+export default function LineChart({ labels, data, color = '#7a4f28', height = 200 }: LineChartProps) {
   const maxValue = Math.max(...data, 1);
   const padding = 20;
   const chartWidth = 100; // percentage-based via viewBox
@@ -13,7 +13,7 @@ export default function LineChart({ labels, data, color = '#10b981', height = 20
 
   if (data.length === 0) {
     return (
-      <div className="flex items-center justify-center text-gray-400 text-sm" style={{ height }}>
+      <div className="flex items-center justify-center text-[#8a7a6b] text-sm" style={{ height }}>
         No data available
       </div>
     );
@@ -45,7 +45,7 @@ export default function LineChart({ labels, data, color = '#10b981', height = 20
       </svg>
       <div className="flex justify-between mt-2 px-2">
         {labels.filter((_, i) => i % Math.ceil(labels.length / 6) === 0 || i === labels.length - 1).map((label, index) => (
-          <span key={index} className="text-xs text-gray-500 dark:text-gray-400">{label}</span>
+          <span key={index} className="text-xs text-[#8a7a6b]">{label}</span>
         ))}
       </div>
     </div>

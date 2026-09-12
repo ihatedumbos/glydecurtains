@@ -50,7 +50,6 @@ export default function LoginPage() {
 
   const [showPassword, setShowPassword] = useState(false);
   const [accountLocked, setAccountLocked] = useState(false);
-  const [showPasswordBanner, setShowPasswordBanner] = useState(false);
 
   const {
     register,
@@ -69,7 +68,6 @@ export default function LoginPage() {
     dispatch(setLoading(true));
     dispatch(setError(null));
     setAccountLocked(false);
-    setShowPasswordBanner(false);
 
     try {
       const response = await axiosInstance.post<LoginApiResponse>('/auth/login', {
@@ -95,18 +93,8 @@ export default function LoginPage() {
         }),
       );
 
-      // Check if password has never been changed
-      if (user.passwordChangedAt === null || user.passwordChangedAt === undefined) {
-        setShowPasswordBanner(true);
-        // Brief delay so user sees the banner before redirect
-        setTimeout(() => {
-          const redirectPath = user.role === 'CUSTOMER' ? '/' : '/admin/dashboard';
-          navigate(redirectPath, { replace: true });
-        }, 3000);
-      } else {
-        const redirectPath = user.role === 'CUSTOMER' ? '/' : '/admin/dashboard';
-        navigate(redirectPath, { replace: true });
-      }
+      const redirectPath = user.role === 'CUSTOMER' ? '/' : '/admin/dashboard';
+      navigate(redirectPath, { replace: true });
     } catch (err: unknown) {
       const axiosError = err as { response?: { data?: { message?: string; errorCode?: string }; status?: number } };
       const message = axiosError?.response?.data?.message || 'Login failed. Please try again.';
@@ -177,27 +165,6 @@ export default function LoginPage() {
           >
             Sign in to your account
           </Typography>
-
-          {/* Password change banner */}
-          {showPasswordBanner && (
-            <Alert
-              severity="warning"
-              sx={{
-                mb: 2,
-                backgroundColor: 'rgba(245, 158, 11, 0.08)',
-                color: '#9a5b00',
-                border: '1px solid rgba(245, 158, 11, 0.2)',
-                '& .MuiAlert-icon': { color: '#b45309' },
-              }}
-            >
-              <Typography variant="body2" fontWeight={600}>
-                Password Change Recommended
-              </Typography>
-              <Typography variant="caption">
-                Your password has never been changed. Please update it immediately for security.
-              </Typography>
-            </Alert>
-          )}
 
           {/* Account locked alert */}
           {accountLocked && (

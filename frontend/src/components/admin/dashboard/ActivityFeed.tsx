@@ -41,18 +41,18 @@ function getActivityColor(actionType: string): string {
   switch (actionType) {
     case 'ORDER_PLACED':
     case 'ORDER_UPDATED':
-      return 'bg-blue-100 dark:bg-blue-900/30';
+      return 'bg-[#a06b3a]/15';
     case 'USER_REGISTERED':
     case 'USER_APPROVED':
-      return 'bg-green-100 dark:bg-green-900/30';
+      return 'bg-[#3a6b3f]/15';
     case 'PRODUCT_CREATED':
     case 'PRODUCT_UPDATED':
-      return 'bg-purple-100 dark:bg-purple-900/30';
+      return 'bg-[#6b5544]/15';
     case 'LOGIN':
     case 'LOGOUT':
-      return 'bg-amber-100 dark:bg-amber-900/30';
+      return 'bg-[#b5895a]/20';
     default:
-      return 'bg-gray-100 dark:bg-gray-700';
+      return 'bg-[#f4ede1]';
   }
 }
 
@@ -77,10 +77,10 @@ export default function ActivityFeed({ activities, loading = false }: ActivityFe
       <div className="space-y-3">
         {Array.from({ length: 5 }).map((_, i) => (
           <div key={i} className="flex items-center gap-3 animate-pulse">
-            <div className="w-9 h-9 rounded-full bg-gray-200 dark:bg-gray-700" />
+            <div className="w-9 h-9 rounded-full bg-[#e8dfcd]" />
             <div className="flex-1 space-y-2">
-              <div className="h-3 bg-gray-200 dark:bg-gray-700 rounded w-3/4" />
-              <div className="h-2 bg-gray-200 dark:bg-gray-700 rounded w-1/4" />
+              <div className="h-3 bg-[#e8dfcd] rounded w-3/4" />
+              <div className="h-2 bg-[#e8dfcd] rounded w-1/4" />
             </div>
           </div>
         ))}
@@ -90,7 +90,7 @@ export default function ActivityFeed({ activities, loading = false }: ActivityFe
 
   if (activities.length === 0) {
     return (
-      <div className="flex items-center justify-center h-32 text-gray-400 text-sm">
+      <div className="flex items-center justify-center h-32 text-[#8a7a6b] text-sm">
         No recent activity
       </div>
     );
@@ -101,16 +101,16 @@ export default function ActivityFeed({ activities, loading = false }: ActivityFe
       {activities.map((activity) => (
         <div
           key={activity.id}
-          className="flex items-start gap-3 p-2 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors"
+          className="flex items-start gap-3 p-2 rounded-lg hover:bg-[#f4ede1] transition-colors"
         >
           <div className={`flex items-center justify-center w-9 h-9 rounded-full text-sm ${getActivityColor(activity.actionType)}`}>
             {getActivityIcon(activity.actionType)}
           </div>
           <div className="flex-1 min-w-0">
-            <p className="text-sm text-gray-700 dark:text-gray-200 truncate">
+            <p className="text-sm text-[#2c2c2c] truncate">
               {activity.details || `${activity.actionType.replace(/_/g, ' ').toLowerCase()} on ${activity.entityType}`}
             </p>
-            <p className="text-xs text-gray-400 dark:text-gray-500 mt-0.5">
+            <p className="text-xs text-[#8a7a6b] mt-0.5">
               {formatTimeAgo(activity.timestamp)}
             </p>
           </div>

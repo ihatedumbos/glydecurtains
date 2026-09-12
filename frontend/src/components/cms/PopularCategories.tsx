@@ -38,8 +38,8 @@ export default function PopularCategories({ title }: PopularCategoriesProps) {
           <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-6">
             {Array.from({ length: 5 }).map((_, i) => (
               <div key={i} className="animate-pulse flex flex-col items-center">
-                <div className="w-24 h-24 bg-gray-200 dark:bg-gray-700 rounded-full" />
-                <div className="mt-3 h-4 bg-gray-200 dark:bg-gray-700 rounded w-20" />
+                <div className="w-24 h-24 bg-[#e8dfcd] rounded-full" />
+                <div className="mt-3 h-4 bg-[#e8dfcd] rounded w-20" />
               </div>
             ))}
           </div>

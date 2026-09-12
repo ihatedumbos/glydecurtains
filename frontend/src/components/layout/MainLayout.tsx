@@ -101,7 +101,7 @@ export default function MainLayout({ categories: providedCategories }: MainLayou
         display: 'flex',
         flexDirection: 'column',
         minHeight: '100vh',
-        background: 'linear-gradient(180deg, #edf5ff 0%, #f8fbff 100%)',
+        background: '#f4ede1',
       }}
     >
       <Header categories={categories} />

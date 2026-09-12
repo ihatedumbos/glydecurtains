@@ -5,7 +5,7 @@ interface BarChartProps {
   height?: number;
 }
 
-export default function BarChart({ labels, data, color = '#6366f1', height = 200 }: BarChartProps) {
+export default function BarChart({ labels, data, color = '#a06b3a', height = 200 }: BarChartProps) {
   const maxValue = Math.max(...data, 1);
 
   return (
@@ -16,7 +16,7 @@ export default function BarChart({ labels, data, color = '#6366f1', height = 200
           return (
             <div key={index} className="flex-1 flex flex-col items-center justify-end h-full group relative">
               <div
-                className="absolute -top-6 left-1/2 -translate-x-1/2 bg-gray-800 text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none z-10"
+                className="absolute -top-6 left-1/2 -translate-x-1/2 bg-[#2c2c2c] text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none z-10"
               >
                 {value.toLocaleString()}
               </div>
@@ -35,7 +35,7 @@ export default function BarChart({ labels, data, color = '#6366f1', height = 200
       <div className="flex gap-1 justify-between mt-2">
         {labels.map((label, index) => (
           <div key={index} className="flex-1 text-center">
-            <span className="text-xs text-gray-500 dark:text-gray-400 truncate block">{label}</span>
+            <span className="text-xs text-[#8a7a6b] truncate block">{label}</span>
           </div>
         ))}
       </div>

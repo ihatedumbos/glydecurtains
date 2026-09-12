@@ -121,8 +121,9 @@ export default function ProductListPage() {
       const params: Record<string, string | number | undefined> = {
         page: page - 1, // Backend is 0-indexed
         size: 20,
-        sort: sortBy,
-        query: query || undefined,
+        sortBy: sortBy === 'popularity' ? undefined : sortBy,
+        sortDirection: sortBy === 'priceAsc' ? 'asc' : sortBy === 'priceDesc' ? 'desc' : sortBy === 'createdAt' ? 'desc' : undefined,
+        query: query?.trim() || undefined,
         categoryId: filters.categoryId,
         subCategoryId: filters.subCategoryId,
         collectionId: filters.collectionId,
@@ -131,7 +132,6 @@ export default function ProductListPage() {
         colors: filters.colors?.join(',') || undefined,
         sizes: filters.sizes?.join(',') || undefined,
         materials: filters.materials?.join(',') || undefined,
-        status: filters.status,
       };
 
       // Remove undefined params
@@ -139,7 +139,15 @@ export default function ProductListPage() {
         Object.entries(params).filter(([, v]) => v !== undefined),
       );
 
-      const res = await axiosInstance.get('/search/products', { params: cleanParams });
+      const shouldUseSearchEndpoint =
+        Boolean(cleanParams.query) ||
+        cleanParams.categoryId !== undefined ||
+        cleanParams.subCategoryId !== undefined ||
+        cleanParams.collectionId !== undefined;
+
+      const res = shouldUseSearchEndpoint
+        ? await axiosInstance.get('/search/products', { params: cleanParams })
+        : await axiosInstance.get('/products/public', { params: cleanParams });
       const data = res.data?.data || res.data;
 
       dispatch(
@@ -250,7 +258,7 @@ export default function ProductListPage() {
   );
 
   return (
-    <Container maxWidth="xl" sx={{ py: 3 }}>
+    <Container maxWidth="xl" sx={{ py: 3, color: 'text.primary' }}>
       {/* Breadcrumbs */}
       <Breadcrumbs sx={{ mb: 2 }}>
         <Link component={RouterLink} to="/" underline="hover" color="inherit" sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
@@ -331,7 +339,7 @@ export default function ProductListPage() {
             renderSkeletons()
           ) : products.length === 0 ? (
             <Box sx={{ textAlign: 'center', py: 8 }}>
-              <Typography variant="h6" color="text.secondary">
+                  <Typography variant="h6" color="text.primary">
                 No products found
               </Typography>
               <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
