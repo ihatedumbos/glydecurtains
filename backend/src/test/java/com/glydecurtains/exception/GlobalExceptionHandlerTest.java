@@ -5,6 +5,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.validation.BeanPropertyBindingResult;
@@ -102,8 +103,9 @@ class GlobalExceptionHandlerTest {
     @Test
     void handleGenericException_returns500() {
         RuntimeException ex = new RuntimeException("Unexpected error");
+        MockHttpServletResponse mockResponse = new MockHttpServletResponse();
 
-        ResponseEntity<ApiErrorResponse> response = handler.handleGenericException(ex);
+        ResponseEntity<ApiErrorResponse> response = handler.handleGenericException(ex, mockResponse);
 
         assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
         assertNotNull(response.getBody());
@@ -111,5 +113,16 @@ class GlobalExceptionHandlerTest {
         assertEquals("INTERNAL_ERROR", response.getBody().getErrorCode());
         assertEquals("An unexpected error occurred", response.getBody().getMessage());
         assertNotNull(response.getBody().getTimestamp());
+    }
+
+    @Test
+    void handleGenericException_committedResponse_returnsNull() {
+        RuntimeException ex = new RuntimeException("Unexpected error");
+        MockHttpServletResponse mockResponse = new MockHttpServletResponse();
+        mockResponse.setCommitted(true);
+
+        ResponseEntity<ApiErrorResponse> response = handler.handleGenericException(ex, mockResponse);
+
+        assertNull(response);
     }
 }
