@@ -100,10 +100,10 @@ function AchievementCard({ achievement, index }: { achievement: Achievement; ind
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: '-30px' }}
       transition={{ delay: index * 0.1, duration: 0.5, ease: 'easeOut' }}
-      className="group relative bg-white dark:bg-gray-800 rounded-2xl p-8 shadow-md hover:shadow-xl transition-shadow duration-300 border border-gray-100 dark:border-gray-700"
+      className="group relative bg-[#faf5ea] rounded-2xl p-8 shadow-md hover:shadow-xl transition-shadow duration-300 border border-[#2c2c2c]/12"
     >
       {/* Icon */}
-      <div className="w-16 h-16 mb-5 rounded-xl bg-primary/10 dark:bg-primary/20 flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+      <div className="w-16 h-16 mb-5 rounded-xl bg-primary/10 flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
         {achievement.iconBase64 ? (
           <img
             src={`data:image/png;base64,${achievement.iconBase64}`}
@@ -121,20 +121,20 @@ function AchievementCard({ achievement, index }: { achievement: Achievement; ind
       </div>
 
       {/* Title */}
-      <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">
+      <h3 className="text-lg font-semibold text-[#2c2c2c] mb-2">
         {achievement.title}
       </h3>
 
       {/* Description */}
       {achievement.description && (
-        <p className="text-sm text-gray-600 dark:text-gray-400 leading-relaxed">
+        <p className="text-sm text-[#6b5d52] leading-relaxed">
           {achievement.description}
         </p>
       )}
 
       {/* Year badge */}
       {achievement.year && (
-        <div className="absolute top-4 right-4 text-xs font-medium text-gray-400 dark:text-gray-500 bg-gray-50 dark:bg-gray-700/50 px-2 py-1 rounded-full">
+        <div className="absolute top-4 right-4 text-xs font-medium text-[#8a7a6b] bg-[#f4ede1] px-2 py-1 rounded-full">
           {achievement.year}
         </div>
       )}
@@ -170,7 +170,7 @@ export default function AchievementsPage() {
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
-            className="text-3xl md:text-5xl font-bold text-gray-900 dark:text-white mb-4"
+            className="text-3xl md:text-5xl font-bold text-[#2c2c2c] mb-4"
           >
             Our Achievements
           </motion.h1>
@@ -178,7 +178,7 @@ export default function AchievementsPage() {
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.2 }}
-            className="text-lg text-gray-600 dark:text-gray-400 max-w-2xl mx-auto"
+            className="text-lg text-[#6b5d52] max-w-2xl mx-auto"
           >
             Milestones that define our journey of excellence in crafting premium curtains and home decor solutions.
           </motion.p>
@@ -191,16 +191,16 @@ export default function AchievementsPage() {
           {loading ? (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
               {Array.from({ length: 6 }).map((_, i) => (
-                <div key={i} className="animate-pulse bg-white dark:bg-gray-800 rounded-2xl p-8 shadow-md">
-                  <div className="w-16 h-16 bg-gray-200 dark:bg-gray-700 rounded-xl mb-5" />
-                  <div className="h-8 bg-gray-200 dark:bg-gray-700 rounded w-24 mb-2" />
-                  <div className="h-5 bg-gray-200 dark:bg-gray-700 rounded w-32 mb-2" />
-                  <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-full" />
+                <div key={i} className="animate-pulse bg-[#faf5ea] rounded-2xl p-8 shadow-md">
+                  <div className="w-16 h-16 bg-[#e8dfcd] rounded-xl mb-5" />
+                  <div className="h-8 bg-[#e8dfcd] rounded w-24 mb-2" />
+                  <div className="h-5 bg-[#e8dfcd] rounded w-32 mb-2" />
+                  <div className="h-4 bg-[#e8dfcd] rounded w-full" />
                 </div>
               ))}
             </div>
           ) : achievements.length === 0 ? (
-            <div className="text-center py-20 text-gray-500 dark:text-gray-400">
+            <div className="text-center py-20 text-[#6b5d52]">
               <p className="text-lg">No achievements to display yet.</p>
             </div>
           ) : (

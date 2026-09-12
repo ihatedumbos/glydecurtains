@@ -349,7 +349,7 @@ export default function StoreManagementPage() {
               </TableRow>
             ) : stores.length === 0 ? (
               <TableRow>
-                <TableCell colSpan={8} align="center" className="py-8 text-gray-500">
+                <TableCell colSpan={8} align="center" className="py-8 text-[#6b5d52]">
                   No stores found
                 </TableCell>
               </TableRow>

@@ -26,15 +26,15 @@ export default function NewsletterSection({ title }: NewsletterSectionProps) {
         transition={{ duration: 0.5 }}
         className="max-w-2xl mx-auto text-center"
       >
-        <h2 className="text-2xl md:text-3xl font-bold mb-4">{title || 'Stay Updated'}</h2>
-        <p className="text-gray-600 dark:text-gray-400 mb-8">
+        <h2 className="mb-4 font-display text-2xl text-[#2c2c2c] md:text-3xl">{title || 'Stay Updated'}</h2>
+        <p className="text-[#6b5d52] mb-8">
           Subscribe to our newsletter for the latest collections, exclusive offers, and home décor inspiration.
         </p>
         {submitted ? (
           <motion.div
             initial={{ scale: 0.9, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
-            className="text-green-600 dark:text-green-400 font-medium"
+            className="text-green-600 font-medium"
           >
             Thank you for subscribing! We'll keep you updated.
           </motion.div>
@@ -46,7 +46,7 @@ export default function NewsletterSection({ title }: NewsletterSectionProps) {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
-              className="flex-1 px-4 py-3 rounded-full border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-sm focus:outline-none focus:ring-2 focus:ring-primary/50"
+              className="flex-1 px-4 py-3 rounded-full border border-[#2c2c2c]/15 bg-[#faf5ea] text-[#2c2c2c] text-sm placeholder:text-[#8a7a6b] focus:outline-none focus:ring-2 focus:ring-[#a06b3a]/40"
             />
             <button
               type="submit"

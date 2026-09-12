@@ -33,7 +33,7 @@ export default function PromotionalBanner({ banners }: PromotionalBannerProps) {
               {banner.buttonText && banner.buttonLink && (
                 <a
                   href={banner.buttonLink}
-                  className="inline-block px-5 py-2 bg-white text-gray-900 text-sm font-medium rounded-full hover:bg-gray-100 transition-colors w-fit"
+                  className="inline-block px-5 py-2 bg-[#faf5ea] text-[#2c2c2c] text-sm font-medium rounded-full hover:bg-[#f4ede1] transition-colors w-fit"
                 >
                   {banner.buttonText}
                 </a>

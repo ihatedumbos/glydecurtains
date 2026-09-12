@@ -34,7 +34,7 @@ export default function PopularCategories({ title }: PopularCategoriesProps) {
     return (
       <section className="py-12 px-4 md:px-8">
         <div className="max-w-7xl mx-auto">
-          <h2 className="text-2xl md:text-3xl font-bold mb-8 text-center">{title || 'Popular Categories'}</h2>
+          <h2 className="mb-8 text-center font-display text-2xl text-[#2c2c2c] md:text-3xl">{title || 'Popular Categories'}</h2>
           <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-6">
             {Array.from({ length: 5 }).map((_, i) => (
               <div key={i} className="animate-pulse flex flex-col items-center">

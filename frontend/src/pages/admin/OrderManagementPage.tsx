@@ -692,7 +692,7 @@ export default function OrderManagementPage() {
               </TableRow>
             ) : orders.length === 0 ? (
               <TableRow>
-                <TableCell colSpan={8} align="center" className="py-8 text-gray-500">
+                <TableCell colSpan={8} align="center" className="py-8 text-[#6b5d52]">
                   No orders found
                 </TableCell>
               </TableRow>

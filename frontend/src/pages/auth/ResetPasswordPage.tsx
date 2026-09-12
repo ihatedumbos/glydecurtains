@@ -70,23 +70,23 @@ export default function ResetPasswordPage() {
 
   if (success) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4">
-        <div className="max-w-md w-full space-y-6 bg-white p-8 rounded-lg shadow-md">
+      <div className="min-h-screen flex items-center justify-center bg-[#f4ede1] px-4">
+        <div className="max-w-md w-full space-y-6 bg-[#faf5ea] p-8 rounded-lg shadow-md">
           <div className="text-center">
             <div className="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-green-100 mb-4">
               <svg className="h-6 w-6 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
               </svg>
             </div>
-            <h2 className="text-2xl font-bold text-gray-900">Password Reset Successful</h2>
-            <p className="mt-2 text-sm text-gray-600">
+            <h2 className="text-2xl font-bold text-[#2c2c2c]">Password Reset Successful</h2>
+            <p className="mt-2 text-sm text-[#6b5d52]">
               Your password has been updated. You can now sign in with your new password.
             </p>
           </div>
           <div className="text-center">
             <button
               onClick={() => navigate('/login')}
-              className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+              className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-[#a06b3a] hover:bg-[#7a4f28] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#a06b3a]"
             >
               Go to Sign In
             </button>
@@ -98,23 +98,23 @@ export default function ResetPasswordPage() {
 
   if (!token) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4">
-        <div className="max-w-md w-full space-y-6 bg-white p-8 rounded-lg shadow-md">
+      <div className="min-h-screen flex items-center justify-center bg-[#f4ede1] px-4">
+        <div className="max-w-md w-full space-y-6 bg-[#faf5ea] p-8 rounded-lg shadow-md">
           <div className="text-center">
             <div className="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-red-100 mb-4">
               <svg className="h-6 w-6 text-red-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
               </svg>
             </div>
-            <h2 className="text-2xl font-bold text-gray-900">Invalid Reset Link</h2>
-            <p className="mt-2 text-sm text-gray-600">
+            <h2 className="text-2xl font-bold text-[#2c2c2c]">Invalid Reset Link</h2>
+            <p className="mt-2 text-sm text-[#6b5d52]">
               This password reset link is invalid or missing a token. Please request a new one.
             </p>
           </div>
           <div className="text-center">
             <Link
               to="/forgot-password"
-              className="text-sm font-medium text-indigo-600 hover:text-indigo-500"
+              className="text-sm font-medium text-[#a06b3a] hover:text-[#7a4f28]"
             >
               Request New Reset Link
             </Link>
@@ -125,18 +125,18 @@ export default function ResetPasswordPage() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4">
-      <div className="max-w-md w-full space-y-6 bg-white p-8 rounded-lg shadow-md">
+    <div className="min-h-screen flex items-center justify-center bg-[#f4ede1] px-4">
+      <div className="max-w-md w-full space-y-6 bg-[#faf5ea] p-8 rounded-lg shadow-md">
         <div className="text-center">
-          <h1 className="text-2xl font-bold text-gray-900">Reset Password</h1>
-          <p className="mt-2 text-sm text-gray-600">
+          <h1 className="text-2xl font-bold text-[#2c2c2c]">Reset Password</h1>
+          <p className="mt-2 text-sm text-[#6b5d52]">
             Enter your new password below.
           </p>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-4" noValidate>
           <div>
-            <label htmlFor="newPassword" className="block text-sm font-medium text-gray-700">
+            <label htmlFor="newPassword" className="block text-sm font-medium text-[#2c2c2c]">
               New Password
             </label>
             <input
@@ -147,13 +147,13 @@ export default function ResetPasswordPage() {
               required
               value={newPassword}
               onChange={(e) => setNewPassword(e.target.value)}
-              className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm placeholder-gray-400 focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500 sm:text-sm"
+              className="mt-1 block w-full rounded-md border border-[#2c2c2c]/15 px-3 py-2 shadow-sm placeholder:text-[#8a7a6b] focus:border-[#a06b3a] focus:outline-none focus:ring-1 focus:ring-[#a06b3a] sm:text-sm"
               placeholder="Minimum 8 characters"
             />
           </div>
 
           <div>
-            <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-700">
+            <label htmlFor="confirmPassword" className="block text-sm font-medium text-[#2c2c2c]">
               Confirm Password
             </label>
             <input
@@ -164,7 +164,7 @@ export default function ResetPasswordPage() {
               required
               value={confirmPassword}
               onChange={(e) => setConfirmPassword(e.target.value)}
-              className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm placeholder-gray-400 focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500 sm:text-sm"
+              className="mt-1 block w-full rounded-md border border-[#2c2c2c]/15 px-3 py-2 shadow-sm placeholder:text-[#8a7a6b] focus:border-[#a06b3a] focus:outline-none focus:ring-1 focus:ring-[#a06b3a] sm:text-sm"
               placeholder="Re-enter your new password"
             />
           </div>
@@ -178,7 +178,7 @@ export default function ResetPasswordPage() {
           <button
             type="submit"
             disabled={loading}
-            className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50 disabled:cursor-not-allowed"
+            className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-[#a06b3a] hover:bg-[#7a4f28] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#a06b3a] disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {loading ? 'Resetting...' : 'Reset Password'}
           </button>
@@ -187,7 +187,7 @@ export default function ResetPasswordPage() {
         <div className="text-center">
           <Link
             to="/login"
-            className="text-sm font-medium text-indigo-600 hover:text-indigo-500"
+            className="text-sm font-medium text-[#a06b3a] hover:text-[#7a4f28]"
           >
             Back to Sign In
           </Link>

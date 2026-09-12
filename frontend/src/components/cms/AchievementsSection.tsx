@@ -86,13 +86,13 @@ export default function AchievementsSection({ title }: AchievementsSectionProps)
     return (
       <section className="py-12 px-4 md:px-8">
         <div className="max-w-7xl mx-auto">
-          <h2 className="text-2xl md:text-3xl font-bold mb-8 text-center">{title || 'Our Achievements'}</h2>
+          <h2 className="mb-8 text-center font-display text-2xl text-[#2c2c2c] md:text-3xl">{title || 'Our Achievements'}</h2>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
             {Array.from({ length: 4 }).map((_, i) => (
               <div key={i} className="animate-pulse text-center p-6">
-                <div className="w-16 h-16 bg-gray-200 dark:bg-gray-700 rounded-full mx-auto mb-3" />
-                <div className="h-6 bg-gray-200 dark:bg-gray-700 rounded w-20 mx-auto mb-2" />
-                <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-24 mx-auto" />
+                <div className="w-16 h-16 bg-[#e8dfcd] rounded-full mx-auto mb-3" />
+                <div className="h-6 bg-[#e8dfcd] rounded w-20 mx-auto mb-2" />
+                <div className="h-4 bg-[#e8dfcd] rounded w-24 mx-auto" />
               </div>
             ))}
           </div>
@@ -110,7 +110,7 @@ export default function AchievementsSection({ title }: AchievementsSectionProps)
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          className="text-2xl md:text-3xl font-bold mb-12 text-center"
+          className="mb-12 text-center font-display text-2xl text-[#2c2c2c] md:text-3xl"
         >
           {title || 'Our Achievements'}
         </motion.h2>
@@ -124,7 +124,7 @@ export default function AchievementsSection({ title }: AchievementsSectionProps)
               transition={{ delay: idx * 0.15, duration: 0.4 }}
               className="text-center"
             >
-              <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-white dark:bg-gray-800 shadow-md flex items-center justify-center">
+              <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-[#faf5ea] shadow-md flex items-center justify-center">
                 {achievement.iconBase64 ? (
                   <img
                     src={`data:image/png;base64,${achievement.iconBase64}`}
@@ -135,12 +135,12 @@ export default function AchievementsSection({ title }: AchievementsSectionProps)
                   <span className="text-2xl">🏆</span>
                 )}
               </div>
-              <div className="text-3xl font-bold text-primary mb-1">
+              <div className="text-3xl font-display text-[#a06b3a] mb-1">
                 <AnimatedCounter value={achievement.metricValue} format={achievement.metricFormat} />
               </div>
-              <div className="text-sm font-medium text-gray-700 dark:text-gray-300">{achievement.title}</div>
+              <div className="text-sm font-medium text-[#2c2c2c]">{achievement.title}</div>
               {achievement.description && (
-                <div className="text-xs text-gray-500 mt-1">{achievement.description}</div>
+                <div className="text-xs text-[#6b5d52] mt-1">{achievement.description}</div>
               )}
             </motion.div>
           ))}

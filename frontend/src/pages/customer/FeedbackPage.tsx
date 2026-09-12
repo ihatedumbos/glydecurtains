@@ -97,7 +97,7 @@ export default function FeedbackPage() {
 
   return (
     <div className="max-w-xl mx-auto p-6">
-      <h1 className="text-2xl font-bold mb-6">Submit Feedback</h1>
+      <h1 className="font-display text-2xl text-[#2c2c2c] mb-6">Submit Feedback</h1>
 
       {errors.general && (
         <div className="bg-red-50 border border-red-200 rounded p-3 mb-4 text-red-700 text-sm">
@@ -108,7 +108,7 @@ export default function FeedbackPage() {
       <form onSubmit={handleSubmit} noValidate className="space-y-5">
         {/* Star Rating */}
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
+          <label className="block text-sm font-medium text-[#2c2c2c] mb-1">
             Rating <span className="text-red-500">*</span>
           </label>
           <div className="flex gap-1" role="radiogroup" aria-label="Rating">
@@ -121,13 +121,13 @@ export default function FeedbackPage() {
                 onMouseLeave={() => setHoveredStar(0)}
                 aria-label={`${star} star${star > 1 ? 's' : ''}`}
                 aria-pressed={rating === star}
-                className="p-1 focus:outline-none focus:ring-2 focus:ring-blue-400 rounded"
+                className="p-1 focus:outline-none focus:ring-2 focus:ring-[#a06b3a] rounded"
               >
                 <svg
                   className={`w-8 h-8 transition-colors ${
                     star <= (hoveredStar || rating)
                       ? 'text-yellow-400 fill-yellow-400'
-                      : 'text-gray-300 fill-gray-300'
+                      : 'text-[#e8dfcd] fill-[#e8dfcd]'
                   }`}
                   viewBox="0 0 24 24"
                 >
@@ -141,7 +141,7 @@ export default function FeedbackPage() {
 
         {/* Title */}
         <div>
-          <label htmlFor="feedback-title" className="block text-sm font-medium text-gray-700 mb-1">
+          <label htmlFor="feedback-title" className="block text-sm font-medium text-[#2c2c2c] mb-1">
             Title <span className="text-red-500">*</span>
           </label>
           <input
@@ -151,7 +151,7 @@ export default function FeedbackPage() {
             onChange={(e) => setTitle(e.target.value)}
             maxLength={100}
             placeholder="Brief summary of your feedback"
-            className="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-blue-400"
+            className="w-full border border-[#2c2c2c]/15 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#a06b3a] focus:border-[#a06b3a]"
           />
           <div className="flex justify-between mt-1">
             {errors.title ? (
@@ -159,13 +159,13 @@ export default function FeedbackPage() {
             ) : (
               <span />
             )}
-            <span className="text-xs text-gray-400">{title.length}/100</span>
+            <span className="text-xs text-[#8a7a6b]">{title.length}/100</span>
           </div>
         </div>
 
         {/* Comment */}
         <div>
-          <label htmlFor="feedback-comment" className="block text-sm font-medium text-gray-700 mb-1">
+          <label htmlFor="feedback-comment" className="block text-sm font-medium text-[#2c2c2c] mb-1">
             Comment <span className="text-red-500">*</span>
           </label>
           <textarea
@@ -175,7 +175,7 @@ export default function FeedbackPage() {
             maxLength={2000}
             rows={5}
             placeholder="Tell us more about your experience (min 10 characters)"
-            className="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-blue-400 resize-y"
+            className="w-full border border-[#2c2c2c]/15 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#a06b3a] focus:border-[#a06b3a] resize-y"
           />
           <div className="flex justify-between mt-1">
             {errors.comment ? (
@@ -183,14 +183,14 @@ export default function FeedbackPage() {
             ) : (
               <span />
             )}
-            <span className="text-xs text-gray-400">{comment.length}/2000</span>
+            <span className="text-xs text-[#8a7a6b]">{comment.length}/2000</span>
           </div>
         </div>
 
         {/* Optional Product Reference */}
         <div>
-          <label htmlFor="feedback-product" className="block text-sm font-medium text-gray-700 mb-1">
-            Product ID <span className="text-gray-400 text-xs">(optional)</span>
+          <label htmlFor="feedback-product" className="block text-sm font-medium text-[#2c2c2c] mb-1">
+            Product ID <span className="text-[#8a7a6b] text-xs">(optional)</span>
           </label>
           <input
             id="feedback-product"
@@ -198,7 +198,7 @@ export default function FeedbackPage() {
             value={productId}
             onChange={(e) => setProductId(e.target.value)}
             placeholder="Enter product ID if related to a specific product"
-            className="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-blue-400"
+            className="w-full border border-[#2c2c2c]/15 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#a06b3a] focus:border-[#a06b3a]"
           />
           {errors.productId && <p className="text-red-600 text-sm mt-1">{errors.productId}</p>}
         </div>
@@ -207,7 +207,7 @@ export default function FeedbackPage() {
         <button
           type="submit"
           disabled={submitting}
-          className="w-full bg-blue-600 text-white py-2.5 px-4 rounded font-medium hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+          className="w-full bg-[#a06b3a] text-white py-2.5 px-4 rounded font-medium hover:bg-[#7a4f28] disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
         >
           {submitting ? 'Submitting...' : 'Submit Feedback'}
         </button>

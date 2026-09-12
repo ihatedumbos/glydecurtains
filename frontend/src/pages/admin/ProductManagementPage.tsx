@@ -148,7 +148,7 @@ function SpecificationEditor({ specs, onChange }: { specs: ProductSpecification[
       </Box>
       {specs.map((spec, idx) => (
         <Box key={idx} className="flex gap-2 mb-2 items-center">
-          <DragIcon className="text-gray-400 cursor-move" fontSize="small" />
+          <DragIcon className="text-[#8a7a6b] cursor-move" fontSize="small" />
           <TextField size="small" placeholder="Key (e.g. Material)" value={spec.specKey}
             onChange={(e) => updateSpec(idx, 'specKey', e.target.value)} sx={{ flex: 1 }} />
           <TextField size="small" placeholder="Value (e.g. Aluminium)" value={spec.specValue}
@@ -159,7 +159,7 @@ function SpecificationEditor({ specs, onChange }: { specs: ProductSpecification[
         </Box>
       ))}
       {specs.length === 0 && (
-        <Typography variant="body2" className="text-gray-500 italic">No specifications added yet.</Typography>
+        <Typography variant="body2" className="text-[#6b5d52] italic">No specifications added yet.</Typography>
       )}
     </Box>
   );
@@ -221,7 +221,7 @@ function VariantEditor({ variants, onChange }: { variants: ProductVariant[]; onC
         </TableContainer>
       )}
       {variants.length === 0 && (
-        <Typography variant="body2" className="text-gray-500 italic">No variants configured. Base price will apply.</Typography>
+        <Typography variant="body2" className="text-[#6b5d52] italic">No variants configured. Base price will apply.</Typography>
       )}
     </Box>
   );
@@ -584,13 +584,13 @@ export default function ProductManagementPage() {
               </TableRow>
             ) : products.length === 0 ? (
               <TableRow>
-                <TableCell colSpan={9} align="center" className="py-8 text-gray-500">No products found</TableCell>
+                <TableCell colSpan={9} align="center" className="py-8 text-[#6b5d52]">No products found</TableCell>
               </TableRow>
             ) : (
               products.map((product) => (
                 <TableRow key={product.id} hover>
                   <TableCell className="font-medium">{product.name}</TableCell>
-                  <TableCell className="text-gray-600 text-sm">{product.sku}</TableCell>
+                  <TableCell className="text-[#6b5d52] text-sm">{product.sku}</TableCell>
                   <TableCell>{product.categoryName || '—'}</TableCell>
                   <TableCell align="right">{formatCurrency(product.basePrice)}</TableCell>
                   <TableCell align="right">
@@ -829,7 +829,7 @@ export default function ProductManagementPage() {
           {formTab === 1 && (
             <Box>
               <Typography variant="subtitle2" gutterBottom>Upload Images & Videos</Typography>
-              <Typography variant="body2" className="text-gray-500 mb-3">
+              <Typography variant="body2" className="text-[#6b5d52] mb-3">
                 Upload product images (JPEG, PNG, WebP, SVG up to 5MB) and videos (MP4, WebM up to 10MB, max 10s).
                 Click a thumbnail to set it as the main product image.
               </Typography>
@@ -900,7 +900,7 @@ export default function ProductManagementPage() {
           {formTab === 4 && (
             <Box>
               <Typography variant="subtitle2" gutterBottom>Multi-language Content</Typography>
-              <Typography variant="body2" className="text-gray-500 mb-3">
+              <Typography variant="body2" className="text-[#6b5d52] mb-3">
                 Provide translations for product fields. English (EN) is the default language.
                 Hindi (HI) and Gujarati (GU) translations are optional and will fall back to English if empty.
               </Typography>

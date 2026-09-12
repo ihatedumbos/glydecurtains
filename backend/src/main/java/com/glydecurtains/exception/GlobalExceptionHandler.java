@@ -1,7 +1,9 @@
 package com.glydecurtains.exception;
 
 import com.glydecurtains.dto.response.ApiErrorResponse;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.catalina.connector.ClientAbortException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
@@ -11,6 +13,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.servlet.resource.NoResourceFoundException;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -84,15 +87,35 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
     }
 
+    /**
+     * Client disconnects during media/range streaming (e.g. video/mp4 downloads cut short)
+     * surface as broken-pipe IOExceptions after the response is already committed. Writing a
+     * JSON error body onto a committed non-JSON response throws HttpMessageNotWritableException,
+     * so these are logged at debug level and otherwise ignored instead of producing a 500 response.
+     */
+    @ExceptionHandler({ClientAbortException.class, IOException.class})
+    public ResponseEntity<ApiErrorResponse> handleIOException(IOException ex, HttpServletResponse response) {
+        log.debug("Client disconnected during response streaming: {}", ex.getMessage());
+        if (response.isCommitted()) {
+            return null;
+        }
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body(ApiErrorResponse.of(HttpStatus.INTERNAL_SERVER_ERROR.value(), "IO_ERROR", "A streaming error occurred"));
+    }
+
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<ApiErrorResponse> handleGenericException(Exception ex) {
-        ApiErrorResponse response = ApiErrorResponse.of(
+    public ResponseEntity<ApiErrorResponse> handleGenericException(Exception ex, HttpServletResponse response) {
+        if (response.isCommitted()) {
+            log.warn("Exception occurred after response was committed, cannot write error body: {}", ex.toString());
+            return null;
+        }
+        ApiErrorResponse errorResponse = ApiErrorResponse.of(
                 HttpStatus.INTERNAL_SERVER_ERROR.value(),
                 "INTERNAL_ERROR",
                 "An unexpected error occurred"
         );
 
         log.error("Unexpected error: ", ex);
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
     }
 }

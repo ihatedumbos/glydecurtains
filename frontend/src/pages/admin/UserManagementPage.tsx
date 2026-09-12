@@ -327,9 +327,9 @@ export default function UserManagementPage() {
           </FormControl>
         </Box>
 
-        <Accordion disableGutters elevation={0} className="border border-gray-200 rounded">
+        <Accordion disableGutters elevation={0} className="border border-[#2c2c2c]/12 rounded">
           <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-            <Typography variant="body2" className="text-gray-600">
+            <Typography variant="body2" className="text-[#6b5d52]">
               Advanced Filters
             </Typography>
           </AccordionSummary>
@@ -412,7 +412,7 @@ export default function UserManagementPage() {
               </TableRow>
             ) : users.length === 0 ? (
               <TableRow>
-                <TableCell colSpan={6} align="center" className="py-8 text-gray-500">
+                <TableCell colSpan={6} align="center" className="py-8 text-[#6b5d52]">
                   No users found
                 </TableCell>
               </TableRow>
@@ -537,7 +537,7 @@ export default function UserManagementPage() {
               <CircularProgress />
             </Box>
           ) : auditLogs.length === 0 ? (
-            <Typography className="text-gray-500 text-center py-4">
+            <Typography className="text-[#6b5d52] text-center py-4">
               No audit log entries found for this user.
             </Typography>
           ) : (
@@ -558,7 +558,7 @@ export default function UserManagementPage() {
                       <Chip label={log.actionType} size="small" variant="outlined" />
                     </TableCell>
                     <TableCell>{log.details}</TableCell>
-                    <TableCell className="text-gray-500 text-sm">{log.ipAddress}</TableCell>
+                    <TableCell className="text-[#6b5d52] text-sm">{log.ipAddress}</TableCell>
                   </TableRow>
                 ))}
               </TableBody>

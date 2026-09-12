@@ -275,7 +275,7 @@ export default function RegisterPage() {
           {/* Link to Login */}
           <Typography variant="body2" className="mt-4 text-center" sx={{ mt: 3, textAlign: 'center' }}>
             {t('auth:haveAccount')}{' '}
-            <Link to="/login" className="text-blue-600 hover:underline">
+            <Link to="/login" className="text-[#a06b3a] hover:text-[#7a4f28] hover:underline">
               {t('auth:signInHere')}
             </Link>
           </Typography>

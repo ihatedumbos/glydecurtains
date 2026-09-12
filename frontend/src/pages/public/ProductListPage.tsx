@@ -118,32 +118,47 @@ export default function ProductListPage() {
   const fetchProducts = useCallback(async () => {
     dispatch(setProductLoading(true));
     try {
+      const shouldUseSearchEndpoint =
+        Boolean(query?.trim()) ||
+        filters.categoryId !== undefined ||
+        filters.subCategoryId !== undefined ||
+        filters.collectionId !== undefined;
+
+      // The two backend endpoints accept sorting differently:
+      // - /search/products (SearchRequest) takes a single `sortBy` string: popularity|newest|price_asc|price_desc|featured
+      // - /products/public (Spring Pageable) takes a `sort` param as "field,direction" and has no popularity concept
+      const publicSortMap: Record<string, string | undefined> = {
+        popularity: undefined,
+        newest: 'createdAt,desc',
+        price_asc: 'basePrice,asc',
+        price_desc: 'basePrice,desc',
+        featured: 'isFeatured,desc',
+      };
+
       const params: Record<string, string | number | undefined> = {
         page: page - 1, // Backend is 0-indexed
         size: 20,
-        sortBy: sortBy === 'popularity' ? undefined : sortBy,
-        sortDirection: sortBy === 'priceAsc' ? 'asc' : sortBy === 'priceDesc' ? 'desc' : sortBy === 'createdAt' ? 'desc' : undefined,
+        sortBy: shouldUseSearchEndpoint ? sortBy : undefined,
+        sort: shouldUseSearchEndpoint ? undefined : publicSortMap[sortBy],
         query: query?.trim() || undefined,
         categoryId: filters.categoryId,
         subCategoryId: filters.subCategoryId,
         collectionId: filters.collectionId,
         minPrice: filters.minPrice,
         maxPrice: filters.maxPrice,
-        colors: filters.colors?.join(',') || undefined,
-        sizes: filters.sizes?.join(',') || undefined,
-        materials: filters.materials?.join(',') || undefined,
+        // Backend only supports a single color/material value per request today,
+        // so we send the first selected chip from each multi-select filter group.
+        // NOTE: a product "size" filter can't be wired here - the backend binds both
+        // Pageable's page-size and ProductFilterRequest/SearchRequest's size filter field
+        // to the same `size` query param, so they'd collide. Needs a backend param rename.
+        color: filters.colors?.[0],
+        material: filters.materials?.[0],
       };
 
       // Remove undefined params
       const cleanParams = Object.fromEntries(
         Object.entries(params).filter(([, v]) => v !== undefined),
       );
-
-      const shouldUseSearchEndpoint =
-        Boolean(cleanParams.query) ||
-        cleanParams.categoryId !== undefined ||
-        cleanParams.subCategoryId !== undefined ||
-        cleanParams.collectionId !== undefined;
 
       const res = shouldUseSearchEndpoint
         ? await axiosInstance.get('/search/products', { params: cleanParams })
