@@ -14,7 +14,7 @@ services:
       - key: SPRING_PROFILES_ACTIVE
         value: prod
       - key: CORS_ORIGINS
-        value: https://glydecurtains.com,https://www.glydecurtains.com
+        value: https://glydecurtains.com,https://www.glydecurtains.com,https://glydecurtains-frontend.onrender.com
 
 static_sites:
   - name: glydecurtains-frontend
