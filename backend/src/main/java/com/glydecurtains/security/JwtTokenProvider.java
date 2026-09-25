@@ -83,15 +83,18 @@ public class JwtTokenProvider {
             parseClaims(token);
             return true;
         } catch (SecurityException e) {
-            logger.error("Invalid JWT signature: {}", e.getMessage());
+            logger.debug("Invalid JWT signature: {}", e.getMessage());
         } catch (MalformedJwtException e) {
-            logger.error("Invalid JWT token: {}", e.getMessage());
+            logger.debug("Invalid JWT token: {}", e.getMessage());
         } catch (ExpiredJwtException e) {
-            logger.error("JWT token is expired: {}", e.getMessage());
+            // Expected/benign: browsers routinely send stale tokens from localStorage. Since
+            // the active security config does not enforce authentication (permitAll), this is
+            // not an error condition and shouldn't be logged as one.
+            logger.debug("JWT token is expired: {}", e.getMessage());
         } catch (UnsupportedJwtException e) {
-            logger.error("JWT token is unsupported: {}", e.getMessage());
+            logger.debug("JWT token is unsupported: {}", e.getMessage());
         } catch (IllegalArgumentException e) {
-            logger.error("JWT claims string is empty: {}", e.getMessage());
+            logger.debug("JWT claims string is empty: {}", e.getMessage());
         }
         return false;
     }
