@@ -2,24 +2,24 @@
 @import "./styles/responsive.css";
 
 @theme {
-  --color-primary: #a06b3a;
-  --color-primary-light: #c99a5f;
-  --color-primary-dark: #7a4f28;
-  --color-paper: #faf5ea;
-  --color-ink: #2c2c2c;
+  --color-primary: #c27d56;
+  --color-primary-light: #d4a489;
+  --color-primary-dark: #925e41;
+  --color-paper: #ffffff;
+  --color-ink: #2f3e46;
   --font-display: "Lora", Georgia, serif;
   --font-annotation: "Caveat", cursive;
 }
 
 /* ===== CSS Custom Properties ===== */
 :root {
-  --primary-color: #a06b3a;
-  --secondary-color: #8a6d5a;
-  --accent-color: #a06b3a;
-  --accent-light: #c99a5f;
-  --background-color: #f4ede1;
-  --text-color: #2c2c2c;
-  --text-muted: #6b5d52;
+  --primary-color: #c27d56;
+  --secondary-color: #6d787e;
+  --accent-color: #c27d56;
+  --accent-light: #d4a489;
+  --background-color: #ffffff;
+  --text-color: #2f3e46;
+  --text-muted: #5c6b73;
   --border-radius: 8px;
 
   /* Workshop Typography Scale */
@@ -105,7 +105,7 @@ h6 { font-size: var(--text-lg); }
 
 /* ===== Paper Surface Utilities ===== */
 .glass-card {
-  background: #faf5ea;
+  background: #ffffff;
   border: 1px solid rgba(44, 34, 24, 0.12);
   border-radius: var(--border-radius);
   box-shadow: var(--shadow-soft);
@@ -116,20 +116,20 @@ h6 { font-size: var(--text-lg); }
 }
 
 .glass-panel {
-  background: #faf5ea;
+  background: #ffffff;
   border: 1px solid rgba(44, 34, 24, 0.12);
   border-radius: var(--border-radius);
 }
 
 .glass-input {
-  background: #faf5ea;
+  background: #ffffff;
   border: 1px solid rgba(44, 34, 24, 0.2);
   border-radius: var(--border-radius);
   transition: all 0.2s ease;
 }
 
 .glass-input:focus {
-  border-color: #a06b3a;
+  border-color: #c27d56;
   box-shadow: 0 0 0 3px rgba(160, 107, 58, 0.15);
   outline: none;
 }
@@ -309,7 +309,7 @@ h6 { font-size: var(--text-lg); }
 /* ===== Selection Styling ===== */
 ::selection {
   background: rgba(160, 107, 58, 0.25);
-  color: #2c2c2c;
+  color: #2f3e46;
 }
 
 /* ===== Responsive Typography & Layout Adjustments ===== */

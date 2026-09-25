@@ -115,10 +115,9 @@ export default function ProductCard({ product, variants = [], onAddToCart, onCli
         {/* Product image */}
         <CardMedia
           component="img"
-          height="220"
           image={resolveMediaUrl(product.thumbnailUrl) || '/assets/logo/poster.png'}
           alt={product.name}
-          sx={{ objectFit: 'cover' }}
+          sx={{ width: '100%', aspectRatio: '1', objectFit: 'cover' }}
           loading="lazy"
         />
 
@@ -132,6 +131,17 @@ export default function ProductCard({ product, variants = [], onAddToCart, onCli
           >
             {product.name}
           </Typography>
+
+          {(product.colors?.length || product.sizes?.length) ? (
+            <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
+              {product.colors?.slice(0, 4).map((color) => (
+                <Chip key={`c-${color}`} label={color} size="small" variant="outlined" sx={{ height: 20, fontSize: 11 }} />
+              ))}
+              {product.sizes?.slice(0, 3).map((size) => (
+                <Chip key={`s-${size}`} label={size} size="small" variant="outlined" color="primary" sx={{ height: 20, fontSize: 11 }} />
+              ))}
+            </Box>
+          ) : null}
 
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mt: 'auto' }}>
             <Typography variant="subtitle1" fontWeight={700} color="primary">

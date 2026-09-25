@@ -205,31 +205,31 @@ export default function HomePage() {
       {/* Fallback: if no sections configured, show a compact version of the workshop world */}
       {enabledSections.length === 0 && (
         <>
-          <section className="relative overflow-hidden bg-[#f4ede1] px-4 py-14 md:px-8 md:py-16">
+          <section className="relative overflow-hidden bg-[#ffffff] px-4 py-14 md:px-8 md:py-16">
             <div className="mx-auto grid max-w-6xl items-center gap-8 md:grid-cols-[1.1fr_0.9fr]">
               <div>
                 <p
-                  className="mb-3 text-2xl text-[#a06b3a]"
+                  className="mb-3 text-2xl text-[#c27d56]"
                   style={{ fontFamily: 'var(--font-annotation)' }}
                 >
                   Cut to fit, since day one.
                 </p>
-                <h1 className="max-w-2xl font-display text-4xl leading-[1.08] text-[#2c2c2c] md:text-5xl">
+                <h1 className="max-w-2xl font-display text-4xl leading-[1.08] text-[#2f3e46] md:text-5xl">
                   Curtain track runners and fittings, made by us, backed by real stores.
                 </h1>
-                <p className="mt-5 max-w-xl text-base leading-7 text-[#6b5d52] md:text-lg">
+                <p className="mt-5 max-w-xl text-base leading-7 text-[#5c6b73] md:text-lg">
                   Precision hardware for every home, plus direct bulk pricing for installers and dealers.
                 </p>
                 <div className="mt-8 flex flex-wrap gap-3">
                   <a
                     href="/products"
-                    className="inline-flex rounded-sm bg-[#a06b3a] px-5 py-3 text-sm font-semibold text-white transition-colors hover:bg-[#7a4f28]"
+                    className="inline-flex rounded-sm bg-[#c27d56] px-5 py-3 text-sm font-semibold text-white transition-colors hover:bg-[#925e41]"
                   >
                     Shop now
                   </a>
                   <a
                     href="/about"
-                    className="inline-flex rounded-sm border border-[#2c2c2c]/20 px-5 py-3 text-sm font-semibold text-[#2c2c2c] transition-colors hover:bg-[#2c2c2c]/5"
+                    className="inline-flex rounded-sm border border-[#2f3e46]/20 px-5 py-3 text-sm font-semibold text-[#2f3e46] transition-colors hover:bg-[#2f3e46]/5"
                   >
                     About us
                   </a>
@@ -237,7 +237,7 @@ export default function HomePage() {
               </div>
 
               <div className="relative">
-                <div className="overflow-hidden rounded-sm border border-[#2c2c2c]/15 bg-[#faf5ea] p-3 shadow-[0_2px_10px_rgba(44,34,24,0.12)]">
+                <div className="overflow-hidden rounded-sm border border-[#2f3e46]/15 bg-[#ffffff] p-3 shadow-[0_2px_10px_rgba(44,34,24,0.12)]">
                   <img
                     src={resolveMediaUrl('/assets/logo/poster.png')}
                     alt="Glyde Curtains hardware collection"

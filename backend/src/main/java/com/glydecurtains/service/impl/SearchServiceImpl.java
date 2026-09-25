@@ -261,8 +261,8 @@ public class SearchServiceImpl implements SearchService {
                 .filter(p -> filterByCategory(p, request.getCategoryId()))
                 .filter(p -> filterBySubCategory(p, request.getSubCategoryId()))
                 .filter(p -> filterByCollection(p, request.getCollectionId()))
-                .filter(p -> filterByColor(p, request.getColor()))
-                .filter(p -> filterBySize(p, request.getSize()))
+                .filter(p -> filterByColor(p, request.getColors()))
+                .filter(p -> filterBySize(p, request.getSizes()))
                 .filter(p -> filterByMaterial(p, request.getMaterial()))
                 .filter(p -> filterByPriceRange(p, request.getMinPrice(), request.getMaxPrice()))
                 .filter(p -> filterByAvailability(p, request.getInStock()))
@@ -281,16 +281,26 @@ public class SearchServiceImpl implements SearchService {
         return collectionId == null || collectionId.equals(product.getCollectionId());
     }
 
-    private boolean filterByColor(Product product, String color) {
-        if (color == null || color.isBlank()) return true;
-        List<String> colors = fromJson(product.getColors());
-        return colors.stream().anyMatch(c -> c.equalsIgnoreCase(color));
+    private boolean filterByColor(Product product, String colorsCsv) {
+        List<String> requested = fromCsv(colorsCsv);
+        if (requested.isEmpty()) return true;
+        List<String> productColors = fromJson(product.getColors());
+        return requested.stream().anyMatch(rc -> productColors.stream().anyMatch(pc -> pc.equalsIgnoreCase(rc)));
     }
 
-    private boolean filterBySize(Product product, String size) {
-        if (size == null || size.isBlank()) return true;
-        List<String> sizes = fromJson(product.getSizes());
-        return sizes.stream().anyMatch(s -> s.equalsIgnoreCase(size));
+    private boolean filterBySize(Product product, String sizesCsv) {
+        List<String> requested = fromCsv(sizesCsv);
+        if (requested.isEmpty()) return true;
+        List<String> productSizes = fromJson(product.getSizes());
+        return requested.stream().anyMatch(rs -> productSizes.stream().anyMatch(ps -> ps.equalsIgnoreCase(rs)));
+    }
+
+    private List<String> fromCsv(String csv) {
+        if (csv == null || csv.isBlank()) return Collections.emptyList();
+        return Arrays.stream(csv.split(","))
+                .map(String::trim)
+                .filter(s -> !s.isEmpty())
+                .collect(Collectors.toList());
     }
 
     private boolean filterByMaterial(Product product, String material) {

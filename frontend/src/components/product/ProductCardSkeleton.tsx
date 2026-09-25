@@ -3,7 +3,7 @@ import { Card, CardContent, Skeleton, Box } from '@mui/material';
 export default function ProductCardSkeleton() {
   return (
     <Card sx={{ height: '100%', borderRadius: 2 }}>
-      <Skeleton variant="rectangular" height={220} animation="wave" />
+      <Skeleton variant="rectangular" sx={{ width: '100%', aspectRatio: '1' }} animation="wave" />
       <CardContent>
         <Skeleton variant="text" width="80%" animation="wave" />
         <Box sx={{ display: 'flex', gap: 1, mt: 1 }}>

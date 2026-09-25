@@ -143,10 +143,10 @@ export default function OrderDetailPage() {
     return (
       <div className="max-w-4xl mx-auto p-6">
         <div className="animate-pulse space-y-4">
-          <div className="h-8 bg-[#e8dfcd] rounded w-1/3" />
-          <div className="h-4 bg-[#e8dfcd] rounded w-1/4" />
-          <div className="h-32 bg-[#e8dfcd] rounded" />
-          <div className="h-48 bg-[#e8dfcd] rounded" />
+          <div className="h-8 bg-[#f2f4f5] rounded w-1/3" />
+          <div className="h-4 bg-[#f2f4f5] rounded w-1/4" />
+          <div className="h-32 bg-[#f2f4f5] rounded" />
+          <div className="h-48 bg-[#f2f4f5] rounded" />
         </div>
       </div>
     );
@@ -160,7 +160,7 @@ export default function OrderDetailPage() {
         </div>
         <button
           onClick={() => navigate('/orders')}
-          className="mt-4 px-4 py-2 text-[#a06b3a] hover:text-[#7a4f28] hover:underline"
+          className="mt-4 px-4 py-2 text-[#c27d56] hover:text-[#925e41] hover:underline"
         >
           ← Back to Orders
         </button>
@@ -177,14 +177,14 @@ export default function OrderDetailPage() {
         <div>
           <button
             onClick={() => navigate('/orders')}
-            className="text-sm text-[#a06b3a] hover:text-[#7a4f28] hover:underline mb-2 inline-block"
+            className="text-sm text-[#c27d56] hover:text-[#925e41] hover:underline mb-2 inline-block"
           >
             ← Back to Orders
           </button>
-          <h1 className="text-2xl font-bold text-[#2c2c2c]">{order.orderNumber}</h1>
-          <p className="text-sm text-[#6b5d52] mt-1">Placed on {formatDate(order.createdAt)}</p>
+          <h1 className="text-2xl font-bold text-[#2f3e46]">{order.orderNumber}</h1>
+          <p className="text-sm text-[#5c6b73] mt-1">Placed on {formatDate(order.createdAt)}</p>
         </div>
-        <span className={`px-4 py-1.5 rounded-full text-sm font-medium ${STATUS_COLORS[order.status] || 'bg-[#f4ede1] text-[#2c2c2c]'}`}>
+        <span className={`px-4 py-1.5 rounded-full text-sm font-medium ${STATUS_COLORS[order.status] || 'bg-[#ffffff] text-[#2f3e46]'}`}>
           {order.status}
         </span>
       </div>
@@ -197,7 +197,7 @@ export default function OrderDetailPage() {
 
       {/* Status Timeline */}
       {order.status !== 'CANCELLED' && (
-        <div className="bg-[#faf5ea] rounded-lg shadow p-6 mb-6">
+        <div className="bg-[#ffffff] rounded-lg shadow p-6 mb-6">
           <h2 className="text-lg font-semibold mb-4">Order Progress</h2>
           <div className="flex items-center justify-between">
             {STATUS_ORDER.map((status, index) => {
@@ -207,11 +207,11 @@ export default function OrderDetailPage() {
                 <div key={status} className="flex flex-col items-center flex-1">
                   <div className="flex items-center w-full">
                     {index > 0 && (
-                      <div className={`flex-1 h-0.5 ${index <= currentStatusIndex ? 'bg-[#a06b3a]' : 'bg-[#e8dfcd]'}`} />
+                      <div className={`flex-1 h-0.5 ${index <= currentStatusIndex ? 'bg-[#c27d56]' : 'bg-[#f2f4f5]'}`} />
                     )}
                     <div
                       className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-medium shrink-0
-                        ${isCurrent ? 'bg-[#a06b3a] text-white ring-4 ring-[#a06b3a]/15' : isCompleted ? 'bg-[#a06b3a] text-white' : 'bg-[#e8dfcd] text-[#6b5d52]'}`}
+                        ${isCurrent ? 'bg-[#c27d56] text-white ring-4 ring-[#c27d56]/15' : isCompleted ? 'bg-[#c27d56] text-white' : 'bg-[#f2f4f5] text-[#5c6b73]'}`}
                     >
                       {isCompleted ? (
                         <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -222,10 +222,10 @@ export default function OrderDetailPage() {
                       )}
                     </div>
                     {index < STATUS_ORDER.length - 1 && (
-                      <div className={`flex-1 h-0.5 ${index < currentStatusIndex ? 'bg-[#a06b3a]' : 'bg-[#e8dfcd]'}`} />
+                      <div className={`flex-1 h-0.5 ${index < currentStatusIndex ? 'bg-[#c27d56]' : 'bg-[#f2f4f5]'}`} />
                     )}
                   </div>
-                  <span className={`text-xs mt-2 text-center ${isCurrent ? 'font-semibold text-[#a06b3a]' : 'text-[#6b5d52]'}`}>
+                  <span className={`text-xs mt-2 text-center ${isCurrent ? 'font-semibold text-[#c27d56]' : 'text-[#5c6b73]'}`}>
                     {status.charAt(0) + status.slice(1).toLowerCase()}
                   </span>
                 </div>
@@ -237,18 +237,18 @@ export default function OrderDetailPage() {
 
       {/* Status History */}
       {order.statusHistory && order.statusHistory.length > 0 && (
-        <div className="bg-[#faf5ea] rounded-lg shadow p-6 mb-6">
+        <div className="bg-[#ffffff] rounded-lg shadow p-6 mb-6">
           <h2 className="text-lg font-semibold mb-4">Status History</h2>
           <div className="space-y-3">
             {order.statusHistory.map((entry) => (
               <div key={entry.id} className="flex items-start gap-3">
-                <div className="w-2 h-2 rounded-full bg-[#8a6d5a] mt-2 shrink-0" />
+                <div className="w-2 h-2 rounded-full bg-[#6d787e] mt-2 shrink-0" />
                 <div>
-                  <p className="text-sm text-[#2c2c2c]">
+                  <p className="text-sm text-[#2f3e46]">
                     {entry.fromStatus ? `${entry.fromStatus} → ` : ''}{entry.toStatus}
                   </p>
-                  <p className="text-xs text-[#8a7a6b]">{formatDate(entry.changedAt)}</p>
-                  {entry.notes && <p className="text-xs text-[#6b5d52] mt-0.5">{entry.notes}</p>}
+                  <p className="text-xs text-[#8a97a0]">{formatDate(entry.changedAt)}</p>
+                  {entry.notes && <p className="text-xs text-[#5c6b73] mt-0.5">{entry.notes}</p>}
                 </div>
               </div>
             ))}
@@ -257,7 +257,7 @@ export default function OrderDetailPage() {
       )}
 
       {/* Line Items */}
-      <div className="bg-[#faf5ea] rounded-lg shadow mb-6">
+      <div className="bg-[#ffffff] rounded-lg shadow mb-6">
         <div className="p-4 border-b">
           <h2 className="text-lg font-semibold">Order Items</h2>
         </div>
@@ -265,23 +265,23 @@ export default function OrderDetailPage() {
           {order.items.map((item) => (
             <div key={item.id} className="p-4 flex items-center justify-between">
               <div className="flex-1">
-                <p className="font-medium text-[#2c2c2c]">{item.productName}</p>
-                <p className="text-sm text-[#6b5d52]">
+                <p className="font-medium text-[#2f3e46]">{item.productName}</p>
+                <p className="text-sm text-[#5c6b73]">
                   Qty: {item.quantity} × ₹{item.unitPrice.toLocaleString('en-IN')}
                 </p>
               </div>
-              <p className="font-medium text-[#2c2c2c]">
+              <p className="font-medium text-[#2f3e46]">
                 ₹{item.subtotal.toLocaleString('en-IN')}
               </p>
             </div>
           ))}
         </div>
-        <div className="p-4 border-t bg-[#f4ede1]">
-          <div className="flex justify-between text-sm text-[#6b5d52] mb-1">
+        <div className="p-4 border-t bg-[#ffffff]">
+          <div className="flex justify-between text-sm text-[#5c6b73] mb-1">
             <span>Subtotal</span>
             <span>₹{order.subtotal.toLocaleString('en-IN')}</span>
           </div>
-          <div className="flex justify-between text-lg font-semibold text-[#2c2c2c]">
+          <div className="flex justify-between text-lg font-semibold text-[#2f3e46]">
             <span>Grand Total</span>
             <span>₹{order.grandTotal.toLocaleString('en-IN')}</span>
           </div>
@@ -294,7 +294,7 @@ export default function OrderDetailPage() {
           <button
             onClick={handleDownloadInvoice}
             disabled={downloading}
-            className="px-5 py-2 border border-[#a06b3a] text-[#a06b3a] rounded-lg hover:bg-[#f4ede1] transition-colors disabled:opacity-50"
+            className="px-5 py-2 border border-[#c27d56] text-[#c27d56] rounded-lg hover:bg-[#ffffff] transition-colors disabled:opacity-50"
           >
             {downloading ? 'Downloading...' : 'Download Invoice'}
           </button>

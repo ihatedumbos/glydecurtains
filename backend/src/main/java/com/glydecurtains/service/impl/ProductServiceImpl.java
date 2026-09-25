@@ -9,6 +9,7 @@ import com.glydecurtains.entity.*;
 import com.glydecurtains.entity.enums.ProductStatus;
 import com.glydecurtains.exception.BusinessException;
 import com.glydecurtains.repository.*;
+import com.glydecurtains.repository.spec.ProductSpecifications;
 import com.glydecurtains.service.ProductService;
 import com.glydecurtains.service.TranslationService;
 import lombok.RequiredArgsConstructor;
@@ -265,25 +266,10 @@ public class ProductServiceImpl implements ProductService {
     @Override
     @Transactional(readOnly = true)
     public PageResponse<ProductResponse> getProducts(ProductFilterRequest filter, Pageable pageable) {
-        Page<Product> page;
-
-        if (filter != null && filter.getQuery() != null && !filter.getQuery().isBlank()) {
-            if (filter.getStatus() != null) {
-                page = productRepository.search(filter.getQuery(), filter.getStatus(), pageable);
-            } else {
-                page = productRepository.searchAll(filter.getQuery(), pageable);
-            }
-        } else if (filter != null && filter.getCategoryId() != null) {
-            if (filter.getStatus() != null) {
-                page = productRepository.findByCategoryIdAndStatus(filter.getCategoryId(), filter.getStatus(), pageable);
-            } else {
-                page = productRepository.findByCategoryId(filter.getCategoryId(), pageable);
-            }
-        } else if (filter != null && filter.getStatus() != null) {
-            page = productRepository.findByStatus(filter.getStatus(), pageable);
-        } else {
-            page = productRepository.findAll(pageable);
-        }
+        // Specification applies every populated filter field (category, sub-category,
+        // collection, color, size, material, price range, status, merchandising flags)
+        // - previously subCategoryId/color/size/material/price were silently ignored here.
+        Page<Product> page = productRepository.findAll(ProductSpecifications.fromFilter(filter), pageable);
 
         List<ProductResponse> content = page.getContent().stream()
                 .map(this::mapToProductResponse)

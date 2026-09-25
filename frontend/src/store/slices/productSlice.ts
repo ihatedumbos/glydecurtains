@@ -17,6 +17,9 @@ export interface Product {
   isBestSeller?: boolean;
   isPremium?: boolean;
   stockQuantity: number;
+  material?: string;
+  colors?: string[];
+  sizes?: string[];
 }
 
 export interface ProductFilters {

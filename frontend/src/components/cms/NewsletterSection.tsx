@@ -26,8 +26,8 @@ export default function NewsletterSection({ title }: NewsletterSectionProps) {
         transition={{ duration: 0.5 }}
         className="max-w-2xl mx-auto text-center"
       >
-        <h2 className="mb-4 font-display text-2xl text-[#2c2c2c] md:text-3xl">{title || 'Stay Updated'}</h2>
-        <p className="text-[#6b5d52] mb-8">
+        <h2 className="mb-4 font-display text-2xl text-[#2f3e46] md:text-3xl">{title || 'Stay Updated'}</h2>
+        <p className="text-[#5c6b73] mb-8">
           Subscribe to our newsletter for the latest collections, exclusive offers, and home décor inspiration.
         </p>
         {submitted ? (
@@ -46,7 +46,7 @@ export default function NewsletterSection({ title }: NewsletterSectionProps) {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
-              className="flex-1 px-4 py-3 rounded-full border border-[#2c2c2c]/15 bg-[#faf5ea] text-[#2c2c2c] text-sm placeholder:text-[#8a7a6b] focus:outline-none focus:ring-2 focus:ring-[#a06b3a]/40"
+              className="flex-1 px-4 py-3 rounded-full border border-[#2f3e46]/15 bg-[#ffffff] text-[#2f3e46] text-sm placeholder:text-[#8a97a0] focus:outline-none focus:ring-2 focus:ring-[#c27d56]/40"
             />
             <button
               type="submit"

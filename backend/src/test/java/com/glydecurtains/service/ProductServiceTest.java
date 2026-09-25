@@ -310,14 +310,15 @@ class ProductServiceTest {
             Pageable pageable = PageRequest.of(0, 10);
 
             Page<Product> productPage = new PageImpl<>(List.of(sampleProduct), pageable, 1);
-            when(productRepository.findByCategoryId(1L, pageable)).thenReturn(productPage);
+            when(productRepository.findAll(org.mockito.ArgumentMatchers.<org.springframework.data.jpa.domain.Specification<Product>>any(), eq(pageable)))
+                    .thenReturn(productPage);
 
             var result = productService.getProducts(filter, pageable);
 
             assertThat(result).isNotNull();
             assertThat(result.getContent()).hasSize(1);
             assertThat(result.getContent().get(0).getCategoryId()).isEqualTo(1L);
-            verify(productRepository).findByCategoryId(1L, pageable);
+            verify(productRepository).findAll(org.mockito.ArgumentMatchers.<org.springframework.data.jpa.domain.Specification<Product>>any(), eq(pageable));
         }
     }
 
@@ -334,14 +335,15 @@ class ProductServiceTest {
             Pageable pageable = PageRequest.of(0, 10);
 
             Page<Product> productPage = new PageImpl<>(List.of(sampleProduct), pageable, 1);
-            when(productRepository.findByStatus(ProductStatus.ACTIVE, pageable)).thenReturn(productPage);
+            when(productRepository.findAll(org.mockito.ArgumentMatchers.<org.springframework.data.jpa.domain.Specification<Product>>any(), eq(pageable)))
+                    .thenReturn(productPage);
 
             var result = productService.getProducts(filter, pageable);
 
             assertThat(result).isNotNull();
             assertThat(result.getContent()).hasSize(1);
             assertThat(result.getContent().get(0).getStatus()).isEqualTo(ProductStatus.ACTIVE);
-            verify(productRepository).findByStatus(ProductStatus.ACTIVE, pageable);
+            verify(productRepository).findAll(org.mockito.ArgumentMatchers.<org.springframework.data.jpa.domain.Specification<Product>>any(), eq(pageable));
         }
     }
 }

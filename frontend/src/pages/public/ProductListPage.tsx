@@ -17,9 +17,11 @@ import {
 import FilterListIcon from '@mui/icons-material/FilterList';
 import CloseIcon from '@mui/icons-material/Close';
 import HomeIcon from '@mui/icons-material/Home';
-import { useSearchParams, Link as RouterLink } from 'react-router-dom';
+import { useSearchParams, Link as RouterLink, useNavigate } from 'react-router-dom';
 import { useAppSelector, useAppDispatch } from '@/store/hooks';
-import { setProducts, setFilters, setProductLoading, type ProductFilters } from '@/store/slices/productSlice';
+import { setProducts, setFilters, setProductLoading, type Product, type ProductFilters } from '@/store/slices/productSlice';
+import { addCartItem } from '@/store/slices/cartSlice';
+import { addToast } from '@/store/slices/uiSlice';
 import { setQuery, setSuggestions, setRecentSearches } from '@/store/slices/searchSlice';
 import axiosInstance from '@/api/axiosInstance';
 import ProductCard from '@/components/product/ProductCard';
@@ -41,6 +43,7 @@ export default function ProductListPage() {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
   const dispatch = useAppDispatch();
+  const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
 
   // Redux state
@@ -226,11 +229,39 @@ export default function ProductListPage() {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
+  const handleAddToCart = useCallback(
+    async (product: Product, variant: { id: number } | null) => {
+      try {
+        await dispatch(
+          addCartItem({ productId: product.id, variantId: variant?.id, quantity: 1 }),
+        ).unwrap();
+        dispatch(addToast({ id: `cart-add-${Date.now()}`, type: 'success', message: `${product.name} added to cart` }));
+      } catch (err) {
+        dispatch(
+          addToast({
+            id: `cart-add-error-${Date.now()}`,
+            type: 'error',
+            message: typeof err === 'string' ? err : 'Failed to add item to cart',
+          }),
+        );
+      }
+    },
+    [dispatch],
+  );
+
   // Active filter chips
   const activeFilterChips: { label: string; onDelete: () => void }[] = [];
   if (filters.categoryId) {
     const cat = categories.find((c) => c.id === filters.categoryId);
     if (cat) activeFilterChips.push({ label: cat.name, onDelete: () => handleFilterChange({ ...filters, categoryId: undefined }) });
+  }
+  if (filters.subCategoryId) {
+    const sub = subCategories.find((s) => s.id === filters.subCategoryId);
+    if (sub) activeFilterChips.push({ label: sub.name, onDelete: () => handleFilterChange({ ...filters, subCategoryId: undefined }) });
+  }
+  if (filters.collectionId) {
+    const col = collections.find((c) => c.id === filters.collectionId);
+    if (col) activeFilterChips.push({ label: col.name, onDelete: () => handleFilterChange({ ...filters, collectionId: undefined }) });
   }
   if (filters.colors?.length) {
     filters.colors.forEach((color) => {
@@ -240,12 +271,32 @@ export default function ProductListPage() {
       }});
     });
   }
+  if (filters.sizes?.length) {
+    filters.sizes.forEach((size) => {
+      activeFilterChips.push({ label: size, onDelete: () => {
+        const updated = filters.sizes!.filter((s) => s !== size);
+        handleFilterChange({ ...filters, sizes: updated.length ? updated : undefined });
+      }});
+    });
+  }
+  if (filters.materials?.length) {
+    filters.materials.forEach((material) => {
+      activeFilterChips.push({ label: material, onDelete: () => {
+        const updated = filters.materials!.filter((m) => m !== material);
+        handleFilterChange({ ...filters, materials: updated.length ? updated : undefined });
+      }});
+    });
+  }
   if (filters.minPrice || filters.maxPrice) {
     activeFilterChips.push({
       label: `₹${filters.minPrice || 0} - ₹${filters.maxPrice || '50,000'}`,
       onDelete: () => handleFilterChange({ ...filters, minPrice: undefined, maxPrice: undefined }),
     });
   }
+
+  const handleClearAllFilters = () => {
+    handleFilterChange({});
+  };
 
   // Skeleton grid
   const renderSkeletons = () => (
@@ -317,10 +368,13 @@ export default function ProductListPage() {
 
       {/* Active filter chips */}
       {activeFilterChips.length > 0 && (
-        <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1, mb: 2 }}>
+        <Box sx={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: 1, mb: 2 }}>
           {activeFilterChips.map((chip, idx) => (
             <Chip key={idx} label={chip.label} onDelete={chip.onDelete} size="small" />
           ))}
+          <Button size="small" color="error" onClick={handleClearAllFilters}>
+            Clear All
+          </Button>
         </Box>
       )}
 
@@ -366,9 +420,11 @@ export default function ProductListPage() {
               <Grid container spacing={2}>
                 {products.map((product) => (
                   <Grid item xs={12} sm={6} md={4} lg={3} key={product.id}>
-                    <RouterLink to={`/products/${product.id}`} style={{ textDecoration: 'none' }}>
-                      <ProductCard product={product} />
-                    </RouterLink>
+                    <ProductCard
+                      product={product}
+                      onClick={(p) => navigate(`/products/${p.id}`)}
+                      onAddToCart={handleAddToCart}
+                    />
                   </Grid>
                 ))}
               </Grid>

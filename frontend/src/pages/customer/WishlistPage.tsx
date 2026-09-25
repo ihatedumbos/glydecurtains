@@ -122,10 +122,9 @@ export default function WishlistPage() {
               >
                 <CardMedia
                   component="img"
-                  height="200"
                   image={resolveMediaUrl(item.thumbnailUrl) || '/assets/logo/poster.png'}
                   alt={item.productName}
-                  sx={{ objectFit: 'cover' }}
+                  sx={{ width: '100%', aspectRatio: '1', objectFit: 'cover' }}
                 />
                 <CardContent sx={{ flexGrow: 1 }}>
                   <Typography variant="subtitle1" fontWeight="bold" noWrap>

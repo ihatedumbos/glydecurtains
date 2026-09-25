@@ -312,7 +312,7 @@ export default function InvoiceManagementPage() {
               variant="outlined"
               sx={{
                 p: 3,
-                backgroundColor: '#fafafa',
+                backgroundColor: '#f2f4f5',
                 minHeight: 400,
               }}
             >
@@ -324,7 +324,7 @@ export default function InvoiceManagementPage() {
                       sx={{
                         width: 48,
                         height: 48,
-                        backgroundColor: '#e0e0e0',
+                        backgroundColor: 'rgba(47, 62, 70, 0.15)',
                         borderRadius: 1,
                         display: 'flex',
                         alignItems: 'center',

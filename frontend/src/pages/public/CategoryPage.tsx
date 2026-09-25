@@ -1,13 +1,22 @@
 import { useEffect, useState } from 'react';
 import { Box, Container, Grid, Typography, Breadcrumbs, Link, Chip } from '@mui/material';
 import HomeIcon from '@mui/icons-material/Home';
-import { Link as RouterLink, useParams } from 'react-router-dom';
+import { Link as RouterLink, useParams, useNavigate, useSearchParams } from 'react-router-dom';
 import axiosInstance from '@/api/axiosInstance';
 import ProductCard from '@/components/product/ProductCard';
 import type { Product } from '@/store/slices/productSlice';
+import { addCartItem } from '@/store/slices/cartSlice';
+import { addToast } from '@/store/slices/uiSlice';
+import { useAppDispatch } from '@/store/hooks';
 
 export default function CategoryPage() {
   const { slug, subSlug } = useParams();
+  const [searchParams] = useSearchParams();
+  const navigate = useNavigate();
+  const dispatch = useAppDispatch();
+  // Some links (e.g. the product detail breadcrumb) pass the sub-category as a
+  // `?sub=` query param instead of a path segment - support both.
+  const effectiveSubSlug = subSlug || searchParams.get('sub') || undefined;
   const [products, setProducts] = useState<Product[]>([]);
   const [categoryName, setCategoryName] = useState('Category');
   const [loading, setLoading] = useState(true);
@@ -26,17 +35,25 @@ export default function CategoryPage() {
         const tree = treeRes.data?.data || treeRes.data || [];
 
         const category = tree.find((item: any) =>
-          item.slug === slug || item.name?.toLowerCase().replace(/\s+/g, '-') === slug,
+          item.slug === slug ||
+          item.name?.toLowerCase().replace(/\s+/g, '-') === slug ||
+          String(item.id) === slug,
         );
 
         if (category) {
           categoryId = category.id;
           setCategoryName(category.name);
 
-          const subCategory = (category.subCategories || []).find(
-            (item: any) => item.slug === subSlug || item.name?.toLowerCase().replace(/\s+/g, '-') === subSlug,
-          );
-          subCategoryId = subCategory?.id;
+          if (effectiveSubSlug) {
+            const subCategory = (category.subCategories || []).find(
+              (item: any) =>
+                item.slug === effectiveSubSlug ||
+                item.name?.toLowerCase().replace(/\s+/g, '-') === effectiveSubSlug ||
+                String(item.id) === effectiveSubSlug,
+            );
+            subCategoryId = subCategory?.id;
+            if (subCategory) setCategoryName(subCategory.name);
+          }
         }
 
         const params: Record<string, string | number | undefined> = {
@@ -64,7 +81,22 @@ export default function CategoryPage() {
     return () => {
       active = false;
     };
-  }, [slug, subSlug]);
+  }, [slug, effectiveSubSlug]);
+
+  const handleAddToCart = async (product: Product, variant: { id: number } | null) => {
+    try {
+      await dispatch(addCartItem({ productId: product.id, variantId: variant?.id, quantity: 1 })).unwrap();
+      dispatch(addToast({ id: `cart-add-${Date.now()}`, type: 'success', message: `${product.name} added to cart` }));
+    } catch (err) {
+      dispatch(
+        addToast({
+          id: `cart-add-error-${Date.now()}`,
+          type: 'error',
+          message: typeof err === 'string' ? err : 'Failed to add item to cart',
+        }),
+      );
+    }
+  };
 
   return (
     <Container maxWidth="xl" sx={{ py: 4 }}>
@@ -98,7 +130,7 @@ export default function CategoryPage() {
         <Grid container spacing={2.5}>
           {products.map((product) => (
             <Grid item xs={12} sm={6} md={4} lg={3} key={product.id}>
-              <ProductCard product={product} />
+              <ProductCard product={product} onClick={(p) => navigate(`/products/${p.id}`)} onAddToCart={handleAddToCart} />
             </Grid>
           ))}
         </Grid>

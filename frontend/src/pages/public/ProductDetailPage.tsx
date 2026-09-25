@@ -21,10 +21,19 @@ import {
   CardContent,
   CardActionArea,
   Alert,
+  Button,
+  IconButton,
+  CircularProgress,
 } from '@mui/material';
+import ShoppingCartOutlinedIcon from '@mui/icons-material/ShoppingCartOutlined';
+import AddIcon from '@mui/icons-material/Add';
+import RemoveIcon from '@mui/icons-material/Remove';
 import Breadcrumb, { BreadcrumbItem } from '@/components/layout/Breadcrumb';
 import axiosInstance from '@/api/axiosInstance';
 import { resolveMediaUrl } from '@/utils/mediaUrl';
+import { useAppDispatch } from '@/store/hooks';
+import { addCartItem } from '@/store/slices/cartSlice';
+import { addToast } from '@/store/slices/uiSlice';
 
 // ─── Types ──────────────────────────────────────────────────────────────────
 
@@ -183,6 +192,7 @@ function LazyImage({
 
 export default function ProductDetailPage() {
   const { id } = useParams<{ id: string }>();
+  const dispatch = useAppDispatch();
   const [product, setProduct] = useState<ProductDetail | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -193,6 +203,8 @@ export default function ProductDetailPage() {
 
   const [selectedColor, setSelectedColor] = useState<string | null>(null);
   const [selectedSize, setSelectedSize] = useState<string | null>(null);
+  const [quantity, setQuantity] = useState(1);
+  const [addingToCart, setAddingToCart] = useState(false);
 
   const [relatedProducts, setRelatedProducts] = useState<RelatedProduct[]>([]);
   const [similarProducts, setSimilarProducts] = useState<RelatedProduct[]>([]);
@@ -285,6 +297,57 @@ export default function ProductDetailPage() {
       price: product.offerPrice || product.basePrice,
     };
   }, [product, selectedColor, selectedSize]);
+
+  // The single matched variant (if any) for the current color/size selection - used to
+  // send the correct variantId when adding to cart.
+  const selectedVariant = useMemo(() => {
+    if (!product || (!selectedColor && !selectedSize)) return null;
+    const matches = product.variants.filter((v) => {
+      const colorMatch = !selectedColor || v.color === selectedColor;
+      const sizeMatch = !selectedSize || v.size === selectedSize;
+      return colorMatch && sizeMatch;
+    });
+    return matches.length === 1 ? matches[0] : null;
+  }, [product, selectedColor, selectedSize]);
+
+  const handleAddToCart = useCallback(async () => {
+    if (!product) return;
+    setAddingToCart(true);
+    try {
+      await dispatch(
+        addCartItem({ productId: product.id, variantId: selectedVariant?.id, quantity }),
+      ).unwrap();
+      dispatch(addToast({ id: `cart-add-${Date.now()}`, type: 'success', message: `${product.name} added to cart` }));
+    } catch (err) {
+      dispatch(
+        addToast({
+          id: `cart-add-error-${Date.now()}`,
+          type: 'error',
+          message: typeof err === 'string' ? err : 'Failed to add item to cart',
+        }),
+      );
+    } finally {
+      setAddingToCart(false);
+    }
+  }, [dispatch, product, selectedVariant, quantity]);
+
+  const handleAddToCartGeneric = useCallback(
+    async (productId: number, productName: string) => {
+      try {
+        await dispatch(addCartItem({ productId, quantity: 1 })).unwrap();
+        dispatch(addToast({ id: `cart-add-${Date.now()}`, type: 'success', message: `${productName} added to cart` }));
+      } catch (err) {
+        dispatch(
+          addToast({
+            id: `cart-add-error-${Date.now()}`,
+            type: 'error',
+            message: typeof err === 'string' ? err : 'Failed to add item to cart',
+          }),
+        );
+      }
+    },
+    [dispatch],
+  );
 
   // ─── Image zoom handler ────────────────────────────────────────────────
 
@@ -460,10 +523,25 @@ export default function ProductDetailPage() {
               <Grid container spacing={1}>
                 {videos.map((video) => (
                   <Grid key={video.id} size={{ xs: 12, sm: 6 }}>
-                    <video controls preload="metadata" style={{ width: '100%', display: 'block', borderRadius: 8 }}>
-                      <source src={getImageSrc(video)} type={video.mimeType} />
-                      Your browser does not support this video.
-                    </video>
+                    <Box
+                      sx={{
+                        position: 'relative',
+                        width: '100%',
+                        aspectRatio: '1',
+                        borderRadius: 2,
+                        overflow: 'hidden',
+                        bgcolor: 'common.black',
+                      }}
+                    >
+                      <video
+                        controls
+                        preload="metadata"
+                        style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'contain' }}
+                      >
+                        <source src={getImageSrc(video)} type={video.mimeType} />
+                        Your browser does not support this video.
+                      </video>
+                    </Box>
                   </Grid>
                 ))}
               </Grid>
@@ -608,6 +686,39 @@ export default function ProductDetailPage() {
             </Box>
           </Box>
 
+          {/* Quantity + Add to Cart */}
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 3 }}>
+            <Box sx={{ display: 'flex', alignItems: 'center', border: '1px solid', borderColor: 'divider', borderRadius: 1.5 }}>
+              <IconButton
+                size="small"
+                onClick={() => setQuantity((q) => Math.max(1, q - 1))}
+                disabled={quantity <= 1}
+                aria-label="Decrease quantity"
+              >
+                <RemoveIcon fontSize="small" />
+              </IconButton>
+              <Typography sx={{ px: 2, minWidth: 24, textAlign: 'center' }}>{quantity}</Typography>
+              <IconButton
+                size="small"
+                onClick={() => setQuantity((q) => Math.min(availability.stock || 99, q + 1))}
+                disabled={availability.stock > 0 && quantity >= availability.stock}
+                aria-label="Increase quantity"
+              >
+                <AddIcon fontSize="small" />
+              </IconButton>
+            </Box>
+            <Button
+              variant="contained"
+              size="large"
+              startIcon={addingToCart ? <CircularProgress size={18} color="inherit" /> : <ShoppingCartOutlinedIcon />}
+              onClick={handleAddToCart}
+              disabled={addingToCart || !availability.available}
+              sx={{ textTransform: 'none', fontWeight: 600, flexGrow: 1 }}
+            >
+              {addingToCart ? 'Adding...' : 'Add to Cart'}
+            </Button>
+          </Box>
+
           <Divider sx={{ my: 3 }} />
 
           {/* Long description */}
@@ -710,7 +821,7 @@ export default function ProductDetailPage() {
           <Grid container spacing={2}>
             {relatedProducts.slice(0, 4).map((rp) => (
               <Grid key={rp.id} size={{ xs: 6, sm: 4, md: 3 }}>
-                <ProductCard product={rp} />
+                <ProductCard product={rp} onAddToCart={() => handleAddToCartGeneric(rp.id, rp.name)} />
               </Grid>
             ))}
           </Grid>
@@ -726,7 +837,7 @@ export default function ProductDetailPage() {
           <Grid container spacing={2}>
             {similarProducts.slice(0, 4).map((sp) => (
               <Grid key={sp.id} size={{ xs: 6, sm: 4, md: 3 }}>
-                <ProductCard product={sp} />
+                <ProductCard product={sp} onAddToCart={() => handleAddToCartGeneric(sp.id, sp.name)} />
               </Grid>
             ))}
           </Grid>
@@ -738,7 +849,7 @@ export default function ProductDetailPage() {
 
 // ─── Product Card sub-component ─────────────────────────────────────────────
 
-function ProductCard({ product }: { product: RelatedProduct }) {
+function ProductCard({ product, onAddToCart }: { product: RelatedProduct; onAddToCart?: () => void }) {
   const imgSrc = resolveMediaUrl(product.thumbnailUrl) || '';
 
   return (
@@ -746,7 +857,8 @@ function ProductCard({ product }: { product: RelatedProduct }) {
       <CardActionArea component={Link} to={`/products/${product.id}`}>
         <CardMedia
           sx={{
-            height: 180,
+            width: '100%',
+            aspectRatio: '1',
             bgcolor: 'grey.100',
             display: 'flex',
             alignItems: 'center',
@@ -790,6 +902,18 @@ function ProductCard({ product }: { product: RelatedProduct }) {
           )}
         </CardContent>
       </CardActionArea>
+      {onAddToCart && (
+        <Button
+          size="small"
+          fullWidth
+          startIcon={<ShoppingCartOutlinedIcon fontSize="small" />}
+          onClick={onAddToCart}
+          disabled={product.stockQuantity <= 0}
+          sx={{ textTransform: 'none', borderRadius: 0 }}
+        >
+          Add to Cart
+        </Button>
+      )}
     </Card>
   );
 }

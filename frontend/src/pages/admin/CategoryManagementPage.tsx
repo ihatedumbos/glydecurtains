@@ -310,29 +310,29 @@ export default function CategoryManagementPage() {
   // ─── Render ─────────────────────────────────────────────────────────────────
 
   return (
-    <div className="min-h-screen bg-[#f4ede1] p-6">
+    <div className="min-h-screen bg-[#ffffff] p-6">
       <div className="mx-auto max-w-7xl space-y-6">
-        <div className="rounded-2xl border border-[#2c2c2c]/12 bg-[#faf5ea]/90 p-5 shadow-[0_10px_25px_rgba(160,107,58,0.08)] backdrop-blur-sm">
+        <div className="rounded-2xl border border-[#2f3e46]/12 bg-[#ffffff]/90 p-5 shadow-[0_10px_25px_rgba(160,107,58,0.08)] backdrop-blur-sm">
           <div className="flex items-center justify-between gap-4">
             <div>
-              <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[#a06b3a]">Catalog</p>
-              <h1 className="mt-1 text-3xl font-bold text-[#2c2c2c]">
+              <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[#c27d56]">Catalog</p>
+              <h1 className="mt-1 text-3xl font-bold text-[#2f3e46]">
                 Category Management
               </h1>
-              <p className="mt-1 text-sm text-[#6b5d52]">
+              <p className="mt-1 text-sm text-[#5c6b73]">
                 Manage categories, sub-categories, and collections
               </p>
             </div>
           </div>
         </div>
 
-        <div className="flex gap-2 border-b border-[#2c2c2c]/12 pb-2">
+        <div className="flex gap-2 border-b border-[#2f3e46]/12 pb-2">
           <button
             onClick={() => setActiveTab('categories')}
             className={`rounded-xl px-4 py-2 text-sm font-medium transition-colors ${
               activeTab === 'categories'
-                ? 'bg-[#a06b3a] text-white shadow-sm'
-                : 'bg-transparent text-[#6b5d52] hover:text-[#6b5544]'
+                ? 'bg-[#c27d56] text-white shadow-sm'
+                : 'bg-transparent text-[#5c6b73] hover:text-[#2f3e46]'
             }`}
           >
             Categories
@@ -341,8 +341,8 @@ export default function CategoryManagementPage() {
             onClick={() => setActiveTab('collections')}
             className={`rounded-xl px-4 py-2 text-sm font-medium transition-colors ${
               activeTab === 'collections'
-                ? 'bg-[#a06b3a] text-white shadow-sm'
-                : 'bg-transparent text-[#6b5d52] hover:text-[#6b5544]'
+                ? 'bg-[#c27d56] text-white shadow-sm'
+                : 'bg-transparent text-[#5c6b73] hover:text-[#2f3e46]'
             }`}
           >
             Collections
@@ -356,7 +356,7 @@ export default function CategoryManagementPage() {
           <div className="flex justify-end">
             <button
               onClick={openCreateCategory}
-              className="rounded-xl bg-gradient-to-r from-[#a06b3a] to-[#7a4f28] px-4 py-2 text-sm font-semibold text-white shadow-sm transition-colors hover:from-[#7a4f28] hover:to-[#7a4f28]"
+              className="rounded-xl bg-gradient-to-r from-[#c27d56] to-[#925e41] px-4 py-2 text-sm font-semibold text-white shadow-sm transition-colors hover:from-[#925e41] hover:to-[#925e41]"
             >
               + Add Category
             </button>
@@ -364,10 +364,10 @@ export default function CategoryManagementPage() {
 
           {loading ? (
             <div className="flex justify-center py-12">
-              <div className="animate-spin h-8 w-8 border-4 border-[#a06b3a] border-t-transparent rounded-full" />
+              <div className="animate-spin h-8 w-8 border-4 border-[#c27d56] border-t-transparent rounded-full" />
             </div>
           ) : categories.length === 0 ? (
-            <div className="text-center py-12 text-[#6b5d52]">
+            <div className="text-center py-12 text-[#5c6b73]">
               No categories found. Create your first category.
             </div>
           ) : (
@@ -379,14 +379,14 @@ export default function CategoryManagementPage() {
                   onDragStart={() => handleDragStart(cat.id)}
                   onDragOver={handleDragOver}
                   onDrop={() => handleDrop(cat.id)}
-                  className={`rounded-2xl border border-[#2c2c2c]/12 bg-[#faf5ea] p-4 shadow-[0_8px_20px_rgba(160,107,58,0.06)] transition-all ${
+                  className={`rounded-2xl border border-[#2f3e46]/12 bg-[#ffffff] p-4 shadow-[0_8px_20px_rgba(160,107,58,0.06)] transition-all ${
                     draggedId === cat.id ? 'scale-[0.99] opacity-60' : ''
                   }`}
                 >
                   {/* Category Header Row */}
                   <div className="flex items-center gap-3">
                     {/* Drag Handle */}
-                    <span className="cursor-grab text-[#8a7a6b] hover:text-[#6b5d52] select-none text-lg">
+                    <span className="cursor-grab text-[#8a97a0] hover:text-[#5c6b73] select-none text-lg">
                       ⠿
                     </span>
 
@@ -401,11 +401,11 @@ export default function CategoryManagementPage() {
 
                     {/* Name & description */}
                     <div className="flex-1 min-w-0">
-                      <h3 className="text-sm font-semibold text-[#2c2c2c] truncate">
+                      <h3 className="text-sm font-semibold text-[#2f3e46] truncate">
                         {cat.name}
                       </h3>
                       {cat.description && (
-                        <p className="text-xs text-[#6b5d52] truncate">
+                        <p className="text-xs text-[#5c6b73] truncate">
                           {cat.description}
                         </p>
                       )}
@@ -416,7 +416,7 @@ export default function CategoryManagementPage() {
                       className={`px-2 py-0.5 text-xs rounded-full font-medium ${
                         cat.isActive
                           ? 'bg-green-100 text-green-700'
-                          : 'bg-[#f4ede1] text-[#6b5d52]'
+                          : 'bg-[#ffffff] text-[#5c6b73]'
                       }`}
                     >
                       {cat.isActive ? 'Active' : 'Inactive'}
@@ -424,8 +424,8 @@ export default function CategoryManagementPage() {
                     <span
                       className={`px-2 py-0.5 text-xs rounded-full font-medium ${
                         cat.isVisible
-                          ? 'bg-[#f4ede1] text-[#a06b3a]'
-                          : 'bg-[#f4ede1] text-[#6b5d52]'
+                          ? 'bg-[#ffffff] text-[#c27d56]'
+                          : 'bg-[#ffffff] text-[#5c6b73]'
                       }`}
                     >
                       {cat.isVisible ? 'Visible' : 'Hidden'}
@@ -435,14 +435,14 @@ export default function CategoryManagementPage() {
                     <button
                       onClick={() => toggleVisibility(cat)}
                       title={cat.isVisible ? 'Hide category' : 'Show category'}
-                      className="p-1.5 rounded-md text-[#6b5d52] hover:bg-[#f4ede1] transition-colors"
+                      className="p-1.5 rounded-md text-[#5c6b73] hover:bg-[#ffffff] transition-colors"
                     >
                       {cat.isVisible ? '👁️' : '🙈'}
                     </button>
                     <button
                       onClick={() => toggleActive(cat)}
                       title={cat.isActive ? 'Deactivate' : 'Activate'}
-                      className="p-1.5 rounded-md text-[#6b5d52] hover:bg-[#f4ede1] transition-colors"
+                      className="p-1.5 rounded-md text-[#5c6b73] hover:bg-[#ffffff] transition-colors"
                     >
                       {cat.isActive ? '✅' : '⭕'}
                     </button>
@@ -450,7 +450,7 @@ export default function CategoryManagementPage() {
                     {/* Actions */}
                     <button
                       onClick={() => openEditCategory(cat)}
-                      className="p-1.5 rounded-md text-[#a06b3a] hover:bg-[#f4ede1] transition-colors"
+                      className="p-1.5 rounded-md text-[#c27d56] hover:bg-[#ffffff] transition-colors"
                       title="Edit category"
                     >
                       ✏️
@@ -470,24 +470,24 @@ export default function CategoryManagementPage() {
                       {cat.subCategories.map((sub) => (
                         <div
                           key={sub.id}
-                          className="flex items-center gap-2 p-2 bg-[#f4ede1] rounded-lg"
+                          className="flex items-center gap-2 p-2 bg-[#ffffff] rounded-lg"
                         >
-                          <span className="text-xs text-[#8a7a6b]">└</span>
-                          <span className="flex-1 text-sm text-[#6b5544]">
+                          <span className="text-xs text-[#8a97a0]">└</span>
+                          <span className="flex-1 text-sm text-[#2f3e46]">
                             {sub.name}
                           </span>
                           <span
                             className={`px-1.5 py-0.5 text-[10px] rounded-full ${
                               sub.isActive
                                 ? 'bg-green-100 text-green-700'
-                                : 'bg-[#f4ede1] text-[#6b5d52]'
+                                : 'bg-[#ffffff] text-[#5c6b73]'
                             }`}
                           >
                             {sub.isActive ? 'Active' : 'Inactive'}
                           </span>
                           <button
                             onClick={() => openEditSubCategory(sub)}
-                            className="p-1 text-[#a06b3a] hover:bg-[#f4ede1] rounded"
+                            className="p-1 text-[#c27d56] hover:bg-[#ffffff] rounded"
                             title="Edit sub-category"
                           >
                             ✏️
@@ -508,7 +508,7 @@ export default function CategoryManagementPage() {
                   <div className="mt-2 ml-10">
                     <button
                       onClick={() => openCreateSubCategory(cat.id)}
-                      className="text-xs text-[#a06b3a] hover:text-[#7a4f28] font-medium"
+                      className="text-xs text-[#c27d56] hover:text-[#925e41] font-medium"
                     >
                       + Add Sub-category
                     </button>
@@ -526,14 +526,14 @@ export default function CategoryManagementPage() {
           <div className="flex justify-end">
             <button
               onClick={openCreateCollection}
-              className="px-4 py-2 bg-[#a06b3a] text-white text-sm font-medium rounded-lg hover:bg-[#7a4f28] transition-colors"
+              className="px-4 py-2 bg-[#c27d56] text-white text-sm font-medium rounded-lg hover:bg-[#925e41] transition-colors"
             >
               + Add Collection
             </button>
           </div>
 
           {collections.length === 0 ? (
-            <div className="text-center py-12 text-[#6b5d52]">
+            <div className="text-center py-12 text-[#5c6b73]">
               No collections found. Create your first collection.
             </div>
           ) : (
@@ -541,7 +541,7 @@ export default function CategoryManagementPage() {
               {collections.map((col) => (
                 <div
                   key={col.id}
-                  className="bg-[#faf5ea] rounded-xl shadow-sm border border-[#2c2c2c]/12 overflow-hidden"
+                  className="bg-[#ffffff] rounded-xl shadow-sm border border-[#2f3e46]/12 overflow-hidden"
                 >
                   {col.imageBase64 && (
                     <img
@@ -552,28 +552,28 @@ export default function CategoryManagementPage() {
                   )}
                   <div className="p-4">
                     <div className="flex items-center justify-between">
-                      <h3 className="font-semibold text-[#2c2c2c] text-sm">
+                      <h3 className="font-semibold text-[#2f3e46] text-sm">
                         {col.name}
                       </h3>
                       <span
                         className={`px-2 py-0.5 text-[10px] rounded-full font-medium ${
                           col.isActive
                             ? 'bg-green-100 text-green-700'
-                            : 'bg-[#f4ede1] text-[#6b5d52]'
+                            : 'bg-[#ffffff] text-[#5c6b73]'
                         }`}
                       >
                         {col.isActive ? 'Active' : 'Inactive'}
                       </span>
                     </div>
                     {col.description && (
-                      <p className="text-xs text-[#6b5d52] mt-1 line-clamp-2">
+                      <p className="text-xs text-[#5c6b73] mt-1 line-clamp-2">
                         {col.description}
                       </p>
                     )}
                     <div className="flex gap-2 mt-3">
                       <button
                         onClick={() => openEditCollection(col)}
-                        className="text-xs px-2 py-1 bg-[#f4ede1] text-[#a06b3a] rounded hover:bg-[#e8dfcd]"
+                        className="text-xs px-2 py-1 bg-[#ffffff] text-[#c27d56] rounded hover:bg-[#f2f4f5]"
                       >
                         Edit
                       </button>
@@ -595,13 +595,13 @@ export default function CategoryManagementPage() {
       {/* Category Form Modal */}
       {showCategoryForm && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
-          <div className="bg-[#faf5ea] rounded-xl shadow-xl w-full max-w-md p-6 m-4">
-            <h2 className="text-lg font-bold text-[#2c2c2c] mb-4">
+          <div className="bg-[#ffffff] rounded-xl shadow-xl w-full max-w-md p-6 m-4">
+            <h2 className="text-lg font-bold text-[#2f3e46] mb-4">
               {editingCategory ? 'Edit Category' : 'New Category'}
             </h2>
             <form onSubmit={handleCategorySubmit} className="space-y-4">
               <div>
-                <label className="block text-sm font-medium text-[#6b5544] mb-1">
+                <label className="block text-sm font-medium text-[#2f3e46] mb-1">
                   Name *
                 </label>
                 <input
@@ -609,29 +609,29 @@ export default function CategoryManagementPage() {
                   required
                   value={categoryForm.name}
                   onChange={(e) => setCategoryForm((p) => ({ ...p, name: e.target.value }))}
-                  className="w-full px-3 py-2 border border-[#2c2c2c]/15 rounded-lg bg-[#faf5ea] text-[#2c2c2c] text-sm focus:ring-2 focus:ring-[#a06b3a] focus:border-transparent"
+                  className="w-full px-3 py-2 border border-[#2f3e46]/15 rounded-lg bg-[#ffffff] text-[#2f3e46] text-sm focus:ring-2 focus:ring-[#c27d56] focus:border-transparent"
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-[#6b5544] mb-1">
+                <label className="block text-sm font-medium text-[#2f3e46] mb-1">
                   Description
                 </label>
                 <textarea
                   value={categoryForm.description}
                   onChange={(e) => setCategoryForm((p) => ({ ...p, description: e.target.value }))}
                   rows={3}
-                  className="w-full px-3 py-2 border border-[#2c2c2c]/15 rounded-lg bg-[#faf5ea] text-[#2c2c2c] text-sm focus:ring-2 focus:ring-[#a06b3a] focus:border-transparent"
+                  className="w-full px-3 py-2 border border-[#2f3e46]/15 rounded-lg bg-[#ffffff] text-[#2f3e46] text-sm focus:ring-2 focus:ring-[#c27d56] focus:border-transparent"
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-[#6b5544] mb-1">
+                <label className="block text-sm font-medium text-[#2f3e46] mb-1">
                   Icon
                 </label>
                 <input
                   type="file"
                   accept="image/*"
                   onChange={handleIconUpload}
-                  className="w-full text-sm text-[#6b5d52] file:mr-3 file:py-1.5 file:px-3 file:rounded-md file:border-0 file:text-sm file:font-medium file:bg-[#f4ede1] file:text-[#a06b3a] hover:file:bg-[#e8dfcd]"
+                  className="w-full text-sm text-[#5c6b73] file:mr-3 file:py-1.5 file:px-3 file:rounded-md file:border-0 file:text-sm file:font-medium file:bg-[#ffffff] file:text-[#c27d56] hover:file:bg-[#f2f4f5]"
                 />
                 {categoryForm.iconBase64 && (
                   <img src={categoryForm.iconBase64} alt="Icon preview" className="mt-2 w-10 h-10 rounded object-cover" />
@@ -639,14 +639,14 @@ export default function CategoryManagementPage() {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-[#6b5544] mb-1">
+                <label className="block text-sm font-medium text-[#2f3e46] mb-1">
                   Image
                 </label>
                 <input
                   type="file"
                   accept="image/*"
                   onChange={handleImageUpload}
-                  className="w-full text-sm text-[#6b5d52] file:mr-3 file:py-1.5 file:px-3 file:rounded-md file:border-0 file:text-sm file:font-medium file:bg-[#f4ede1] file:text-[#a06b3a] hover:file:bg-[#e8dfcd]"
+                  className="w-full text-sm text-[#5c6b73] file:mr-3 file:py-1.5 file:px-3 file:rounded-md file:border-0 file:text-sm file:font-medium file:bg-[#ffffff] file:text-[#c27d56] hover:file:bg-[#f2f4f5]"
                 />
                 {categoryForm.imageBase64 && (
                   <img src={categoryForm.imageBase64} alt="Image preview" className="mt-2 w-full h-24 rounded-lg object-cover" />
@@ -656,13 +656,13 @@ export default function CategoryManagementPage() {
                 <button
                   type="button"
                   onClick={() => setShowCategoryForm(false)}
-                  className="px-4 py-2 text-sm font-medium text-[#6b5544] bg-[#f4ede1] rounded-lg hover:bg-[#e8dfcd] transition-colors"
+                  className="px-4 py-2 text-sm font-medium text-[#2f3e46] bg-[#ffffff] rounded-lg hover:bg-[#f2f4f5] transition-colors"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
-                  className="px-4 py-2 text-sm font-medium text-white bg-[#a06b3a] rounded-lg hover:bg-[#7a4f28] transition-colors"
+                  className="px-4 py-2 text-sm font-medium text-white bg-[#c27d56] rounded-lg hover:bg-[#925e41] transition-colors"
                 >
                   {editingCategory ? 'Update' : 'Create'}
                 </button>
@@ -675,13 +675,13 @@ export default function CategoryManagementPage() {
       {/* Sub-Category Form Modal */}
       {showSubCategoryForm && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
-          <div className="bg-[#faf5ea] rounded-xl shadow-xl w-full max-w-sm p-6 m-4">
-            <h2 className="text-lg font-bold text-[#2c2c2c] mb-4">
+          <div className="bg-[#ffffff] rounded-xl shadow-xl w-full max-w-sm p-6 m-4">
+            <h2 className="text-lg font-bold text-[#2f3e46] mb-4">
               {editingSubCategory ? 'Edit Sub-category' : 'New Sub-category'}
             </h2>
             <form onSubmit={handleSubCategorySubmit} className="space-y-4">
               <div>
-                <label className="block text-sm font-medium text-[#6b5544] mb-1">
+                <label className="block text-sm font-medium text-[#2f3e46] mb-1">
                   Name *
                 </label>
                 <input
@@ -689,20 +689,20 @@ export default function CategoryManagementPage() {
                   required
                   value={subCategoryForm.name}
                   onChange={(e) => setSubCategoryForm({ name: e.target.value })}
-                  className="w-full px-3 py-2 border border-[#2c2c2c]/15 rounded-lg bg-[#faf5ea] text-[#2c2c2c] text-sm focus:ring-2 focus:ring-[#a06b3a] focus:border-transparent"
+                  className="w-full px-3 py-2 border border-[#2f3e46]/15 rounded-lg bg-[#ffffff] text-[#2f3e46] text-sm focus:ring-2 focus:ring-[#c27d56] focus:border-transparent"
                 />
               </div>
               <div className="flex justify-end gap-2 pt-2">
                 <button
                   type="button"
                   onClick={() => setShowSubCategoryForm(false)}
-                  className="px-4 py-2 text-sm font-medium text-[#6b5544] bg-[#f4ede1] rounded-lg hover:bg-[#e8dfcd] transition-colors"
+                  className="px-4 py-2 text-sm font-medium text-[#2f3e46] bg-[#ffffff] rounded-lg hover:bg-[#f2f4f5] transition-colors"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
-                  className="px-4 py-2 text-sm font-medium text-white bg-[#a06b3a] rounded-lg hover:bg-[#7a4f28] transition-colors"
+                  className="px-4 py-2 text-sm font-medium text-white bg-[#c27d56] rounded-lg hover:bg-[#925e41] transition-colors"
                 >
                   {editingSubCategory ? 'Update' : 'Create'}
                 </button>
@@ -715,13 +715,13 @@ export default function CategoryManagementPage() {
       {/* Collection Form Modal */}
       {showCollectionForm && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
-          <div className="bg-[#faf5ea] rounded-xl shadow-xl w-full max-w-md p-6 m-4">
-            <h2 className="text-lg font-bold text-[#2c2c2c] mb-4">
+          <div className="bg-[#ffffff] rounded-xl shadow-xl w-full max-w-md p-6 m-4">
+            <h2 className="text-lg font-bold text-[#2f3e46] mb-4">
               {editingCollection ? 'Edit Collection' : 'New Collection'}
             </h2>
             <form onSubmit={handleCollectionSubmit} className="space-y-4">
               <div>
-                <label className="block text-sm font-medium text-[#6b5544] mb-1">
+                <label className="block text-sm font-medium text-[#2f3e46] mb-1">
                   Name *
                 </label>
                 <input
@@ -729,29 +729,29 @@ export default function CategoryManagementPage() {
                   required
                   value={collectionForm.name}
                   onChange={(e) => setCollectionForm((p) => ({ ...p, name: e.target.value }))}
-                  className="w-full px-3 py-2 border border-[#2c2c2c]/15 rounded-lg bg-[#faf5ea] text-[#2c2c2c] text-sm focus:ring-2 focus:ring-[#a06b3a] focus:border-transparent"
+                  className="w-full px-3 py-2 border border-[#2f3e46]/15 rounded-lg bg-[#ffffff] text-[#2f3e46] text-sm focus:ring-2 focus:ring-[#c27d56] focus:border-transparent"
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-[#6b5544] mb-1">
+                <label className="block text-sm font-medium text-[#2f3e46] mb-1">
                   Description
                 </label>
                 <textarea
                   value={collectionForm.description}
                   onChange={(e) => setCollectionForm((p) => ({ ...p, description: e.target.value }))}
                   rows={3}
-                  className="w-full px-3 py-2 border border-[#2c2c2c]/15 rounded-lg bg-[#faf5ea] text-[#2c2c2c] text-sm focus:ring-2 focus:ring-[#a06b3a] focus:border-transparent"
+                  className="w-full px-3 py-2 border border-[#2f3e46]/15 rounded-lg bg-[#ffffff] text-[#2f3e46] text-sm focus:ring-2 focus:ring-[#c27d56] focus:border-transparent"
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-[#6b5544] mb-1">
+                <label className="block text-sm font-medium text-[#2f3e46] mb-1">
                   Image
                 </label>
                 <input
                   type="file"
                   accept="image/*"
                   onChange={handleCollectionImageUpload}
-                  className="w-full text-sm text-[#6b5d52] file:mr-3 file:py-1.5 file:px-3 file:rounded-md file:border-0 file:text-sm file:font-medium file:bg-[#f4ede1] file:text-[#a06b3a] hover:file:bg-[#e8dfcd]"
+                  className="w-full text-sm text-[#5c6b73] file:mr-3 file:py-1.5 file:px-3 file:rounded-md file:border-0 file:text-sm file:font-medium file:bg-[#ffffff] file:text-[#c27d56] hover:file:bg-[#f2f4f5]"
                 />
                 {collectionForm.imageBase64 && (
                   <img src={collectionForm.imageBase64} alt="Preview" className="mt-2 w-full h-24 rounded-lg object-cover" />
@@ -761,13 +761,13 @@ export default function CategoryManagementPage() {
                 <button
                   type="button"
                   onClick={() => setShowCollectionForm(false)}
-                  className="px-4 py-2 text-sm font-medium text-[#6b5544] bg-[#f4ede1] rounded-lg hover:bg-[#e8dfcd] transition-colors"
+                  className="px-4 py-2 text-sm font-medium text-[#2f3e46] bg-[#ffffff] rounded-lg hover:bg-[#f2f4f5] transition-colors"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
-                  className="px-4 py-2 text-sm font-medium text-white bg-[#a06b3a] rounded-lg hover:bg-[#7a4f28] transition-colors"
+                  className="px-4 py-2 text-sm font-medium text-white bg-[#c27d56] rounded-lg hover:bg-[#925e41] transition-colors"
                 >
                   {editingCollection ? 'Update' : 'Create'}
                 </button>

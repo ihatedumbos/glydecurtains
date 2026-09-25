@@ -97,15 +97,15 @@ export default function ProductSection({ title, sectionType }: ProductSectionPro
 
   if (loading) {
     return (
-      <section className="bg-[#f4ede1] px-4 py-12 md:px-8">
+      <section className="bg-[#ffffff] px-4 py-12 md:px-8">
         <div className="mx-auto max-w-7xl">
-          <h2 className="mb-8 text-center font-display text-2xl text-[#2c2c2c] md:text-3xl">{displayTitle}</h2>
+          <h2 className="mb-8 text-center font-display text-2xl text-[#2f3e46] md:text-3xl">{displayTitle}</h2>
           <div className="grid grid-cols-2 gap-6 md:grid-cols-3 lg:grid-cols-4">
             {Array.from({ length: 4 }).map((_, i) => (
               <div key={i} className="animate-pulse">
-                <div className="h-64 rounded-sm bg-[#e8dfcd]" />
-                <div className="mt-3 h-4 w-3/4 rounded bg-[#e8dfcd]" />
-                <div className="mt-2 h-4 w-1/2 rounded bg-[#e8dfcd]" />
+                <div className="h-64 rounded-sm bg-[#f2f4f5]" />
+                <div className="mt-3 h-4 w-3/4 rounded bg-[#f2f4f5]" />
+                <div className="mt-2 h-4 w-1/2 rounded bg-[#f2f4f5]" />
               </div>
             ))}
           </div>
@@ -116,12 +116,12 @@ export default function ProductSection({ title, sectionType }: ProductSectionPro
 
   if (failed) {
     return (
-      <section className="bg-[#f4ede1] px-4 py-12 text-center md:px-8">
-        <p className="text-sm text-[#6b5d52]">Couldn&apos;t load {displayTitle.toLowerCase()} right now.</p>
+      <section className="bg-[#ffffff] px-4 py-12 text-center md:px-8">
+        <p className="text-sm text-[#5c6b73]">Couldn&apos;t load {displayTitle.toLowerCase()} right now.</p>
         <button
           type="button"
           onClick={() => setRetryToken((n) => n + 1)}
-          className="mt-2 text-sm font-semibold text-[#a06b3a] underline underline-offset-2 hover:text-[#7a4f28]"
+          className="mt-2 text-sm font-semibold text-[#c27d56] underline underline-offset-2 hover:text-[#925e41]"
         >
           Try again
         </button>
@@ -132,21 +132,21 @@ export default function ProductSection({ title, sectionType }: ProductSectionPro
   if (products.length === 0) return null;
 
   return (
-    <section className="bg-[#f4ede1] px-4 py-12 md:px-8 md:py-16">
+    <section className="bg-[#ffffff] px-4 py-12 md:px-8 md:py-16">
       <div className="mx-auto max-w-7xl">
-        <div className="mb-8 flex items-end justify-between border-b border-[#2c2c2c]/15 pb-4">
+        <div className="mb-8 flex items-end justify-between border-b border-[#2f3e46]/15 pb-4">
           <div>
-            <p className="text-xs font-semibold uppercase tracking-[0.16em] text-[#6b5d52]">Glyde accessories</p>
+            <p className="text-xs font-semibold uppercase tracking-[0.16em] text-[#5c6b73]">Glyde accessories</p>
             <motion.h2
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              className="mt-1 font-display text-2xl text-[#2c2c2c] md:text-3xl"
+              className="mt-1 font-display text-2xl text-[#2f3e46] md:text-3xl"
             >
               {displayTitle}
             </motion.h2>
           </div>
-          <Link to="/products" className="text-sm font-semibold text-[#6b5544] hover:text-[#2c2c2c]">View all →</Link>
+          <Link to="/products" className="text-sm font-semibold text-[#2f3e46] hover:text-[#2f3e46]">View all →</Link>
         </div>
         <div className="grid grid-cols-2 gap-6 md:grid-cols-3 lg:grid-cols-4">
           {products.map((product, idx) => (
@@ -159,9 +159,9 @@ export default function ProductSection({ title, sectionType }: ProductSectionPro
             >
               <Link
                 to={`/products/${product.id}`}
-                className="group block overflow-hidden rounded-sm border border-[#2c2c2c]/12 bg-[#faf5ea] shadow-[0_1px_2px_rgba(44,34,24,0.08)] transition-all hover:-translate-y-0.5 hover:shadow-[0_4px_14px_rgba(44,34,24,0.14)]"
+                className="group block overflow-hidden rounded-sm border border-[#2f3e46]/12 bg-[#ffffff] shadow-[0_1px_2px_rgba(44,34,24,0.08)] transition-all hover:-translate-y-0.5 hover:shadow-[0_4px_14px_rgba(44,34,24,0.14)]"
               >
-                <div className="relative h-60 overflow-hidden bg-[#efe6d4] p-3">
+                <div className="relative h-60 overflow-hidden bg-[#f2f4f5] p-3">
                   {product.thumbnailUrl ? (
                     <img
                       src={resolveMediaUrl(product.thumbnailUrl) || '/assets/logo/poster.png'}
@@ -176,17 +176,17 @@ export default function ProductSection({ title, sectionType }: ProductSectionPro
                     />
                   )}
                   {product.discountPercentage && product.discountPercentage > 0 && (
-                    <span className="absolute left-2 top-2 rounded-sm bg-[#a13a2e] px-2 py-1 text-xs font-bold text-white">
+                    <span className="absolute left-2 top-2 rounded-sm bg-[#b3261e] px-2 py-1 text-xs font-bold text-white">
                       -{product.discountPercentage}%
                     </span>
                   )}
                 </div>
                 <div className="p-4">
-                  <h3 className="truncate text-sm font-semibold text-[#2c2c2c]">
+                  <h3 className="truncate text-sm font-semibold text-[#2f3e46]">
                     {product.name}
                   </h3>
                   <div className="mt-2 flex items-center gap-2">
-                    <span className="text-lg font-bold text-[#2c2c2c]">
+                    <span className="text-lg font-bold text-[#2f3e46]">
                       ₹{product.offerPrice || product.basePrice}
                     </span>
                     {product.offerPrice && product.offerPrice < product.basePrice && (

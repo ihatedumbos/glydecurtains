@@ -21,7 +21,7 @@ export default function ScrollingTicker({ content, speed = 50, images = [] }: Sc
   ]);
 
   return (
-    <div className="relative w-full overflow-hidden border-y border-[#2c2c2c]/15 bg-[#8a6d5a] py-1.5 text-[#faf5ea]">
+    <div className="relative w-full overflow-hidden border-y border-[#2f3e46]/15 bg-[#6d787e] py-1.5 text-[#ffffff]">
       <motion.div
         className="inline-flex whitespace-nowrap items-center"
         animate={{ x: ['0%', '-50%'] }}
@@ -37,14 +37,14 @@ export default function ScrollingTicker({ content, speed = 50, images = [] }: Sc
         {tickerItems.map((item) => (
           <span
             key={item.key}
-            className="mx-1.5 inline-flex items-center gap-2 rounded-sm border border-[#faf5ea]/25 bg-[#2c2c2c]/10 px-3 py-1 text-sm font-medium"
+            className="mx-1.5 inline-flex items-center gap-2 rounded-sm border border-[#ffffff]/25 bg-[#2f3e46]/10 px-3 py-1 text-sm font-medium"
           >
             {item.type === 'image' ? (
               <>
                 <img
                   src={resolveMediaUrl(item.src)}
                   alt="Featured Glyde hardware"
-                  className="h-5 w-5 rounded-full border border-[#faf5ea]/50 object-cover"
+                  className="h-5 w-5 rounded-full border border-[#ffffff]/50 object-cover"
                 />
                 <span>{item.label}</span>
               </>

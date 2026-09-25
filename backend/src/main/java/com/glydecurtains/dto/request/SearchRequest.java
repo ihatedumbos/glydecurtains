@@ -17,8 +17,11 @@ public class SearchRequest {
     private Long categoryId;
     private Long subCategoryId;
     private Long collectionId;
-    private String color;
-    private String size;
+    // Comma-separated list of values (e.g. "Red,Blue"). Renamed from the
+    // singular "color"/"size" so multiple values can be sent, and so "size"
+    // no longer collides with Spring's Pageable "size" (page size) query param.
+    private String colors;
+    private String sizes;
     private String material;
     private BigDecimal minPrice;
     private BigDecimal maxPrice;
