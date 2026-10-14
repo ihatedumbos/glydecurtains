@@ -482,7 +482,8 @@ export default function ProductDetailPage() {
                         preload="metadata"
                         style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'contain' }}
                       >
-                        <source src={getImageSrc(video)} type={video.mimeType} />
+                        {/* "#t=0.1" makes browsers paint the first frame instead of a blank box before play. */}
+                        <source src={`${getImageSrc(video)}#t=0.1`} type={video.mimeType} />
                         Your browser does not support this video.
                       </video>
                     </Box>
