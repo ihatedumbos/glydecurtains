@@ -5,7 +5,7 @@ interface BarChartProps {
   height?: number;
 }
 
-export default function BarChart({ labels, data, color = '#c27d56', height = 200 }: BarChartProps) {
+export default function BarChart({ labels, data, color = '#a8400f', height = 200 }: BarChartProps) {
   const maxValue = Math.max(...data, 1);
 
   return (
@@ -16,7 +16,7 @@ export default function BarChart({ labels, data, color = '#c27d56', height = 200
           return (
             <div key={index} className="flex-1 flex flex-col items-center justify-end h-full group relative">
               <div
-                className="absolute -top-6 left-1/2 -translate-x-1/2 bg-[#2f3e46] text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none z-10"
+                className="absolute -top-6 left-1/2 -translate-x-1/2 bg-[#14232b] text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none z-10"
               >
                 {value.toLocaleString()}
               </div>

@@ -86,7 +86,7 @@ export default function AchievementsSection({ title }: AchievementsSectionProps)
     return (
       <section className="py-12 px-4 md:px-8">
         <div className="max-w-7xl mx-auto">
-          <h2 className="mb-8 text-center font-display text-2xl text-[#2f3e46] md:text-3xl">{title || 'Our Achievements'}</h2>
+          <h2 className="mb-8 text-center font-display text-2xl text-[#14232b] md:text-3xl">{title || 'Our Achievements'}</h2>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
             {Array.from({ length: 4 }).map((_, i) => (
               <div key={i} className="animate-pulse text-center p-6">
@@ -110,7 +110,7 @@ export default function AchievementsSection({ title }: AchievementsSectionProps)
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          className="mb-12 text-center font-display text-2xl text-[#2f3e46] md:text-3xl"
+          className="mb-12 text-center font-display text-2xl text-[#14232b] md:text-3xl"
         >
           {title || 'Our Achievements'}
         </motion.h2>
@@ -135,12 +135,12 @@ export default function AchievementsSection({ title }: AchievementsSectionProps)
                   <span className="text-2xl">🏆</span>
                 )}
               </div>
-              <div className="text-3xl font-display text-[#c27d56] mb-1">
+              <div className="text-3xl font-display text-[#a8400f] mb-1">
                 <AnimatedCounter value={achievement.metricValue} format={achievement.metricFormat} />
               </div>
-              <div className="text-sm font-medium text-[#2f3e46]">{achievement.title}</div>
+              <div className="text-sm font-medium text-[#14232b]">{achievement.title}</div>
               {achievement.description && (
-                <div className="text-xs text-[#5c6b73] mt-1">{achievement.description}</div>
+                <div className="text-xs text-[#4b5b63] mt-1">{achievement.description}</div>
               )}
             </motion.div>
           ))}

@@ -31,21 +31,21 @@ function ChalkCallouts() {
       <path
         d="M 60 120 C 140 100, 180 160, 250 150"
         fill="none"
-        stroke="#2f3e46"
+        stroke="#14232b"
         strokeWidth="2"
         strokeLinecap="round"
         opacity="0.55"
       />
-      <circle cx="250" cy="150" r="4" fill="#2f3e46" opacity="0.55" />
+      <circle cx="250" cy="150" r="4" fill="#14232b" opacity="0.55" />
       <path
         d="M 90 340 C 160 360, 190 300, 260 300"
         fill="none"
-        stroke="#2f3e46"
+        stroke="#14232b"
         strokeWidth="2"
         strokeLinecap="round"
         opacity="0.55"
       />
-      <circle cx="260" cy="300" r="4" fill="#2f3e46" opacity="0.55" />
+      <circle cx="260" cy="300" r="4" fill="#14232b" opacity="0.55" />
     </svg>
   );
 }
@@ -96,26 +96,26 @@ export default function HeroBannerSlider({ banners }: HeroBannerSliderProps) {
           className="relative mx-auto grid max-w-6xl items-center gap-8 px-4 py-14 sm:py-20 md:grid-cols-[1.05fr_0.95fr] md:px-8 md:py-24"
         >
           <div>
-            <p className="mb-4 font-annotation text-2xl text-[#c27d56]" style={{ fontFamily: 'var(--font-annotation)' }}>
+            <p className="mb-4 font-annotation text-2xl text-[#a8400f]" style={{ fontFamily: 'var(--font-annotation)' }}>
               Cut to fit, since day one.
             </p>
-            <h1 className="max-w-xl font-display text-4xl leading-[1.08] text-[#2f3e46] sm:text-5xl lg:text-6xl">
+            <h1 className="max-w-xl font-display text-4xl leading-[1.08] text-[#14232b] sm:text-5xl lg:text-6xl">
               {banner.title || 'Precision hardware, cut to fit your window'}
             </h1>
             {banner.subtitle && (
-              <p className="mt-5 max-w-lg text-base leading-7 text-[#5c6b73] sm:text-lg">
+              <p className="mt-5 max-w-lg text-base leading-7 text-[#4b5b63] sm:text-lg">
                 {banner.subtitle}
               </p>
             )}
             {banner.buttonText && banner.buttonLink && (
               <a
                 href={banner.buttonLink}
-                className="relative mt-8 inline-flex items-center gap-2 rounded-sm bg-[#c27d56] px-6 py-3 text-sm font-semibold text-white shadow-[0_1px_2px_rgba(44,34,24,0.15)] transition-colors hover:bg-[#925e41]"
+                className="relative mt-8 inline-flex items-center gap-2 rounded-sm bg-[#a8400f] px-6 py-3 text-sm font-semibold text-white shadow-[0_1px_2px_rgba(44,34,24,0.15)] transition-colors hover:bg-[#7c2f0b]"
               >
                 {/* swing-tag notch */}
                 <span
                   aria-hidden="true"
-                  className="absolute -left-2 top-1/2 h-3 w-3 -translate-y-1/2 rotate-45 rounded-[2px] border-l border-t border-[#ffffff] bg-[#c27d56]"
+                  className="absolute -left-2 top-1/2 h-3 w-3 -translate-y-1/2 rotate-45 rounded-[2px] border-l border-t border-[#ffffff] bg-[#a8400f]"
                 />
                 {banner.buttonText}
               </a>
@@ -124,7 +124,7 @@ export default function HeroBannerSlider({ banners }: HeroBannerSliderProps) {
 
           <div className="relative">
             <ChalkCallouts />
-            <div className="relative rounded-sm border border-[#2f3e46]/15 bg-[#ffffff] p-3 shadow-[0_2px_10px_rgba(44,34,24,0.12)]">
+            <div className="relative rounded-sm border border-[#14232b]/15 bg-[#ffffff] p-3 shadow-[0_2px_10px_rgba(44,34,24,0.12)]">
               {imageUrl ? (
                 <img
                   src={imageUrl}
@@ -132,13 +132,13 @@ export default function HeroBannerSlider({ banners }: HeroBannerSliderProps) {
                   className="h-[280px] w-full rounded-[2px] object-cover sm:h-[340px]"
                 />
               ) : (
-                <div className="flex h-[280px] w-full items-center justify-center rounded-[2px] bg-[#f2f4f5] text-sm text-[#5c6b73] sm:h-[340px]">
+                <div className="flex h-[280px] w-full items-center justify-center rounded-[2px] bg-[#f2f4f5] text-sm text-[#4b5b63] sm:h-[340px]">
                   Glyde hardware
                 </div>
               )}
             </div>
             <p
-              className="absolute -bottom-3 right-6 rotate-[-2deg] text-lg text-[#2f3e46]/70"
+              className="absolute -bottom-3 right-6 rotate-[-2deg] text-lg text-[#14232b]/70"
               style={{ fontFamily: 'var(--font-annotation)' }}
             >
               precision-fit runner
@@ -151,14 +151,14 @@ export default function HeroBannerSlider({ banners }: HeroBannerSliderProps) {
         <>
           <button
             onClick={prev}
-            className="absolute left-3 top-1/2 z-20 -translate-y-1/2 rounded-full border border-[#2f3e46]/15 bg-[#ffffff]/90 p-2 text-[#2f3e46] opacity-0 shadow-sm transition hover:bg-[#ffffff] group-hover:opacity-100"
+            className="absolute left-3 top-1/2 z-20 -translate-y-1/2 rounded-full border border-[#14232b]/15 bg-[#ffffff]/90 p-2 text-[#14232b] opacity-0 shadow-sm transition hover:bg-[#ffffff] group-hover:opacity-100"
             aria-label="Previous slide"
           >
             <ChevronLeftIcon fontSize="small" />
           </button>
           <button
             onClick={next}
-            className="absolute right-3 top-1/2 z-20 -translate-y-1/2 rounded-full border border-[#2f3e46]/15 bg-[#ffffff]/90 p-2 text-[#2f3e46] opacity-0 shadow-sm transition hover:bg-[#ffffff] group-hover:opacity-100"
+            className="absolute right-3 top-1/2 z-20 -translate-y-1/2 rounded-full border border-[#14232b]/15 bg-[#ffffff]/90 p-2 text-[#14232b] opacity-0 shadow-sm transition hover:bg-[#ffffff] group-hover:opacity-100"
             aria-label="Next slide"
           >
             <ChevronRightIcon fontSize="small" />
@@ -168,7 +168,7 @@ export default function HeroBannerSlider({ banners }: HeroBannerSliderProps) {
               <button
                 key={idx}
                 onClick={() => setCurrent(idx)}
-                className={`h-1.5 rounded-full transition-all ${idx === current ? 'w-6 bg-[#c27d56]' : 'w-1.5 bg-[#2f3e46]/25'}`}
+                className={`h-1.5 rounded-full transition-all ${idx === current ? 'w-6 bg-[#a8400f]' : 'w-1.5 bg-[#14232b]/25'}`}
                 aria-label={`Go to slide ${idx + 1}`}
               />
             ))}

@@ -39,44 +39,44 @@ export default function TrustBar() {
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
       transition={{ duration: 0.4 }}
-      className="border-t border-[#2f3e46]/15 bg-[#ffffff] px-4 py-10 md:px-8"
+      className="border-t border-[#14232b]/15 bg-[#ffffff] px-4 py-10 md:px-8"
     >
       <div className="mx-auto grid max-w-6xl gap-6 md:grid-cols-2">
         <Link
           to="/stores"
-          className="group flex items-start gap-4 rounded-sm border border-[#2f3e46]/15 p-5 transition-colors hover:border-[#c27d56]/50 hover:bg-[#c27d56]/5"
+          className="group flex items-start gap-4 rounded-sm border border-[#14232b]/15 p-5 transition-colors hover:border-[#a8400f]/50 hover:bg-[#a8400f]/5"
         >
-          <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-dashed border-[#c27d56]/45 text-[#c27d56]">
+          <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-dashed border-[#a8400f]/45 text-[#a8400f]">
             <StorefrontOutlinedIcon fontSize="small" />
           </span>
           <span>
-            <span className="block text-sm font-semibold text-[#2f3e46]">
+            <span className="block text-sm font-semibold text-[#14232b]">
               Manufacturer-direct, with real stores you can visit
             </span>
-            <span className="mt-1 block text-sm text-[#5c6b73]">
+            <span className="mt-1 block text-sm text-[#4b5b63]">
               {cities.length === 1
                 ? `See our hardware in person in ${cities[0]}.`
                 : `See our hardware in person in ${cities.slice(0, -1).join(', ')} and ${cities[cities.length - 1]}.`}
               {' '}
-              <span className="font-semibold text-[#c27d56] group-hover:underline">Find your nearest store →</span>
+              <span className="font-semibold text-[#a8400f] group-hover:underline">Find your nearest store →</span>
             </span>
           </span>
         </Link>
 
         <Link
           to="/contact"
-          className="group flex items-start gap-4 rounded-sm border border-[#2f3e46]/15 p-5 transition-colors hover:border-[#c27d56]/50 hover:bg-[#c27d56]/5"
+          className="group flex items-start gap-4 rounded-sm border border-[#14232b]/15 p-5 transition-colors hover:border-[#a8400f]/50 hover:bg-[#a8400f]/5"
         >
-          <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-dashed border-[#c27d56]/45 text-[#c27d56]">
+          <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-dashed border-[#a8400f]/45 text-[#a8400f]">
             <HandshakeOutlinedIcon fontSize="small" />
           </span>
           <span>
-            <span className="block text-sm font-semibold text-[#2f3e46]">
+            <span className="block text-sm font-semibold text-[#14232b]">
               Sourcing hardware in volume?
             </span>
-            <span className="mt-1 block text-sm text-[#5c6b73]">
+            <span className="mt-1 block text-sm text-[#4b5b63]">
               Installers and dealers get direct bulk pricing and support.{' '}
-              <span className="font-semibold text-[#c27d56] group-hover:underline">Talk to us →</span>
+              <span className="font-semibold text-[#a8400f] group-hover:underline">Talk to us →</span>
             </span>
           </span>
         </Link>

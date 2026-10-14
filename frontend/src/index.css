@@ -2,31 +2,31 @@
 @import "./styles/responsive.css";
 
 @theme {
-  --color-primary: #c27d56;
-  --color-primary-light: #d4a489;
-  --color-primary-dark: #925e41;
+  --color-primary: #a8400f;
+  --color-primary-light: #d98a5f;
+  --color-primary-dark: #7c2f0b;
   --color-paper: #ffffff;
-  --color-ink: #2f3e46;
-  --font-display: "Lora", Georgia, serif;
+  --color-ink: #14232b;
+  --font-display: "IBM Plex Sans", system-ui, sans-serif;
   --font-annotation: "Caveat", cursive;
 }
 
 /* ===== CSS Custom Properties ===== */
 :root {
-  --primary-color: #c27d56;
+  --primary-color: #a8400f;
   --secondary-color: #6d787e;
-  --accent-color: #c27d56;
-  --accent-light: #d4a489;
-  --background-color: #ffffff;
-  --text-color: #2f3e46;
-  --text-muted: #5c6b73;
+  --accent-color: #a8400f;
+  --accent-light: #d98a5f;
+  --background-color: #f3f5f6;
+  --text-color: #14232b;
+  --text-muted: #4b5b63;
   --border-radius: 8px;
 
   /* Workshop Typography Scale */
-  --font-display: 'Lora', Georgia, serif;
+  --font-display: 'IBM Plex Sans', system-ui, sans-serif;
   --font-body: 'IBM Plex Sans', system-ui, -apple-system, sans-serif;
   --font-annotation: 'Caveat', cursive;
-  --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
+  --font-mono: 'IBM Plex Mono', 'JetBrains Mono', monospace;
 
   --text-xs: 0.75rem;
   --text-sm: 0.875rem;
@@ -132,7 +132,7 @@
 }
 
 .glass-input:focus {
-  border-color: #c27d56;
+  border-color: #a8400f;
   box-shadow: 0 0 0 3px rgba(160, 107, 58, 0.15);
   outline: none;
 }
@@ -312,10 +312,12 @@
 /* ===== Selection Styling ===== */
 ::selection {
   background: rgba(160, 107, 58, 0.25);
-  color: #2f3e46;
+  color: #14232b;
 }
 
-/* ===== Responsive Typography & Layout Adjustments ===== */
+/* ===== Responsive Typography & Layout Adjustments =====
+ * In the base layer so Tailwind text-size utilities still win. */
+@layer base {
 @media (max-width: 767px) {
   h1 { font-size: var(--text-3xl); }
   h2 { font-size: var(--text-2xl); }
@@ -331,7 +333,8 @@
   h1 { font-size: var(--text-4xl); }
   h2 { font-size: var(--text-3xl); }
   h3 { font-size: var(--text-2xl); }
-}
+}}
+
 
 @media (min-width: 992px) and (max-width: 1199px) {
   h1 { font-size: var(--text-4xl); }

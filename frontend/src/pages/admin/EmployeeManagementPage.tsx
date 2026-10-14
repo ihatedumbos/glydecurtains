@@ -551,7 +551,7 @@ export default function EmployeeManagementPage() {
               </TableRow>
             ) : employees.length === 0 ? (
               <TableRow>
-                <TableCell colSpan={7} align="center" className="py-8 text-[#5c6b73]">
+                <TableCell colSpan={7} align="center" className="py-8 text-[#4b5b63]">
                   No employees found
                 </TableCell>
               </TableRow>
@@ -890,7 +890,7 @@ export default function EmployeeManagementPage() {
               <CircularProgress size={24} />
             </Box>
           ) : tasks.length === 0 ? (
-            <Typography variant="body2" className="text-[#5c6b73]">
+            <Typography variant="body2" className="text-[#4b5b63]">
               No tasks assigned yet.
             </Typography>
           ) : (

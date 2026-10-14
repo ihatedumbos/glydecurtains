@@ -97,7 +97,7 @@ export default function FeedbackPage() {
 
   return (
     <div className="max-w-xl mx-auto p-6">
-      <h1 className="font-display text-2xl text-[#2f3e46] mb-6">Submit Feedback</h1>
+      <h1 className="font-display text-2xl text-[#14232b] mb-6">Submit Feedback</h1>
 
       {errors.general && (
         <div className="bg-red-50 border border-red-200 rounded p-3 mb-4 text-red-700 text-sm">
@@ -108,7 +108,7 @@ export default function FeedbackPage() {
       <form onSubmit={handleSubmit} noValidate className="space-y-5">
         {/* Star Rating */}
         <div>
-          <label className="block text-sm font-medium text-[#2f3e46] mb-1">
+          <label className="block text-sm font-medium text-[#14232b] mb-1">
             Rating <span className="text-red-500">*</span>
           </label>
           <div className="flex gap-1" role="radiogroup" aria-label="Rating">
@@ -121,7 +121,7 @@ export default function FeedbackPage() {
                 onMouseLeave={() => setHoveredStar(0)}
                 aria-label={`${star} star${star > 1 ? 's' : ''}`}
                 aria-pressed={rating === star}
-                className="p-1 focus:outline-none focus:ring-2 focus:ring-[#c27d56] rounded"
+                className="p-1 focus:outline-none focus:ring-2 focus:ring-[#a8400f] rounded"
               >
                 <svg
                   className={`w-8 h-8 transition-colors ${
@@ -141,7 +141,7 @@ export default function FeedbackPage() {
 
         {/* Title */}
         <div>
-          <label htmlFor="feedback-title" className="block text-sm font-medium text-[#2f3e46] mb-1">
+          <label htmlFor="feedback-title" className="block text-sm font-medium text-[#14232b] mb-1">
             Title <span className="text-red-500">*</span>
           </label>
           <input
@@ -151,7 +151,7 @@ export default function FeedbackPage() {
             onChange={(e) => setTitle(e.target.value)}
             maxLength={100}
             placeholder="Brief summary of your feedback"
-            className="w-full border border-[#2f3e46]/15 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#c27d56] focus:border-[#c27d56]"
+            className="w-full border border-[#14232b]/15 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#a8400f] focus:border-[#a8400f]"
           />
           <div className="flex justify-between mt-1">
             {errors.title ? (
@@ -165,7 +165,7 @@ export default function FeedbackPage() {
 
         {/* Comment */}
         <div>
-          <label htmlFor="feedback-comment" className="block text-sm font-medium text-[#2f3e46] mb-1">
+          <label htmlFor="feedback-comment" className="block text-sm font-medium text-[#14232b] mb-1">
             Comment <span className="text-red-500">*</span>
           </label>
           <textarea
@@ -175,7 +175,7 @@ export default function FeedbackPage() {
             maxLength={2000}
             rows={5}
             placeholder="Tell us more about your experience (min 10 characters)"
-            className="w-full border border-[#2f3e46]/15 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#c27d56] focus:border-[#c27d56] resize-y"
+            className="w-full border border-[#14232b]/15 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#a8400f] focus:border-[#a8400f] resize-y"
           />
           <div className="flex justify-between mt-1">
             {errors.comment ? (
@@ -189,7 +189,7 @@ export default function FeedbackPage() {
 
         {/* Optional Product Reference */}
         <div>
-          <label htmlFor="feedback-product" className="block text-sm font-medium text-[#2f3e46] mb-1">
+          <label htmlFor="feedback-product" className="block text-sm font-medium text-[#14232b] mb-1">
             Product ID <span className="text-[#8a97a0] text-xs">(optional)</span>
           </label>
           <input
@@ -198,7 +198,7 @@ export default function FeedbackPage() {
             value={productId}
             onChange={(e) => setProductId(e.target.value)}
             placeholder="Enter product ID if related to a specific product"
-            className="w-full border border-[#2f3e46]/15 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#c27d56] focus:border-[#c27d56]"
+            className="w-full border border-[#14232b]/15 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#a8400f] focus:border-[#a8400f]"
           />
           {errors.productId && <p className="text-red-600 text-sm mt-1">{errors.productId}</p>}
         </div>
@@ -207,7 +207,7 @@ export default function FeedbackPage() {
         <button
           type="submit"
           disabled={submitting}
-          className="w-full bg-[#c27d56] text-white py-2.5 px-4 rounded font-medium hover:bg-[#925e41] disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+          className="w-full bg-[#a8400f] text-white py-2.5 px-4 rounded font-medium hover:bg-[#7c2f0b] disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
         >
           {submitting ? 'Submitting...' : 'Submit Feedback'}
         </button>

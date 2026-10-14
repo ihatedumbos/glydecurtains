@@ -35,7 +35,7 @@ export default function PopularCategories({ title }: PopularCategoriesProps) {
     return (
       <section className="py-12 px-4 md:px-8">
         <div className="max-w-7xl mx-auto">
-          <h2 className="mb-8 text-center font-display text-2xl text-[#2f3e46] md:text-3xl">{title || 'Popular Categories'}</h2>
+          <h2 className="mb-8 text-center font-display text-2xl text-[#14232b] md:text-3xl">{title || 'Popular Categories'}</h2>
           <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-6">
             {Array.from({ length: 5 }).map((_, i) => (
               <div key={i} className="animate-pulse flex flex-col items-center">
@@ -68,7 +68,7 @@ export default function PopularCategories({ title }: PopularCategoriesProps) {
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          className="mb-8 text-center font-display text-2xl text-[#2f3e46] md:text-3xl"
+          className="mb-8 text-center font-display text-2xl text-[#14232b] md:text-3xl"
         >
           {title || 'Popular Categories'}
         </motion.h2>
@@ -88,7 +88,7 @@ export default function PopularCategories({ title }: PopularCategoriesProps) {
                   to={`/products?categoryId=${cat.id}`}
                   className="group flex flex-col items-center text-center"
                 >
-                  <div className="flex h-28 w-28 items-center justify-center overflow-hidden rounded-full border-[1.5px] border-dashed border-[#c27d56]/45 bg-[#ffffff] shadow-[0_1px_2px_rgba(44,34,24,0.08)] transition-colors group-hover:border-[#c27d56]">
+                  <div className="flex h-28 w-28 items-center justify-center overflow-hidden rounded-full border-[1.5px] border-dashed border-[#a8400f]/45 bg-[#ffffff] shadow-[0_1px_2px_rgba(44,34,24,0.08)] transition-colors group-hover:border-[#a8400f]">
                     {categoryImage ? (
                       <img
                         src={categoryImage}
@@ -96,12 +96,12 @@ export default function PopularCategories({ title }: PopularCategoriesProps) {
                         className="h-full w-full object-cover"
                       />
                     ) : (
-                      <div className="flex h-full w-full items-center justify-center bg-[#f7f4f0] text-[#c27d56]">
+                      <div className="flex h-full w-full items-center justify-center bg-[#f7f4f0] text-[#a8400f]">
                         <CategoryOutlinedIcon sx={{ fontSize: 40 }} />
                       </div>
                     )}
                   </div>
-                  <span className="mt-3 text-sm font-semibold text-[#2f3e46] transition-colors group-hover:text-[#c27d56]">
+                  <span className="mt-3 text-sm font-semibold text-[#14232b] transition-colors group-hover:text-[#a8400f]">
                     {cat.name}
                   </span>
                 </Link>

@@ -9,39 +9,39 @@ function buildMuiTheme() {
     palette: {
       mode: 'light',
       primary: {
-        main: '#c27d56',
-        light: '#d4a489',
-        dark: '#925e41',
+        main: '#a8400f',
+        light: '#d98a5f',
+        dark: '#7c2f0b',
         contrastText: '#ffffff',
       },
       secondary: {
-        main: '#2f3e46',
-        light: '#6d787e',
-        dark: '#232f35',
+        main: '#14232b',
+        light: '#4b5b63',
+        dark: '#0b161c',
       },
       background: {
-        default: '#ffffff',
+        default: '#f3f5f6',
         paper: '#ffffff',
       },
       text: {
-        primary: '#2f3e46',
-        secondary: '#5c6b73',
+        primary: '#14232b',
+        secondary: '#4b5b63',
       },
-      divider: 'rgba(47, 62, 70, 0.14)',
-      success: { main: '#2e7d32' },
-      warning: { main: '#c27d56' },
+      divider: 'rgba(20, 35, 43, 0.14)',
+      success: { main: '#1a7f45' },
+      warning: { main: '#b45309' },
       error: { main: '#b3261e' },
-      info: { main: '#2f3e46' },
+      info: { main: '#14232b' },
     },
     shape: {
-      borderRadius: 10,
+      borderRadius: 8,
     },
     typography: {
       fontFamily: "'IBM Plex Sans', system-ui, -apple-system, sans-serif",
-      h1: { fontFamily: "'Lora', Georgia, serif", fontWeight: 600, letterSpacing: '-0.01em' },
-      h2: { fontFamily: "'Lora', Georgia, serif", fontWeight: 600, letterSpacing: '-0.01em' },
-      h3: { fontFamily: "'Lora', Georgia, serif", fontWeight: 600 },
-      h4: { fontFamily: "'Lora', Georgia, serif", fontWeight: 600 },
+      h1: { fontFamily: "'IBM Plex Sans', system-ui, sans-serif", fontWeight: 700, letterSpacing: '-0.01em' },
+      h2: { fontFamily: "'IBM Plex Sans', system-ui, sans-serif", fontWeight: 700, letterSpacing: '-0.01em' },
+      h3: { fontFamily: "'IBM Plex Sans', system-ui, sans-serif", fontWeight: 600 },
+      h4: { fontFamily: "'IBM Plex Sans', system-ui, sans-serif", fontWeight: 600 },
       h5: { fontWeight: 600 },
       h6: { fontWeight: 600 },
       button: { textTransform: 'none', fontWeight: 600 },
@@ -53,16 +53,12 @@ function buildMuiTheme() {
             scrollBehavior: 'smooth',
           },
           body: {
-            backgroundColor: '#ffffff',
+            backgroundColor: '#f3f5f6',
             backgroundImage: 'none',
-            color: '#2f3e46',
+            color: '#14232b',
           },
           '*': {
             boxSizing: 'border-box',
-          },
-          a: {
-            color: 'inherit',
-            textDecoration: 'none',
           },
         },
       },
@@ -70,7 +66,7 @@ function buildMuiTheme() {
         styleOverrides: {
           root: {
             backgroundImage: 'none',
-            color: '#2f3e46',
+            color: '#14232b',
             backgroundColor: '#ffffff',
           },
         },
@@ -78,7 +74,7 @@ function buildMuiTheme() {
       MuiMenuItem: {
         styleOverrides: {
           root: {
-            color: '#2f3e46',
+            color: '#14232b',
           },
         },
       },
@@ -91,10 +87,10 @@ function buildMuiTheme() {
             boxShadow: 'none',
           },
           contained: {
-            backgroundColor: '#c27d56',
+            backgroundColor: '#a8400f',
             color: '#ffffff',
             '&:hover': {
-              backgroundColor: '#925e41',
+              backgroundColor: '#7c2f0b',
             },
           },
         },
@@ -102,18 +98,18 @@ function buildMuiTheme() {
       MuiCard: {
         styleOverrides: {
           root: {
-            boxShadow: '0 1px 2px rgba(47, 62, 70, 0.08)',
-            border: '1px solid rgba(47, 62, 70, 0.12)',
+            boxShadow: '0 1px 2px rgba(20, 35, 43, 0.08)',
+            border: '1px solid rgba(20, 35, 43, 0.12)',
           },
         },
       },
       MuiAppBar: {
         styleOverrides: {
           root: {
-            boxShadow: '0 1px 0 rgba(47, 62, 70, 0.12)',
+            boxShadow: '0 1px 0 rgba(20, 35, 43, 0.12)',
             backgroundImage: 'none',
             backgroundColor: '#ffffff',
-            color: '#2f3e46',
+            color: '#14232b',
           },
         },
       },
@@ -121,7 +117,7 @@ function buildMuiTheme() {
         styleOverrides: {
           paper: {
             backgroundColor: '#ffffff',
-            color: '#2f3e46',
+            color: '#14232b',
           },
         },
       },
