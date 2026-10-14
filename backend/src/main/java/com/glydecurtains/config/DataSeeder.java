@@ -21,7 +21,9 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+// Runs before the upgrade runners, which tidy up whatever this seeds.
 @Component
+@org.springframework.core.annotation.Order(org.springframework.core.Ordered.HIGHEST_PRECEDENCE)
 @RequiredArgsConstructor
 @Slf4j
 public class DataSeeder implements CommandLineRunner {
@@ -649,36 +651,8 @@ public class DataSeeder implements CommandLineRunner {
     }
 
     private void seedStoreLocations() {
-        createStore("Glyde Curtains - Ahmedabad Showroom",
-                "Shop 12, Premium Mall, S.G. Highway", "Ahmedabad", "Gujarat",
-                "+91 79 2345 6789", "ahmedabad@glydecurtains.com",
-                23.0225, 72.5714);
-        createStore("Glyde Curtains - Mumbai Store",
-                "Unit 5, Western Plaza, Andheri West", "Mumbai", "Maharashtra",
-                "+91 22 3456 7890", "mumbai@glydecurtains.com",
-                19.1364, 72.8296);
-        createStore("Glyde Curtains - Delhi Experience Centre",
-                "Block A, South Extension Part 2", "New Delhi", "Delhi",
-                "+91 11 4567 8901", "delhi@glydecurtains.com",
-                28.5721, 77.2218);
-
+        storeLocationRepository.save(BusinessContactUpgrader.realStore());
         log.info("Store locations seeded.");
-    }
-
-    private void createStore(String name, String address, String city, String state,
-                             String phone, String email, double lat, double lng) {
-        StoreLocation store = new StoreLocation();
-        store.setName(name);
-        store.setAddress(address);
-        store.setCity(city);
-        store.setState(state);
-        store.setPhone(phone);
-        store.setEmail(email);
-        store.setLatitude(lat);
-        store.setLongitude(lng);
-        store.setOperatingHours("{\"monday\":\"10:00-20:00\",\"tuesday\":\"10:00-20:00\",\"wednesday\":\"10:00-20:00\",\"thursday\":\"10:00-20:00\",\"friday\":\"10:00-20:00\",\"saturday\":\"10:00-21:00\",\"sunday\":\"11:00-18:00\"}");
-        store.setIsActive(true);
-        storeLocationRepository.save(store);
     }
 
     private void seedAchievements() {
@@ -727,11 +701,11 @@ public class DataSeeder implements CommandLineRunner {
 
     private void seedSiteSettings() {
         SiteSettings settings = new SiteSettings();
-        settings.setContactEmail("info@glydecurtains.com");
-        settings.setContactPhone("+91 79 2345 6789");
-        settings.setAddress("S.G. Highway, Ahmedabad, Gujarat 380054, India");
+        settings.setContactEmail(BusinessContact.EMAIL);
+        settings.setContactPhone(BusinessContact.PHONE);
+        settings.setAddress(BusinessContact.FULL_ADDRESS);
         settings.setSocialLinks("{\"facebook\":\"https://facebook.com/glydecurtains\",\"instagram\":\"https://instagram.com/glydecurtains\",\"twitter\":\"https://twitter.com/glydecurtains\",\"pinterest\":\"https://pinterest.com/glydecurtains\"}");
-        settings.setAnnouncementBar("Free shipping on orders above ₹2000 | Use code WELCOME10 for 10% off your first order");
+        settings.setAnnouncementBar(BusinessContact.ANNOUNCEMENT);
         siteSettingsRepository.save(settings);
         log.info("Site settings seeded.");
     }
