@@ -19,6 +19,10 @@ public interface ProductRepository extends JpaRepository<Product, Long>, org.spr
 
     List<Product> findByStatus(ProductStatus status);
 
+    List<Product> findTop10ByStatusAndNameStartingWithIgnoreCaseOrderByNameAsc(ProductStatus status, String prefix);
+
+    List<Product> findTop20ByStatusAndNameContainingIgnoreCaseOrderByNameAsc(ProductStatus status, String text);
+
     Page<Product> findByStatus(ProductStatus status, Pageable pageable);
 
     List<Product> findByCategoryId(Long categoryId);

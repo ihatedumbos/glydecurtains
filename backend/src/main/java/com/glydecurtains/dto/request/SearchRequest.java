@@ -23,9 +23,9 @@ public class SearchRequest {
     private String colors;
     private String sizes;
     private String material;
+    private String materials;
     private BigDecimal minPrice;
     private BigDecimal maxPrice;
     private Boolean inStock;
-    private String sortBy; // popularity, newest, price_asc, price_desc, featured
-    private String language; // for multi-language search
+    private String sortBy; // relevance, popularity, newest, price_asc, price_desc, featured
 }

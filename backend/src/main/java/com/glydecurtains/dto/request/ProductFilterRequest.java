@@ -24,6 +24,8 @@ public class ProductFilterRequest {
     private String colors;
     private String sizes;
     private String material;
+    // Comma-separated list of materials; matched case-insensitively (any of).
+    private String materials;
     private BigDecimal minPrice;
     private BigDecimal maxPrice;
     private ProductStatus status;
@@ -32,4 +34,9 @@ public class ProductFilterRequest {
     private Boolean isNewArrival;
     private Boolean isBestSeller;
     private Boolean isPremium;
+    // Only products with stockQuantity > 0 when true.
+    private Boolean inStock;
+    // Named sort applied in the database: relevance, popularity, newest, price_asc,
+    // price_desc, featured. When set it takes precedence over a Pageable "sort" param.
+    private String sortBy;
 }
