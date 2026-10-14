@@ -17,7 +17,6 @@ const quickLinks = [
   { label: 'Store Locator', path: '/stores' },
   { label: 'Privacy Policy', path: '/pages/privacy-policy' },
   { label: 'Terms & Conditions', path: '/pages/terms-and-conditions' },
-  { label: 'Shipping & Returns', path: '/pages/shipping-returns' },
 ];
 
 const categoryLinks = [
