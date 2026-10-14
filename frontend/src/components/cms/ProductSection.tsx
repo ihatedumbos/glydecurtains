@@ -38,9 +38,9 @@ interface ProductSectionProps {
 function getQueryParams(sectionType: SectionType): Record<string, string> {
   switch (sectionType) {
     case 'FEATURED':
-      return { isFeatured: 'true', size: '8' };
+      return { isFeatured: 'true', sortBy: 'featured', size: '8' };
     case 'LATEST':
-      return { sortBy: 'createdAt', sortDirection: 'desc', size: '8' };
+      return { sortBy: 'newest', size: '8' };
     case 'NEW_ARRIVALS':
       return { isNewArrival: 'true', size: '8' };
     case 'BEST_SELLING':
@@ -48,7 +48,7 @@ function getQueryParams(sectionType: SectionType): Record<string, string> {
     case 'TRENDING':
       return { isTrending: 'true', size: '8' };
     case 'RECENTLY_ADDED':
-      return { sortBy: 'createdAt', sortDirection: 'desc', size: '8' };
+      return { sortBy: 'newest', size: '8' };
     case 'RECOMMENDED':
       return { isFeatured: 'true', size: '8' };
     case 'FEATURED_ACCESSORIES':
