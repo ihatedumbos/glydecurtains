@@ -22,18 +22,13 @@ import {
   CardActionArea,
   Alert,
   Button,
-  IconButton,
-  CircularProgress,
 } from '@mui/material';
-import ShoppingCartOutlinedIcon from '@mui/icons-material/ShoppingCartOutlined';
-import AddIcon from '@mui/icons-material/Add';
-import RemoveIcon from '@mui/icons-material/Remove';
+import WhatsAppIcon from '@mui/icons-material/WhatsApp';
+import PhoneIcon from '@mui/icons-material/Phone';
 import Breadcrumb, { BreadcrumbItem } from '@/components/layout/Breadcrumb';
 import axiosInstance from '@/api/axiosInstance';
 import { resolveMediaUrl } from '@/utils/mediaUrl';
-import { useAppDispatch } from '@/store/hooks';
-import { addCartItem } from '@/store/slices/cartSlice';
-import { addToast } from '@/store/slices/uiSlice';
+import { CONTACT, productEnquiryLink } from '@/config/contact';
 
 // ─── Types ──────────────────────────────────────────────────────────────────
 
@@ -192,7 +187,6 @@ function LazyImage({
 
 export default function ProductDetailPage() {
   const { id } = useParams<{ id: string }>();
-  const dispatch = useAppDispatch();
   const [product, setProduct] = useState<ProductDetail | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -203,8 +197,6 @@ export default function ProductDetailPage() {
 
   const [selectedColor, setSelectedColor] = useState<string | null>(null);
   const [selectedSize, setSelectedSize] = useState<string | null>(null);
-  const [quantity, setQuantity] = useState(1);
-  const [addingToCart, setAddingToCart] = useState(false);
 
   const [relatedProducts, setRelatedProducts] = useState<RelatedProduct[]>([]);
   const [similarProducts, setSimilarProducts] = useState<RelatedProduct[]>([]);
@@ -297,57 +289,6 @@ export default function ProductDetailPage() {
       price: product.offerPrice || product.basePrice,
     };
   }, [product, selectedColor, selectedSize]);
-
-  // The single matched variant (if any) for the current color/size selection - used to
-  // send the correct variantId when adding to cart.
-  const selectedVariant = useMemo(() => {
-    if (!product || (!selectedColor && !selectedSize)) return null;
-    const matches = product.variants.filter((v) => {
-      const colorMatch = !selectedColor || v.color === selectedColor;
-      const sizeMatch = !selectedSize || v.size === selectedSize;
-      return colorMatch && sizeMatch;
-    });
-    return matches.length === 1 ? matches[0] : null;
-  }, [product, selectedColor, selectedSize]);
-
-  const handleAddToCart = useCallback(async () => {
-    if (!product) return;
-    setAddingToCart(true);
-    try {
-      await dispatch(
-        addCartItem({ productId: product.id, variantId: selectedVariant?.id, quantity }),
-      ).unwrap();
-      dispatch(addToast({ id: `cart-add-${Date.now()}`, type: 'success', message: `${product.name} added to cart` }));
-    } catch (err) {
-      dispatch(
-        addToast({
-          id: `cart-add-error-${Date.now()}`,
-          type: 'error',
-          message: typeof err === 'string' ? err : 'Failed to add item to cart',
-        }),
-      );
-    } finally {
-      setAddingToCart(false);
-    }
-  }, [dispatch, product, selectedVariant, quantity]);
-
-  const handleAddToCartGeneric = useCallback(
-    async (productId: number, productName: string) => {
-      try {
-        await dispatch(addCartItem({ productId, quantity: 1 })).unwrap();
-        dispatch(addToast({ id: `cart-add-${Date.now()}`, type: 'success', message: `${productName} added to cart` }));
-      } catch (err) {
-        dispatch(
-          addToast({
-            id: `cart-add-error-${Date.now()}`,
-            type: 'error',
-            message: typeof err === 'string' ? err : 'Failed to add item to cart',
-          }),
-        );
-      }
-    },
-    [dispatch],
-  );
 
   // ─── Image zoom handler ────────────────────────────────────────────────
 
@@ -689,36 +630,35 @@ export default function ProductDetailPage() {
             </Box>
           </Box>
 
-          {/* Quantity + Add to Cart */}
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 3 }}>
-            <Box sx={{ display: 'flex', alignItems: 'center', border: '1px solid', borderColor: 'divider', borderRadius: 1.5 }}>
-              <IconButton
-                size="small"
-                onClick={() => setQuantity((q) => Math.max(1, q - 1))}
-                disabled={quantity <= 1}
-                aria-label="Decrease quantity"
-              >
-                <RemoveIcon fontSize="small" />
-              </IconButton>
-              <Typography sx={{ px: 2, minWidth: 24, textAlign: 'center' }}>{quantity}</Typography>
-              <IconButton
-                size="small"
-                onClick={() => setQuantity((q) => Math.min(availability.stock || 99, q + 1))}
-                disabled={availability.stock > 0 && quantity >= availability.stock}
-                aria-label="Increase quantity"
-              >
-                <AddIcon fontSize="small" />
-              </IconButton>
-            </Box>
+          {/* Enquire on WhatsApp: the site is a catalogue, orders are taken over WhatsApp */}
+          <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1.5, mb: 3 }}>
             <Button
               variant="contained"
               size="large"
-              startIcon={addingToCart ? <CircularProgress size={18} color="inherit" /> : <ShoppingCartOutlinedIcon />}
-              onClick={handleAddToCart}
-              disabled={addingToCart || !availability.available}
-              sx={{ textTransform: 'none', fontWeight: 600, flexGrow: 1 }}
+              component="a"
+              href={productEnquiryLink(product, product.offerPrice || availability.price)}
+              target="_blank"
+              rel="noopener noreferrer"
+              startIcon={<WhatsAppIcon />}
+              sx={{
+                textTransform: 'none',
+                fontWeight: 600,
+                flexGrow: 1,
+                bgcolor: '#25D366',
+                '&:hover': { bgcolor: '#1ebe5a' },
+              }}
             >
-              {addingToCart ? 'Adding...' : 'Add to Cart'}
+              Enquire on WhatsApp
+            </Button>
+            <Button
+              variant="outlined"
+              size="large"
+              component="a"
+              href={`tel:${CONTACT.phoneDisplay.replace(/\s/g, '')}`}
+              startIcon={<PhoneIcon />}
+              sx={{ textTransform: 'none', fontWeight: 600 }}
+            >
+              Call {CONTACT.phoneDisplay}
             </Button>
           </Box>
 
@@ -824,7 +764,7 @@ export default function ProductDetailPage() {
           <Grid container spacing={2}>
             {relatedProducts.slice(0, 4).map((rp) => (
               <Grid key={rp.id} size={{ xs: 6, sm: 4, md: 3 }}>
-                <ProductCard product={rp} onAddToCart={() => handleAddToCartGeneric(rp.id, rp.name)} />
+                <ProductCard product={rp} />
               </Grid>
             ))}
           </Grid>
@@ -841,7 +781,7 @@ export default function ProductDetailPage() {
           <Grid container spacing={2}>
             {visibleSimilarProducts.map((sp) => (
               <Grid key={sp.id} size={{ xs: 6, sm: 4, md: 3 }}>
-                <ProductCard product={sp} onAddToCart={() => handleAddToCartGeneric(sp.id, sp.name)} />
+                <ProductCard product={sp} />
               </Grid>
             ))}
           </Grid>
@@ -853,7 +793,7 @@ export default function ProductDetailPage() {
 
 // ─── Product Card sub-component ─────────────────────────────────────────────
 
-function ProductCard({ product, onAddToCart }: { product: RelatedProduct; onAddToCart?: () => void }) {
+function ProductCard({ product }: { product: RelatedProduct }) {
   const imgSrc = resolveMediaUrl(product.thumbnailUrl) || '';
 
   return (
@@ -906,18 +846,6 @@ function ProductCard({ product, onAddToCart }: { product: RelatedProduct; onAddT
           )}
         </CardContent>
       </CardActionArea>
-      {onAddToCart && (
-        <Button
-          size="small"
-          fullWidth
-          startIcon={<ShoppingCartOutlinedIcon fontSize="small" />}
-          onClick={onAddToCart}
-          disabled={product.stockQuantity <= 0}
-          sx={{ textTransform: 'none', borderRadius: 0 }}
-        >
-          Add to Cart
-        </Button>
-      )}
     </Card>
   );
 }

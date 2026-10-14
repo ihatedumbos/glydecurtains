@@ -7,12 +7,12 @@ import {
   MenuItem,
   FormControl,
   InputLabel,
-  CircularProgress,
   type SelectChangeEvent,
 } from '@mui/material';
 import { motion, AnimatePresence } from 'framer-motion';
-import ShoppingCartOutlinedIcon from '@mui/icons-material/ShoppingCartOutlined';
+import WhatsAppIcon from '@mui/icons-material/WhatsApp';
 import type { Product } from '@/store/slices/productSlice';
+import { productEnquiryLink } from '@/config/contact';
 
 /** Represents a product variant combination */
 export interface ProductVariant {
@@ -28,7 +28,6 @@ export interface QuickViewPopupProps {
   product: Product;
   open: boolean;
   variants?: ProductVariant[];
-  onAddToCart?: (product: Product, variant: ProductVariant | null) => void;
 }
 
 /** Animation variants for the popup entrance/exit */
@@ -40,9 +39,9 @@ const popupMotion = {
 
 /**
  * QuickViewPopup – appears on ProductCard hover with a 300ms trigger delay.
- * Shows variant selectors (material, size, color), dynamic pricing, and Add to Cart.
+ * Shows variant selectors (material, size, color), dynamic pricing, and a WhatsApp enquiry button.
  */
-export default function QuickViewPopup({ product, open, variants = [], onAddToCart }: QuickViewPopupProps) {
+export default function QuickViewPopup({ product, open, variants = [] }: QuickViewPopupProps) {
   // Derive unique option lists
   const materials = useMemo(() => [...new Set(variants.map((v) => v.material))], [variants]);
   const sizes = useMemo(() => [...new Set(variants.map((v) => v.size))], [variants]);
@@ -54,7 +53,6 @@ export default function QuickViewPopup({ product, open, variants = [], onAddToCa
   const [selectedMaterial, setSelectedMaterial] = useState<string>(firstAvailable?.material ?? materials[0] ?? '');
   const [selectedSize, setSelectedSize] = useState<string>(firstAvailable?.size ?? sizes[0] ?? '');
   const [selectedColor, setSelectedColor] = useState<string>(firstAvailable?.color ?? colors[0] ?? '');
-  const [addingToCart, setAddingToCart] = useState(false);
 
   // Find the matched variant for current selection
   const matchedVariant = useMemo(
@@ -87,15 +85,6 @@ export default function QuickViewPopup({ product, open, variants = [], onAddToCa
   const handleColorChange = useCallback((e: SelectChangeEvent) => {
     setSelectedColor(e.target.value);
   }, []);
-
-  const handleAddToCart = useCallback(async () => {
-    setAddingToCart(true);
-    try {
-      onAddToCart?.(product, matchedVariant);
-    } finally {
-      setAddingToCart(false);
-    }
-  }, [product, matchedVariant, onAddToCart]);
 
   const hasVariants = variants.length > 0;
 
@@ -200,21 +189,26 @@ export default function QuickViewPopup({ product, open, variants = [], onAddToCa
               )}
             </Box>
 
-            {/* Add to Cart */}
+            {/* Enquire on WhatsApp (the site takes no online orders) */}
             <Button
               variant="contained"
               size="small"
               fullWidth
-              startIcon={addingToCart ? <CircularProgress size={16} color="inherit" /> : <ShoppingCartOutlinedIcon />}
-              onClick={handleAddToCart}
-              disabled={addingToCart || (hasVariants && matchedVariant !== null && !matchedVariant.available)}
+              component="a"
+              href={productEnquiryLink(product, displayPrice)}
+              target="_blank"
+              rel="noopener noreferrer"
+              onClick={(e: React.MouseEvent) => e.stopPropagation()}
+              startIcon={<WhatsAppIcon />}
               sx={{
                 textTransform: 'none',
                 fontWeight: 600,
                 borderRadius: 1.5,
+                bgcolor: '#25D366',
+                '&:hover': { bgcolor: '#1ebe5a' },
               }}
             >
-              {addingToCart ? 'Adding...' : 'Add to Cart'}
+              Enquire on WhatsApp
             </Button>
           </Box>
         </motion.div>

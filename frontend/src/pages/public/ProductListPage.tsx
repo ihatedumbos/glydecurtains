@@ -19,9 +19,7 @@ import CloseIcon from '@mui/icons-material/Close';
 import HomeIcon from '@mui/icons-material/Home';
 import { useSearchParams, Link as RouterLink, useNavigate } from 'react-router-dom';
 import { useAppSelector, useAppDispatch } from '@/store/hooks';
-import { setProducts, setProductLoading, type Product, type ProductFilters } from '@/store/slices/productSlice';
-import { addCartItem } from '@/store/slices/cartSlice';
-import { addToast } from '@/store/slices/uiSlice';
+import { setProducts, setProductLoading, type ProductFilters } from '@/store/slices/productSlice';
 import { setSuggestions, setRecentSearches } from '@/store/slices/searchSlice';
 import axiosInstance from '@/api/axiosInstance';
 import ProductCard from '@/components/product/ProductCard';
@@ -281,25 +279,6 @@ export default function ProductListPage() {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
-  const handleAddToCart = useCallback(
-    async (product: Product, variant: { id: number } | null) => {
-      try {
-        await dispatch(
-          addCartItem({ productId: product.id, variantId: variant?.id, quantity: 1 }),
-        ).unwrap();
-        dispatch(addToast({ id: `cart-add-${Date.now()}`, type: 'success', message: `${product.name} added to cart` }));
-      } catch (err) {
-        dispatch(
-          addToast({
-            id: `cart-add-error-${Date.now()}`,
-            type: 'error',
-            message: typeof err === 'string' ? err : 'Failed to add item to cart',
-          }),
-        );
-      }
-    },
-    [dispatch],
-  );
 
   // Active filter chips
   const activeFilterChips: { label: string; onDelete: () => void }[] = [];
@@ -478,7 +457,7 @@ export default function ProductListPage() {
                     <ProductCard
                       product={product}
                       onClick={(p) => navigate(`/products/${p.id}`)}
-                      onAddToCart={handleAddToCart}
+                     
                     />
                   </Grid>
                 ))}

@@ -1,14 +1,10 @@
-import { Box, Container, Grid, Typography, Link as MuiLink, IconButton, Divider, Stack } from '@mui/material';
-import FacebookIcon from '@mui/icons-material/Facebook';
-import InstagramIcon from '@mui/icons-material/Instagram';
-import TwitterIcon from '@mui/icons-material/Twitter';
-import YouTubeIcon from '@mui/icons-material/YouTube';
-import PinterestIcon from '@mui/icons-material/Pinterest';
+import { Box, Button, Container, Grid, Typography, Link as MuiLink, Divider, Stack } from '@mui/material';
 import EmailIcon from '@mui/icons-material/Email';
 import PhoneIcon from '@mui/icons-material/Phone';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
+import WhatsAppIcon from '@mui/icons-material/WhatsApp';
 import { Link, useNavigate } from 'react-router-dom';
-import { useAppSelector } from '@/store/hooks';
+import { CONTACT, whatsappLink } from '@/config/contact';
 import Logo from './Logo';
 
 const quickLinks = [
@@ -27,17 +23,8 @@ const categoryLinks = [
   { label: 'Curtain Tapes', path: '/categories/accessories/curtain-tapes' },
 ];
 
-const socialIcons: Record<string, React.ReactNode> = {
-  facebook: <FacebookIcon />,
-  instagram: <InstagramIcon />,
-  twitter: <TwitterIcon />,
-  youtube: <YouTubeIcon />,
-  pinterest: <PinterestIcon />,
-};
-
 export default function Footer() {
   const navigate = useNavigate();
-  const settings = useAppSelector((state) => state.cms.settings);
 
   return (
     <Box
@@ -59,40 +46,19 @@ export default function Footer() {
               <Logo variant="footer" size="sm" onClick={() => navigate('/')} />
             </Box>
             <Typography variant="body2" color="text.secondary" sx={{ mb: 2, maxWidth: 240 }}>
-              Manufacturer-direct curtain hardware and fittings, backed by real stores you can visit.
+              Manufacturer-direct curtain tracks and accessories, made in Pune.
             </Typography>
-            {/* Social links */}
-            <Stack direction="row" spacing={0.5}>
-              {settings?.socialLinks &&
-                Object.entries(settings.socialLinks).map(([platform, url]) =>
-                  socialIcons[platform] ? (
-                    <IconButton
-                      key={platform}
-                      size="small"
-                      href={url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      aria-label={platform}
-                    >
-                      {socialIcons[platform]}
-                    </IconButton>
-                  ) : null
-                )}
-              {/* Default social icons if no CMS settings */}
-              {!settings?.socialLinks && (
-                <>
-                  <IconButton size="small" aria-label="Facebook">
-                    <FacebookIcon />
-                  </IconButton>
-                  <IconButton size="small" aria-label="Instagram">
-                    <InstagramIcon />
-                  </IconButton>
-                  <IconButton size="small" aria-label="Twitter">
-                    <TwitterIcon />
-                  </IconButton>
-                </>
-              )}
-            </Stack>
+            <Button
+              variant="contained"
+              size="small"
+              href={whatsappLink()}
+              target="_blank"
+              rel="noopener noreferrer"
+              startIcon={<WhatsAppIcon />}
+              sx={{ textTransform: 'none', fontWeight: 600, bgcolor: '#25D366', '&:hover': { bgcolor: '#1ebe5a' } }}
+            >
+              Chat on WhatsApp
+            </Button>
           </Grid>
 
           {/* Quick Links */}
@@ -137,7 +103,7 @@ export default function Footer() {
             </Stack>
           </Grid>
 
-          {/* Contact Info & Newsletter placeholder */}
+          {/* Contact Info */}
           <Grid item xs={12} sm={6} md={3}>
             <Typography variant="subtitle2" fontWeight={600} gutterBottom>
               Contact Us
@@ -146,33 +112,23 @@ export default function Footer() {
               <Box sx={{ display: 'flex', alignItems: 'flex-start', gap: 1 }}>
                 <LocationOnIcon fontSize="small" sx={{ color: 'text.secondary', mt: 0.25 }} />
                 <Typography variant="body2" color="text.secondary">
-                  {settings?.address || 'Glyde Curtains, Surat, Gujarat, India'}
+                  {CONTACT.address}
                 </Typography>
               </Box>
               <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
                 <PhoneIcon fontSize="small" sx={{ color: 'text.secondary' }} />
-                <Typography variant="body2" color="text.secondary">
-                  {settings?.contactPhone || '+91 98765 43210'}
-                </Typography>
+                <MuiLink href={`tel:${CONTACT.phoneDisplay.replace(/\s/g, '')}`} variant="body2" color="text.secondary" underline="hover">
+                  {CONTACT.phoneDisplay}
+                </MuiLink>
               </Box>
               <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
                 <EmailIcon fontSize="small" sx={{ color: 'text.secondary' }} />
-                <Typography variant="body2" color="text.secondary">
-                  {settings?.contactEmail || 'info@glydecurtains.com'}
-                </Typography>
+                <MuiLink href={`mailto:${CONTACT.email}`} variant="body2" color="text.secondary" underline="hover">
+                  {CONTACT.email}
+                </MuiLink>
               </Box>
             </Stack>
 
-            {/* Newsletter placeholder */}
-            <Box sx={{ mt: 3 }}>
-              <Typography variant="subtitle2" fontWeight={600} gutterBottom>
-                Newsletter
-              </Typography>
-              <Typography variant="body2" color="text.secondary">
-                Subscribe for updates and exclusive offers.
-              </Typography>
-              {/* Newsletter form will be implemented in a later task */}
-            </Box>
           </Grid>
         </Grid>
 

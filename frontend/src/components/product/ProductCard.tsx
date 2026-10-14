@@ -1,7 +1,6 @@
 import { useState, useRef, useCallback } from 'react';
 import { Box, Card, CardMedia, CardContent, Typography, Chip } from '@mui/material';
 import { motion } from 'framer-motion';
-import WishlistButton from '@/components/product/WishlistButton';
 import QuickViewPopup, { type ProductVariant } from '@/components/product/QuickViewPopup';
 import type { Product } from '@/store/slices/productSlice';
 import { resolveMediaUrl } from '@/utils/mediaUrl';
@@ -9,7 +8,6 @@ import { resolveMediaUrl } from '@/utils/mediaUrl';
 interface ProductCardProps {
   product: Product;
   variants?: ProductVariant[];
-  onAddToCart?: (product: Product, variant: ProductVariant | null) => void;
   onClick?: (product: Product) => void;
 }
 
@@ -17,7 +15,7 @@ interface ProductCardProps {
 const HOVER_SHOW_DELAY = 300;
 const HOVER_HIDE_DELAY = 300;
 
-export default function ProductCard({ product, variants = [], onAddToCart, onClick }: ProductCardProps) {
+export default function ProductCard({ product, variants = [], onClick }: ProductCardProps) {
   const [showQuickView, setShowQuickView] = useState(false);
   const showTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const hideTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -77,9 +75,6 @@ export default function ProductCard({ product, variants = [], onAddToCart, onCli
             transform: 'translateY(-6px)',
             boxShadow: '0 12px 40px rgba(0,0,0,0.12), 0 0 20px rgba(99,102,241,0.08)',
           },
-          '&:hover .wishlist-btn': {
-            opacity: 1,
-          },
         }}
       >
         {/* Discount badge */}
@@ -93,24 +88,9 @@ export default function ProductCard({ product, variants = [], onAddToCart, onCli
         )}
 
         {/* Status badges */}
-        <Box sx={{ position: 'absolute', top: 8, right: 48, zIndex: 2, display: 'flex', flexDirection: 'column', gap: 0.5 }}>
+        <Box sx={{ position: 'absolute', top: 8, right: 8, zIndex: 2, display: 'flex', flexDirection: 'column', gap: 0.5 }}>
           {product.isNewArrival && <Chip label="New" color="success" size="small" />}
           {product.isTrending && <Chip label="Trending" color="warning" size="small" />}
-        </Box>
-
-        {/* Wishlist heart icon – top right */}
-        <Box
-          className="wishlist-btn"
-          sx={{
-            position: 'absolute',
-            top: 4,
-            right: 4,
-            zIndex: 2,
-            opacity: 0,
-            transition: 'opacity 0.2s ease',
-          }}
-        >
-          <WishlistButton productId={product.id} size="small" showTooltip />
         </Box>
 
         {/* Product image */}
@@ -167,7 +147,6 @@ export default function ProductCard({ product, variants = [], onAddToCart, onCli
           product={product}
           open={showQuickView}
           variants={variants}
-          onAddToCart={onAddToCart}
         />
       </Card>
     </motion.div>

@@ -8,7 +8,12 @@ import {
   Alert,
   CircularProgress,
 } from '@mui/material';
+import WhatsAppIcon from '@mui/icons-material/WhatsApp';
+import PhoneIcon from '@mui/icons-material/Phone';
+import EmailIcon from '@mui/icons-material/Email';
+import LocationOnIcon from '@mui/icons-material/LocationOn';
 import axiosInstance from '@/api/axiosInstance';
+import { CONTACT, whatsappLink } from '@/config/contact';
 
 interface ContactFormData {
   name: string;
@@ -125,8 +130,34 @@ export default function ContactPage() {
         Contact Us
       </Typography>
       <Typography variant="body1" color="text.secondary" className="mb-6">
-        Have a question or need assistance? Fill out the form below and we'll get back to you.
+        The quickest way to reach us is WhatsApp. You can also call, email, or use the form below.
       </Typography>
+
+      <Box sx={{ mb: 4, p: 2.5, border: 1, borderColor: 'divider', borderRadius: 2, display: 'flex', flexDirection: 'column', gap: 1.5 }}>
+        <Button
+          variant="contained"
+          size="large"
+          href={whatsappLink('Hi Glyde, I have an enquiry about your products.')}
+          target="_blank"
+          rel="noopener noreferrer"
+          startIcon={<WhatsAppIcon />}
+          sx={{ textTransform: 'none', fontWeight: 600, bgcolor: '#25D366', '&:hover': { bgcolor: '#1ebe5a' } }}
+        >
+          Chat on WhatsApp
+        </Button>
+        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+          <PhoneIcon fontSize="small" color="action" />
+          <a href={`tel:${CONTACT.phoneDisplay.replace(/\s/g, '')}`}>{CONTACT.phoneDisplay}</a>
+        </Box>
+        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+          <EmailIcon fontSize="small" color="action" />
+          <a href={`mailto:${CONTACT.email}`}>{CONTACT.email}</a>
+        </Box>
+        <Box sx={{ display: 'flex', alignItems: 'flex-start', gap: 1 }}>
+          <LocationOnIcon fontSize="small" color="action" sx={{ mt: 0.25 }} />
+          <Typography variant="body2">{CONTACT.address}</Typography>
+        </Box>
+      </Box>
 
       {success && (
         <Alert severity="success" className="mb-4">
