@@ -25,9 +25,6 @@ import java.util.List;
 @Slf4j
 public class HomepageBannerUpgrader implements ApplicationRunner {
 
-    /** Real uploaded photos are far larger than this; the seeded placeholders are ~380 chars. */
-    private static final int PLACEHOLDER_MAX_LENGTH = 1024;
-
     private final HomepageSectionRepository homepageSectionRepository;
     private final BannerRepository bannerRepository;
 
@@ -55,14 +52,8 @@ public class HomepageBannerUpgrader implements ApplicationRunner {
         log.info("Replaced {} placeholder hero banner(s) with catalogue photos.", placeholders.size());
     }
 
-    static boolean isPlaceholder(Banner banner) {
-        String image = banner.getImageBase64();
-        if (image == null || image.isBlank()) {
-            return true;
-        }
-        String trimmed = image.trim();
-        boolean isPath = trimmed.startsWith("/") && trimmed.matches("^/[\\w\\-./# %()]+\\.(?i)(jpe?g|png|webp|gif|avif)$");
-        return !isPath && !trimmed.startsWith("http") && trimmed.length() <= PLACEHOLDER_MAX_LENGTH;
+    private static boolean isPlaceholder(Banner banner) {
+        return PlaceholderMedia.isPlaceholder(banner.getImageBase64());
     }
 
     private void save(HomepageSection section, String title, String subtitle, String image,

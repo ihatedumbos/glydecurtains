@@ -2,7 +2,9 @@ package com.glydecurtains.repository.spec;
 
 import com.glydecurtains.dto.request.ProductFilterRequest;
 import com.glydecurtains.entity.Product;
+import com.glydecurtains.entity.ProductImage;
 import com.glydecurtains.entity.TranslatedContent;
+import com.glydecurtains.entity.enums.MediaType;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.persistence.criteria.Expression;
@@ -139,6 +141,8 @@ public final class ProductSpecifications {
                     : sortBy.trim().toLowerCase(Locale.ROOT);
 
             List<Order> orders = new ArrayList<>();
+            // Products with a real photo always come before ones still showing the placeholder.
+            orders.add(cb.desc(hasRealPhoto(root, query, cb)));
             switch (sort) {
                 case SORT_NEWEST -> { }
                 case SORT_PRICE_ASC -> orders.add(cb.asc(effectivePrice(root, cb)));
@@ -160,6 +164,20 @@ public final class ProductSpecifications {
             query.orderBy(orders);
             return cb.conjunction();
         };
+    }
+
+    /** File name the placeholder upgrader gives images that stand in for a missing product photo. */
+    public static final String PLACEHOLDER_IMAGE_FILENAME = "photo-coming-soon.jpg";
+
+    private static Expression<Integer> hasRealPhoto(Root<Product> root, CriteriaQuery<?> query, CriteriaBuilder cb) {
+        Subquery<Long> photo = query.subquery(Long.class);
+        Root<ProductImage> image = photo.from(ProductImage.class);
+        photo.select(image.get("id")).where(
+                cb.equal(image.get("product"), root),
+                cb.equal(image.get("mediaType"), MediaType.IMAGE),
+                cb.or(cb.isNull(image.get("originalFilename")),
+                        cb.notEqual(image.get("originalFilename"), PLACEHOLDER_IMAGE_FILENAME)));
+        return cb.<Integer>selectCase().when(cb.exists(photo), 1).otherwise(0);
     }
 
     /** offerPrice when set, otherwise basePrice - the price customers actually see and pay. */
