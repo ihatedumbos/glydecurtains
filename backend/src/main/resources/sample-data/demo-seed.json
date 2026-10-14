@@ -16,44 +16,7 @@
       "password": "emp123"
     }
   ],
-  "storeLocations": [
-    {
-      "name": "Glyde Curtains - Ahmedabad Showroom",
-      "address": "Shop 12, Premium Mall, S.G. Highway",
-      "city": "Ahmedabad",
-      "state": "Gujarat",
-      "phone": "+91 79 2345 6789",
-      "email": "ahmedabad@glydecurtains.com",
-      "latitude": 23.0225,
-      "longitude": 72.5714,
-      "operatingHours": "Mon-Sat: 10:00 AM - 8:00 PM | Sun: 11:00 AM - 6:00 PM",
-      "imageBase64": ""
-    },
-    {
-      "name": "Glyde Curtains - Mumbai Studio",
-      "address": "Unit 5, Western Plaza, Andheri West",
-      "city": "Mumbai",
-      "state": "Maharashtra",
-      "phone": "+91 22 3456 7890",
-      "email": "mumbai@glydecurtains.com",
-      "latitude": 19.1364,
-      "longitude": 72.8296,
-      "operatingHours": "Mon-Sat: 10:00 AM - 8:00 PM | Sun: 11:00 AM - 6:00 PM",
-      "imageBase64": ""
-    },
-    {
-      "name": "Glyde Curtains - Delhi Experience Centre",
-      "address": "Block A, South Extension Part 2",
-      "city": "New Delhi",
-      "state": "Delhi",
-      "phone": "+91 11 4567 8901",
-      "email": "delhi@glydecurtains.com",
-      "latitude": 28.5721,
-      "longitude": 77.2218,
-      "operatingHours": "Mon-Sat: 10:00 AM - 8:00 PM | Sun: 11:00 AM - 6:00 PM",
-      "imageBase64": ""
-    }
-  ],
+  "storeLocations": [],
   "enquiries": [
     {
       "name": "Priya Sharma",

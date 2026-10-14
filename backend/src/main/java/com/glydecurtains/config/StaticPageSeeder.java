@@ -35,14 +35,14 @@ public class StaticPageSeeder implements ApplicationRunner {
                 Custom sizes and finishes are available on request.</p>
                 <h3>Visit or reach us</h3>
                 <p>Shree Vinayak Furnishing, 916 Sukrawar Peth, Panghanti Chowk, near Radhe Hotel, \
-                Pune 411042, Maharashtra.<br/>WhatsApp: +91 81490 66661<br/>Email: info@glydecurtains.com</p>
+                Pune 411042, Maharashtra.<br/>WhatsApp: +91 81490 66661<br/>Email: vishalsjain89@gmail.com</p>
                 """);
         createIfMissing("privacy-policy", "Privacy Policy", PageType.PRIVACY_POLICY, """
                 <p>This website is a product catalogue. We do not take payments or online orders on it.</p>
                 <p>If you send us an enquiry through the contact form or WhatsApp, we use your name, phone \
                 number, email and message only to reply to you about our products. We do not sell or share \
                 these details with third parties.</p>
-                <p>To ask us to delete your details, contact info@glydecurtains.com.</p>
+                <p>To ask us to delete your details, contact vishalsjain89@gmail.com.</p>
                 """);
         createIfMissing("terms-and-conditions", "Terms & Conditions", PageType.TERMS, """
                 <p>Product photos, descriptions and prices on this website are for reference and may change \
