@@ -22,7 +22,7 @@ import { useAppSelector } from '@/store/hooks';
 
 interface ProductSearchBarProps {
   value: string;
-  onChange: (query: string) => void;
+  onChange?: (query: string) => void;
   onSearch: (query: string) => void;
   suggestions: string[];
   onFetchSuggestions: (query: string) => void;
@@ -60,7 +60,7 @@ export default function ProductSearchBar({
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const query = e.target.value;
     setLocalValue(query);
-    onChange(query);
+    onChange?.(query);
     debouncedFetch(query);
     setShowDropdown(true);
   };
@@ -77,14 +77,14 @@ export default function ProductSearchBar({
 
   const handleSuggestionClick = (suggestion: string) => {
     setLocalValue(suggestion);
-    onChange(suggestion);
+    onChange?.(suggestion);
     onSearch(suggestion);
     setShowDropdown(false);
   };
 
   const handleClear = () => {
     setLocalValue('');
-    onChange('');
+    onChange?.('');
     onSearch('');
   };
 

@@ -1,3 +1,8 @@
+import { Navigate, useLocation } from 'react-router-dom';
+
+// Search results live on the product listing (search + filters + sort in one place).
+// Keep /search?q=... working for old links and bookmarks.
 export default function SearchResultsPage() {
-  return <div className="p-4"><h1 className="text-2xl font-bold">Search Results</h1></div>;
+  const { search } = useLocation();
+  return <Navigate to={`/products${search}`} replace />;
 }

@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Box, Container, Grid, Typography, Breadcrumbs, Link, Chip } from '@mui/material';
+import { Box, Button, Container, Grid, Typography, Breadcrumbs, Link, Chip } from '@mui/material';
 import HomeIcon from '@mui/icons-material/Home';
 import { Link as RouterLink, useParams, useNavigate, useSearchParams } from 'react-router-dom';
 import axiosInstance from '@/api/axiosInstance';
@@ -8,6 +8,13 @@ import type { Product } from '@/store/slices/productSlice';
 import { addCartItem } from '@/store/slices/cartSlice';
 import { addToast } from '@/store/slices/uiSlice';
 import { useAppDispatch } from '@/store/hooks';
+
+interface CategoryNode {
+  id: number;
+  name: string;
+  slug?: string;
+  subCategories?: CategoryNode[];
+}
 
 export default function CategoryPage() {
   const { slug, subSlug } = useParams();
@@ -18,6 +25,9 @@ export default function CategoryPage() {
   // `?sub=` query param instead of a path segment - support both.
   const effectiveSubSlug = subSlug || searchParams.get('sub') || undefined;
   const [products, setProducts] = useState<Product[]>([]);
+  const [totalElements, setTotalElements] = useState(0);
+  // Query string for the full, filterable listing of this category.
+  const [listingQuery, setListingQuery] = useState('');
   const [categoryName, setCategoryName] = useState('Category');
   const [loading, setLoading] = useState(true);
 
@@ -32,9 +42,9 @@ export default function CategoryPage() {
         let subCategoryId: number | undefined;
 
         const treeRes = await axiosInstance.get('/categories/public/tree');
-        const tree = treeRes.data?.data || treeRes.data || [];
+        const tree: CategoryNode[] = treeRes.data?.data || treeRes.data || [];
 
-        const category = tree.find((item: any) =>
+        const category = tree.find((item: CategoryNode) =>
           item.slug === slug ||
           item.name?.toLowerCase().replace(/\s+/g, '-') === slug ||
           String(item.id) === slug,
@@ -46,7 +56,7 @@ export default function CategoryPage() {
 
           if (effectiveSubSlug) {
             const subCategory = (category.subCategories || []).find(
-              (item: any) =>
+              (item: CategoryNode) =>
                 item.slug === effectiveSubSlug ||
                 item.name?.toLowerCase().replace(/\s+/g, '-') === effectiveSubSlug ||
                 String(item.id) === effectiveSubSlug,
@@ -62,15 +72,23 @@ export default function CategoryPage() {
           categoryId,
           subCategoryId,
         };
+        const listing = new URLSearchParams();
+        if (categoryId !== undefined) listing.set('categoryId', String(categoryId));
+        if (subCategoryId !== undefined) listing.set('subCategoryId', String(subCategoryId));
 
         const res = await axiosInstance.get('/search/products', { params });
         const data = res.data?.data || res.data || { content: [] };
 
         if (active) {
           setProducts(data.content || []);
+          setTotalElements(data.totalElements ?? (data.content || []).length);
+          setListingQuery(listing.toString());
         }
       } catch {
-        if (active) setProducts([]);
+        if (active) {
+          setProducts([]);
+          setTotalElements(0);
+        }
       } finally {
         if (active) setLoading(false);
       }
@@ -112,7 +130,7 @@ export default function CategoryPage() {
         <Typography variant="h4" fontWeight={700}>
           {categoryName}
         </Typography>
-        <Chip label={loading ? 'Loading…' : `${products.length} items`} color="primary" variant="outlined" />
+        <Chip label={loading ? 'Loading…' : `${totalElements} items`} color="primary" variant="outlined" />
       </Box>
 
       {loading ? (
@@ -134,6 +152,14 @@ export default function CategoryPage() {
             </Grid>
           ))}
         </Grid>
+      )}
+
+      {!loading && totalElements > products.length && (
+        <Box sx={{ display: 'flex', justifyContent: 'center', mt: 4 }}>
+          <Button variant="outlined" onClick={() => navigate(`/products?${listingQuery}`)}>
+            View all {totalElements} products with filters
+          </Button>
+        </Box>
       )}
     </Container>
   );
