@@ -12,7 +12,8 @@ interface HeroBannerSliderProps {
 /** Resolve a banner's image: a real path (seeded catalogue photos) or literal base64/data URI. */
 function resolveBannerImage(banner?: Banner): string | undefined {
   if (!banner?.imageBase64) return undefined;
-  if (banner.imageBase64.startsWith('/')) return resolveMediaUrl(banner.imageBase64);
+  // Raw JPEG base64 also starts with "/" ("/9j/..."), so only treat it as a path when it ends in an image extension.
+  if (/^\/.*\.(jpe?g|png|webp|gif|avif)$/i.test(banner.imageBase64)) return resolveMediaUrl(banner.imageBase64);
   if (banner.imageBase64.startsWith('data:')) return banner.imageBase64;
   return `data:image/jpeg;base64,${banner.imageBase64}`;
 }
