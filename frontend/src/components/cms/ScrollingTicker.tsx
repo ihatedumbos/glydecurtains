@@ -8,16 +8,17 @@ interface ScrollingTickerProps {
 }
 
 export default function ScrollingTicker({ content, speed = 50, images = [] }: ScrollingTickerProps) {
-  const text = content || 'Free shipping on orders above ₹2000 | Manufacturer-direct curtain hardware | Bulk pricing for trade & installers';
+  const text = content || 'Manufacturer-direct curtain hardware | Made in Pune | Bulk pricing for dealers & installers | PAN India delivery';
   const duration = (text.length * 10) / speed;
-  const tickerItems = Array.from({ length: 2 }).flatMap(() => [
+  // The list is rendered twice so the loop scrolls seamlessly; keys carry the copy number to stay unique.
+  const tickerItems = Array.from({ length: 2 }).flatMap((_, copy) => [
     ...images.map((src, index) => ({
-      key: `image-${index}`,
+      key: `image-${copy}-${index}`,
       type: 'image' as const,
       src,
       label: 'New arrival',
     })),
-    { key: 'text', type: 'text' as const, label: text },
+    { key: `text-${copy}`, type: 'text' as const, label: text },
   ]);
 
   return (
