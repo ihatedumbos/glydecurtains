@@ -5,7 +5,6 @@ import {
   Toolbar,
   Box,
   IconButton,
-  Badge,
   InputBase,
   Menu,
   MenuItem,
@@ -16,8 +15,6 @@ import {
   useTheme,
 } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
-import ShoppingCartOutlinedIcon from '@mui/icons-material/ShoppingCartOutlined';
-import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import PersonOutlineIcon from '@mui/icons-material/PersonOutline';
 import MenuIcon from '@mui/icons-material/Menu';
 import LogoutIcon from '@mui/icons-material/Logout';
@@ -42,8 +39,6 @@ export default function Header({ categories = [] }: HeaderProps) {
 
   const isAuthRoute = ['/login', '/register', '/forgot-password', '/reset-password'].includes(location.pathname);
   const { user, isAuthenticated } = useAppSelector((state) => state.auth);
-  const cartItems = useAppSelector((state) => state.cart.items);
-  const wishlistCount = useAppSelector((state) => state.wishlist.count);
   const { logout } = useLogout();
 
   const [searchQuery, setSearchQuery] = useState('');
@@ -51,7 +46,6 @@ export default function Header({ categories = [] }: HeaderProps) {
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [profileAnchor, setProfileAnchor] = useState<null | HTMLElement>(null);
 
-  const cartCount = cartItems.reduce((sum, item) => sum + item.quantity, 0);
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
@@ -172,36 +166,10 @@ export default function Header({ categories = [] }: HeaderProps) {
             />
           </Box>
 
-          {/* Action icons */}
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
+          {/* Action icons, pinned to the right edge */}
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5, ml: 'auto' }}>
             {/* Language switcher */}
             {!isMobile && <LanguageSwitcher />}
-
-            {/* Wishlist */}
-            <Tooltip title="Wishlist">
-              <IconButton
-                aria-label="Wishlist"
-                onClick={() => navigate('/wishlist')}
-                size="small"
-              >
-                <Badge badgeContent={wishlistCount} color="error" max={99}>
-                  <FavoriteBorderIcon />
-                </Badge>
-              </IconButton>
-            </Tooltip>
-
-            {/* Cart */}
-            <Tooltip title="Cart">
-              <IconButton
-                aria-label="Cart"
-                onClick={() => navigate('/cart')}
-                size="small"
-              >
-                <Badge badgeContent={cartCount} color="primary" max={99}>
-                  <ShoppingCartOutlinedIcon />
-                </Badge>
-              </IconButton>
-            </Tooltip>
 
             {/* Profile / Login */}
             {isAuthenticated ? (

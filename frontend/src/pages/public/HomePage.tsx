@@ -43,7 +43,6 @@ const PRIORITY_SECTION_TYPES: string[] = [
 export default function HomePage() {
   const [sections, setSections] = useState<HomepageSection[]>([]);
   const [banners, setBanners] = useState<Banner[]>([]);
-  const [tickerImages, setTickerImages] = useState<string[]>([]);
   const [loading, setLoading] = useState(true);
   const [cmsLoadFailed, setCmsLoadFailed] = useState(false);
   const [retryToken, setRetryToken] = useState(0);
@@ -72,20 +71,7 @@ export default function HomePage() {
       }
     };
 
-    const fetchTickerImages = async () => {
-      try {
-        const productsRes = await axiosInstance.get('/products/public', { params: { size: 3, page: 0 } });
-        const products = productsRes.data?.data?.content || productsRes.data?.content || [];
-        const images = products
-          .map((product: { thumbnailUrl?: string }) => product.thumbnailUrl)
-          .filter((url: string | undefined): url is string => Boolean(url));
-        if (!cancelled) setTickerImages(images.slice(0, 3));
-      } catch {
-        if (!cancelled) setTickerImages([]);
-      }
-    };
-
-    Promise.allSettled([fetchCmsData(), fetchTickerImages()]).finally(() => {
+    Promise.allSettled([fetchCmsData()]).finally(() => {
       if (!cancelled) setLoading(false);
     });
 
@@ -111,10 +97,6 @@ export default function HomePage() {
   // list rather than `enabledSections` (which only carries PRIORITY_SECTION_TYPES) -
   // the ticker renders separately at the top regardless of that priority filter.
   const tickerSection = sections.find((s) => s.isEnabled && s.sectionType === 'SCROLLING_TICKER');
-  const fallbackTickerImages = tickerImages.length > 0
-    ? tickerImages
-    : ['/assets/logo/poster.png', '/assets/logo/poster.png', '/assets/logo/poster.png'];
-
   const renderSection = (section: HomepageSection) => {
     const { sectionType, id, title, config } = section;
 
@@ -188,13 +170,10 @@ export default function HomePage() {
       )}
 
       {/* Scrolling Ticker at the very top */}
-      {(tickerSection || fallbackTickerImages.length > 0) && (
-        <ScrollingTicker
-          content={tickerSection?.config?.content as string | undefined}
-          speed={tickerSection?.config?.speed as number | undefined}
-          images={fallbackTickerImages}
-        />
-      )}
+      <ScrollingTicker
+        content={tickerSection?.config?.content as string | undefined}
+        speed={tickerSection?.config?.speed as number | undefined}
+      />
 
       {/* Render all sections in CMS sort order */}
       {enabledSections.map((section) => renderSection(section))}

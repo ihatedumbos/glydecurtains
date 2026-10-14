@@ -4,6 +4,7 @@ import { Outlet } from 'react-router-dom';
 import axiosInstance from '@/api/axiosInstance';
 import Header from './Header';
 import Footer from './Footer';
+import WhatsAppButton from '@/components/common/WhatsAppButton';
 import type { Category } from './MegaMenu';
 
 const fallbackCategories: Category[] = [
@@ -109,6 +110,7 @@ export default function MainLayout({ categories: providedCategories }: MainLayou
         <Outlet />
       </Box>
       <Footer />
+      <WhatsAppButton />
     </Box>
   );
 }

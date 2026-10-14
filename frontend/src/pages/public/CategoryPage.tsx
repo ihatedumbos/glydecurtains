@@ -5,9 +5,6 @@ import { Link as RouterLink, useParams, useNavigate, useSearchParams } from 'rea
 import axiosInstance from '@/api/axiosInstance';
 import ProductCard from '@/components/product/ProductCard';
 import type { Product } from '@/store/slices/productSlice';
-import { addCartItem } from '@/store/slices/cartSlice';
-import { addToast } from '@/store/slices/uiSlice';
-import { useAppDispatch } from '@/store/hooks';
 
 interface CategoryNode {
   id: number;
@@ -20,7 +17,6 @@ export default function CategoryPage() {
   const { slug, subSlug } = useParams();
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
-  const dispatch = useAppDispatch();
   // Some links (e.g. the product detail breadcrumb) pass the sub-category as a
   // `?sub=` query param instead of a path segment - support both.
   const effectiveSubSlug = subSlug || searchParams.get('sub') || undefined;
@@ -101,20 +97,6 @@ export default function CategoryPage() {
     };
   }, [slug, effectiveSubSlug]);
 
-  const handleAddToCart = async (product: Product, variant: { id: number } | null) => {
-    try {
-      await dispatch(addCartItem({ productId: product.id, variantId: variant?.id, quantity: 1 })).unwrap();
-      dispatch(addToast({ id: `cart-add-${Date.now()}`, type: 'success', message: `${product.name} added to cart` }));
-    } catch (err) {
-      dispatch(
-        addToast({
-          id: `cart-add-error-${Date.now()}`,
-          type: 'error',
-          message: typeof err === 'string' ? err : 'Failed to add item to cart',
-        }),
-      );
-    }
-  };
 
   return (
     <Container maxWidth="xl" sx={{ py: 4 }}>
@@ -148,7 +130,7 @@ export default function CategoryPage() {
         <Grid container spacing={2.5}>
           {products.map((product) => (
             <Grid item xs={12} sm={6} md={4} lg={3} key={product.id}>
-              <ProductCard product={product} onClick={(p) => navigate(`/products/${p.id}`)} onAddToCart={handleAddToCart} />
+              <ProductCard product={product} onClick={(p) => navigate(`/products/${p.id}`)} />
             </Grid>
           ))}
         </Grid>
