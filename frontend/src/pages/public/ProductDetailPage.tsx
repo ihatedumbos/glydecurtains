@@ -434,6 +434,9 @@ export default function ProductDetailPage() {
 
   // ─── Render ────────────────────────────────────────────────────────────
 
+
+  const shownRelatedIds = new Set(relatedProducts.slice(0, 4).map((rp) => rp.id));
+  const visibleSimilarProducts = similarProducts.filter((sp) => !shownRelatedIds.has(sp.id)).slice(0, 4);
   return (
     <Container maxWidth="xl" sx={{ py: 3 }}>
       {/* Breadcrumb */}
@@ -829,13 +832,14 @@ export default function ProductDetailPage() {
       )}
 
       {/* ─── Similar Products ────────────────────────────────────────────── */}
-      {similarProducts.length > 0 && (
+      {/* Skip the row when it would repeat the related products shown just above. */}
+      {visibleSimilarProducts.length > 0 && (
         <Box sx={{ mt: 6, mb: 4 }}>
           <Typography variant="h5" fontWeight={600} gutterBottom>
             Similar Products
           </Typography>
           <Grid container spacing={2}>
-            {similarProducts.slice(0, 4).map((sp) => (
+            {visibleSimilarProducts.map((sp) => (
               <Grid key={sp.id} size={{ xs: 6, sm: 4, md: 3 }}>
                 <ProductCard product={sp} onAddToCart={() => handleAddToCartGeneric(sp.id, sp.name)} />
               </Grid>
@@ -885,7 +889,7 @@ function ProductCard({ product, onAddToCart }: { product: RelatedProduct; onAddT
             <Typography variant="body2" fontWeight={700} color="primary.main">
               ₹{(product.offerPrice || product.basePrice).toLocaleString('en-IN')}
             </Typography>
-            {product.discountPercentage && product.discountPercentage > 0 && (
+            {(product.discountPercentage ?? 0) > 0 && (
               <Typography
                 variant="caption"
                 color="text.secondary"

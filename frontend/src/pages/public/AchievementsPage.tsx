@@ -32,7 +32,8 @@ function parseMetricValue(value: string): { target: number; prefix: string; suff
 
 function AnimatedMetric({ value, format }: { value: string; format: string }) {
   const ref = useRef<HTMLSpanElement>(null);
-  const isInView = useInView(ref, { once: true, margin: '-50px' });
+  // Only shrink the bottom edge: a side margin hid narrow numbers sitting near the screen edge, leaving them at 0.
+  const isInView = useInView(ref, { once: true, margin: '0px 0px -50px 0px' });
   const [displayValue, setDisplayValue] = useState('0');
   const animationRef = useRef<number | null>(null);
 

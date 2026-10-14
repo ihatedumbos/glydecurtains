@@ -175,7 +175,7 @@ export default function ProductSection({ title, sectionType }: ProductSectionPro
                       className="h-full w-full object-contain transition-transform duration-300 group-hover:scale-105"
                     />
                   )}
-                  {product.discountPercentage && product.discountPercentage > 0 && (
+                  {(product.discountPercentage ?? 0) > 0 && (
                     <span className="absolute left-2 top-2 rounded-sm bg-[#b3261e] px-2 py-1 text-xs font-bold text-white">
                       -{product.discountPercentage}%
                     </span>
