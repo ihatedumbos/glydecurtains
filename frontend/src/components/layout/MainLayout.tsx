@@ -60,7 +60,7 @@ export default function MainLayout({ categories: providedCategories }: MainLayou
 
     const fetchCategories = async () => {
       try {
-        const response = await axiosInstance.get('/categories/public/tree');
+        const response = await axiosInstance.get('/categories/public/tree', { params: { listedOnly: true } });
         const data = response.data?.data || response.data || [];
 
         if (!Array.isArray(data) || data.length === 0) {

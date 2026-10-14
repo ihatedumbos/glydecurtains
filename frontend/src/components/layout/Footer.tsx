@@ -16,6 +16,7 @@ const quickLinks = [
 ];
 
 const categoryLinks = [
+  { label: 'Curtain Tracks', path: '/categories/tracks/curtain-tracks' },
   { label: 'Track Runners', path: '/categories/accessories/track-runners' },
   { label: 'Ceiling Fittings', path: '/categories/accessories/ceiling-fittings' },
   { label: 'Wall Fittings', path: '/categories/accessories/wall-fittings' },

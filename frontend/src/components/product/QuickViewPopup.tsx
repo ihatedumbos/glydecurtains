@@ -178,7 +178,7 @@ export default function QuickViewPopup({ product, open, variants = [] }: QuickVi
 
             {/* Price display */}
             <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-              {displayPrice !== null ? (
+              {displayPrice ? (
                 <Typography variant="subtitle2" fontWeight={700} color="primary">
                   ₹{displayPrice.toLocaleString('en-IN')}
                 </Typography>

@@ -88,4 +88,10 @@ public interface ProductRepository extends JpaRepository<Product, Long>, org.spr
                                       @Param("pattern") String pattern);
 
     boolean existsByCategoryId(Long categoryId);
+
+    @Query("SELECT DISTINCT p.categoryId FROM Product p WHERE p.status = :status AND p.categoryId IS NOT NULL")
+    List<Long> findCategoryIdsWithStatus(@Param("status") ProductStatus status);
+
+    @Query("SELECT DISTINCT p.subCategoryId FROM Product p WHERE p.status = :status AND p.subCategoryId IS NOT NULL")
+    List<Long> findSubCategoryIdsWithStatus(@Param("status") ProductStatus status);
 }

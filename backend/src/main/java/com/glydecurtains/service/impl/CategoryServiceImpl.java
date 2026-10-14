@@ -8,6 +8,7 @@ import com.glydecurtains.dto.response.SubCategoryResponse;
 import com.glydecurtains.entity.Category;
 import com.glydecurtains.entity.Collection;
 import com.glydecurtains.entity.SubCategory;
+import com.glydecurtains.entity.enums.ProductStatus;
 import com.glydecurtains.exception.BusinessException;
 import com.glydecurtains.repository.CategoryRepository;
 import com.glydecurtains.repository.CollectionRepository;
@@ -19,7 +20,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -141,6 +144,18 @@ public class CategoryServiceImpl implements CategoryService {
                             .subCategories(subCategoryResponses)
                             .build();
                 })
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<CategoryTreeResponse> getListedCategoryTree() {
+        Set<Long> listedCategories = new HashSet<>(productRepository.findCategoryIdsWithStatus(ProductStatus.ACTIVE));
+        Set<Long> listedSubCategories = new HashSet<>(productRepository.findSubCategoryIdsWithStatus(ProductStatus.ACTIVE));
+        return getCategoryTree().stream()
+                .filter(category -> listedCategories.contains(category.getId()))
+                .peek(category -> category.setSubCategories(category.getSubCategories().stream()
+                        .filter(sub -> listedSubCategories.contains(sub.getId()))
+                        .collect(Collectors.toList())))
                 .collect(Collectors.toList());
     }
 

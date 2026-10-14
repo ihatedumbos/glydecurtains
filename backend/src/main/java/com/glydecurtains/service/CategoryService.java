@@ -18,6 +18,9 @@ public interface CategoryService {
 
     List<CategoryTreeResponse> getCategoryTree();
 
+    /** The category tree trimmed to categories and sub-categories that have at least one active product. */
+    List<CategoryTreeResponse> getListedCategoryTree();
+
     CategoryResponse updateSortOrder(Long id, int sortOrder);
 
     CategoryResponse toggleVisibility(Long id, boolean visible);

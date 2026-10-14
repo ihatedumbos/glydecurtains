@@ -136,7 +136,7 @@ export default function ProductListPage() {
     const fetchFilterMeta = async () => {
       try {
         const [catRes, colRes, facetRes] = await Promise.allSettled([
-          axiosInstance.get('/categories/public/tree'),
+          axiosInstance.get('/categories/public/tree', { params: { listedOnly: true } }),
           axiosInstance.get('/collections/public'),
           axiosInstance.get('/search/facets'),
         ]);
@@ -168,9 +168,11 @@ export default function ProductListPage() {
     if (filters.categoryId) {
       const fetchSubCats = async () => {
         try {
-          const res = await axiosInstance.get(`/categories/public/${filters.categoryId}/sub-categories`);
-          const data = res.data?.data || res.data || [];
-          setSubCategories(data.map((s: { id: number; name: string }) => ({ id: s.id, name: s.name })));
+          // Same trimmed tree as the category list, so only sub-categories with products show.
+          const res = await axiosInstance.get('/categories/public/tree', { params: { listedOnly: true } });
+          const tree: { id: number; subCategories?: { id: number; name: string }[] }[] = res.data?.data || res.data || [];
+          const data = tree.find((c) => c.id === filters.categoryId)?.subCategories || [];
+          setSubCategories(data.map((s) => ({ id: s.id, name: s.name })));
         } catch {
           setSubCategories([]);
         }

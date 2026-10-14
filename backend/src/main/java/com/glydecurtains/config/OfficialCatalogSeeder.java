@@ -31,13 +31,12 @@ import java.util.Set;
 @Slf4j
 public class OfficialCatalogSeeder implements ApplicationRunner {
 
-    private static final Set<String> ACCESSORY_SKUS = Set.of(
-            "GLYDE-ACC-JUMBO-RUNNER", "GLYDE-ACC-20-CEILING", "GLYDE-ACC-20-ENDCAP",
-            "GLYDE-ACC-20-WALL", "GLYDE-ACC-23-ENDCAP", "GLYDE-ACC-23-WALL",
-            "GLYDE-ACC-BICHO-CEILING", "GLYDE-ACC-CEILING", "GLYDE-ACC-DOUBLE-CEILING",
-            "GLYDE-ACC-DOUBLE-WALL", "GLYDE-ACC-RIPPLE-RUNNER", "GLYDE-ACC-RIPPLE-TAPE",
-            "GLYDE-ACC-RUNNER-23-L", "GLYDE-ACC-SILENT-RUNNER"
-    );
+    private static final String TRACK_SHORT_DESCRIPTION =
+            "Glyde aluminium curtain track. Smooth, silent sliding. Message us for sizes and price.";
+    private static final String TRACK_LONG_DESCRIPTION =
+            "Premium aluminium curtain track with a rust-resistant powder-coated finish, made in Pune. "
+            + "Heavy duty and long lasting, with smooth and silent sliding. Fits Glyde runners, end caps "
+            + "and ceiling or wall brackets. Cut to your length; bulk orders and custom solutions available.";
 
     private final CategoryRepository categoryRepository;
     private final ProductRepository productRepository;
@@ -48,9 +47,6 @@ public class OfficialCatalogSeeder implements ApplicationRunner {
     @Transactional
     public void run(org.springframework.boot.ApplicationArguments args) {
         Category accessories = category("Accessories", "Essential curtain accessories and hardware", 4);
-        if (!productRepository.existsBySku("GLYDE-ACC-JUMBO-RUNNER")) {
-            removeNonAccessoryProducts();
-        }
         SubCategory runners = subCategory(accessories, "Track Runners", 1);
         SubCategory ceiling = subCategory(accessories, "Ceiling Fittings", 2);
         SubCategory wall = subCategory(accessories, "Wall Fittings", 3);
@@ -71,6 +67,14 @@ public class OfficialCatalogSeeder implements ApplicationRunner {
         bundledProduct("Ripple Tape", "GLYDE-ACC-RIPPLE-TAPE", accessories, tapes, "RippleTape", new BigDecimal("249.00"), 65, List.of("IMG_20260624_144146.jpg"));
         bundledProduct("Runner 23# L", "GLYDE-ACC-RUNNER-23-L", accessories, runners, "Runner 23# L", new BigDecimal("499.00"), 52, List.of("RUNNER_L.png"));
         bundledProduct("Silent Runner", "GLYDE-ACC-SILENT-RUNNER", accessories, runners, "SilentRunner", new BigDecimal("749.00"), 30, List.of("IMG_20260624_143142.jpg", "IMG_20260624_143206.jpg", "video_20260624_142018 (online-video-cutter.com).mp4", "video_20260624_143148.mp4"));
+
+        // The tracks from the Glyde poster. Price stays 0 (shown as "Price on request") until real prices are set.
+        Category tracks = category("Tracks", "Aluminium curtain tracks", 3);
+        SubCategory curtainTracks = subCategory(tracks, "Curtain Tracks", 0);
+        trackProduct("E101 Curtain Track", "GLYDE-TRK-E101", tracks, curtainTracks,
+                "[\"Ivory\",\"White\"]", List.of("E101-Ivory.jpg", "E101-White.jpg"));
+        trackProduct("P101 Curtain Track", "GLYDE-TRK-P101", tracks, curtainTracks,
+                "[\"White\"]", List.of("P101-White.jpg"));
 
         log.info("Official Glyde catalogue products are available.");
     }
@@ -118,17 +122,26 @@ public class OfficialCatalogSeeder implements ApplicationRunner {
         bundledProduct(product, directory, files);
     }
 
+    private void trackProduct(String name, String sku, Category category, SubCategory subCategory,
+                              String colorsJson, List<String> photos) {
+        boolean isNew = !productRepository.existsBySku(sku);
+        Product product = product(name, sku, category, subCategory, BigDecimal.ZERO, 100);
+        if (isNew) {
+            product.setShortDescription(TRACK_SHORT_DESCRIPTION);
+            product.setLongDescription(TRACK_LONG_DESCRIPTION);
+            product.setMaterial("Aluminium, powder coated");
+            product.setTags("glyde,official catalogue,curtain track");
+            product.setColors(colorsJson);
+            productRepository.save(product);
+        }
+        bundledProduct(product, "tracks", photos);
+    }
+
     private SubCategory subCategory(Category category, String name, int sortOrder) {
         return subCategoryRepository.findByCategoryId(category.getId()).stream()
                 .filter(item -> item.getName().equalsIgnoreCase(name))
                 .findFirst()
                 .orElseGet(() -> subCategoryRepository.save(new SubCategory(null, name, category.getId(), null, sortOrder, true)));
-    }
-
-    private void removeNonAccessoryProducts() {
-        productRepository.findAll().stream()
-                .filter(product -> !ACCESSORY_SKUS.contains(product.getSku()))
-                .forEach(productRepository::delete);
     }
 
     private void bundledProduct(Product product, String directory, List<String> files) {

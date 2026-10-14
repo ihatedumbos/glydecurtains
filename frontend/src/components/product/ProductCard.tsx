@@ -4,6 +4,7 @@ import { motion } from 'framer-motion';
 import QuickViewPopup, { type ProductVariant } from '@/components/product/QuickViewPopup';
 import type { Product } from '@/store/slices/productSlice';
 import { resolveMediaUrl } from '@/utils/mediaUrl';
+import { formatPrice } from '@/utils/price';
 
 interface ProductCardProps {
   product: Product;
@@ -126,7 +127,7 @@ export default function ProductCard({ product, variants = [], onClick }: Product
 
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mt: 'auto' }}>
             <Typography variant="subtitle1" fontWeight={700} color="primary">
-              ₹{displayPrice.toLocaleString('en-IN')}
+              {formatPrice(displayPrice)}
             </Typography>
             {hasDiscount && (
               <Typography variant="body2" color="text.disabled" sx={{ textDecoration: 'line-through' }}>

@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import axiosInstance from '@/api/axiosInstance';
 import { resolveMediaUrl } from '@/utils/mediaUrl';
+import { formatPrice } from '@/utils/price';
 
 interface ProductItem {
   id: number;
@@ -187,7 +188,7 @@ export default function ProductSection({ title, sectionType }: ProductSectionPro
                   </h3>
                   <div className="mt-2 flex items-center gap-2">
                     <span className="text-lg font-bold text-[#14232b]">
-                      ₹{product.offerPrice || product.basePrice}
+                      {formatPrice(product.offerPrice || product.basePrice)}
                     </span>
                     {product.offerPrice && product.offerPrice < product.basePrice && (
                       <span className="text-sm text-[#a08b78] line-through">₹{product.basePrice}</span>

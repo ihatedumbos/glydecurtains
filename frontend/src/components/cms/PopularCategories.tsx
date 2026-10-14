@@ -22,7 +22,7 @@ export default function PopularCategories({ title }: PopularCategoriesProps) {
 
   useEffect(() => {
     axiosInstance
-     .get('/categories/public/tree')
+     .get('/categories/public/tree', { params: { listedOnly: true } })
       .then((res) => {
         const data = res.data?.data || res.data || [];
         setCategories(data);

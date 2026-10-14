@@ -45,8 +45,13 @@ public class CategoryController {
     }
 
     @GetMapping("/categories/public/tree")
-    public ResponseEntity<ApiResponse<List<CategoryTreeResponse>>> getCategoryTree() {
-        List<CategoryTreeResponse> tree = categoryService.getCategoryTree();
+    public ResponseEntity<ApiResponse<List<CategoryTreeResponse>>> getCategoryTree(
+            @RequestParam(defaultValue = "false") boolean listedOnly) {
+        // Storefront menus pass listedOnly=true so empty categories don't lead to blank pages;
+        // the admin screens keep the full tree.
+        List<CategoryTreeResponse> tree = listedOnly
+                ? categoryService.getListedCategoryTree()
+                : categoryService.getCategoryTree();
         return ResponseEntity.ok(ApiResponse.success(tree));
     }
 
