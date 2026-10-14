@@ -10,7 +10,9 @@ export interface StoreLocation {
   email?: string;
   latitude?: number;
   longitude?: number;
-  operatingHours?: Record<string, string>;
+  // The API sends a JSON string such as {"monday":"10:00-20:00"}, or free text like
+  // "Mon-Sat: 10 AM - 8 PM" when entered by hand in the admin panel.
+  operatingHours?: string | Record<string, string>;
   imageBase64?: string;
   isActive: boolean;
 }

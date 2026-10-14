@@ -127,14 +127,33 @@ export default function StoreLocatorPage() {
   const displayedStores: StoreLocation[] = isSearchMode ? searchResults : stores;
 
   // Format operating hours for display
-  const formatOperatingHours = (hours?: Record<string, string>) => {
-    if (!hours || Object.keys(hours).length === 0) return null;
-    return Object.entries(hours).map(([day, time]) => (
-      <Typography key={day} variant="body2" color="text.secondary">
-        {day}: {time}
+  const DAY_ORDER = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'];
+
+  const parseOperatingHours = (hours?: string | Record<string, string>): string[] => {
+    if (!hours) return [];
+    let value: unknown = hours;
+    if (typeof hours === 'string') {
+      const trimmed = hours.trim();
+      if (!trimmed) return [];
+      try {
+        value = JSON.parse(trimmed);
+      } catch {
+        // Free text entered by hand: show it as-is, one line per "|" segment.
+        return trimmed.split('|').map((part) => part.trim()).filter(Boolean);
+      }
+    }
+    if (!value || typeof value !== 'object') return [String(value)];
+    return Object.entries(value as Record<string, string>)
+      .sort(([a], [b]) => DAY_ORDER.indexOf(a.toLowerCase()) - DAY_ORDER.indexOf(b.toLowerCase()))
+      .map(([day, time]) => `${day.charAt(0).toUpperCase()}${day.slice(1)}: ${time}`);
+  };
+
+  const formatOperatingHours = (lines: string[]) =>
+    lines.map((line) => (
+      <Typography key={line} variant="body2" color="text.secondary">
+        {line}
       </Typography>
     ));
-  };
 
   // Skeleton cards for loading state
   const renderSkeletons = () => (
@@ -265,8 +284,7 @@ export default function StoreLocatorPage() {
                       </Box>
                     )}
 
-                    {store.operatingHours &&
-                      Object.keys(store.operatingHours).length > 0 && (
+                    {parseOperatingHours(store.operatingHours).length > 0 && (
                         <Box sx={{ mt: 1.5 }}>
                           <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 0.5 }}>
                             <AccessTimeIcon fontSize="small" color="action" />
@@ -275,7 +293,7 @@ export default function StoreLocatorPage() {
                             </Typography>
                           </Box>
                           <Box sx={{ pl: 3.5 }}>
-                            {formatOperatingHours(store.operatingHours)}
+                            {formatOperatingHours(parseOperatingHours(store.operatingHours))}
                           </Box>
                         </Box>
                       )}
