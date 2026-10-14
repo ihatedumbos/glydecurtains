@@ -31,14 +31,14 @@ export default function BrandStory({ title, config }: BrandStoryProps) {
             viewport={{ once: true }}
             transition={{ duration: 0.6 }}
           >
-            <h2 className="mb-6 font-display text-3xl text-[#2f3e46] md:text-4xl">{heading}</h2>
-            <p className="text-[#5c6b73] leading-relaxed text-lg">{description}</p>
+            <h2 className="mb-6 font-display text-3xl text-[#14232b] md:text-4xl">{heading}</h2>
+            <p className="text-[#4b5b63] leading-relaxed text-lg">{description}</p>
             {stats.length > 0 && (
               <div className="mt-8 flex gap-8">
                 {stats.map((stat) => (
                   <div key={stat.label}>
-                    <div className="text-2xl font-display text-[#c27d56]">{stat.value}</div>
-                    <div className="text-sm text-[#5c6b73]">{stat.label}</div>
+                    <div className="text-2xl font-display text-[#a8400f]">{stat.value}</div>
+                    <div className="text-sm text-[#4b5b63]">{stat.label}</div>
                   </div>
                 ))}
               </div>

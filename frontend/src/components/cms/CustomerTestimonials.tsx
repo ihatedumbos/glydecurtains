@@ -34,7 +34,7 @@ export default function CustomerTestimonials({ title }: CustomerTestimonialsProp
     return (
       <section className="py-12 px-4 md:px-8">
         <div className="max-w-7xl mx-auto">
-          <h2 className="mb-8 text-center font-display text-2xl text-[#2f3e46] md:text-3xl">{title || 'What Our Customers Say'}</h2>
+          <h2 className="mb-8 text-center font-display text-2xl text-[#14232b] md:text-3xl">{title || 'What Our Customers Say'}</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {Array.from({ length: 3 }).map((_, i) => (
               <div key={i} className="animate-pulse p-6 bg-[#ffffff] rounded-xl">
@@ -58,7 +58,7 @@ export default function CustomerTestimonials({ title }: CustomerTestimonialsProp
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          className="mb-8 text-center font-display text-2xl text-[#2f3e46] md:text-3xl"
+          className="mb-8 text-center font-display text-2xl text-[#14232b] md:text-3xl"
         >
           {title || 'What Our Customers Say'}
         </motion.h2>
@@ -79,9 +79,9 @@ export default function CustomerTestimonials({ title }: CustomerTestimonialsProp
                   </span>
                 ))}
               </div>
-              <h4 className="font-semibold text-[#2f3e46] mb-2">{t.title}</h4>
-              <p className="text-sm text-[#5c6b73] mb-4 line-clamp-3">{t.comment}</p>
-              <div className="flex items-center justify-between text-xs text-[#5c6b73]">
+              <h4 className="font-semibold text-[#14232b] mb-2">{t.title}</h4>
+              <p className="text-sm text-[#4b5b63] mb-4 line-clamp-3">{t.comment}</p>
+              <div className="flex items-center justify-between text-xs text-[#4b5b63]">
                 <span className="font-medium">{t.userName}</span>
                 <span>{new Date(t.createdAt).toLocaleDateString()}</span>
               </div>

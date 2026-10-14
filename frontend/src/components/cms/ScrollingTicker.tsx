@@ -17,7 +17,7 @@ export default function ScrollingTicker({ content, speed = 50 }: ScrollingTicker
 
   // The messages are rendered twice so the loop scrolls seamlessly from -50% back to 0.
   return (
-    <div className="relative w-full overflow-hidden bg-[#2f3e46] py-2 text-[#ffffff]">
+    <div className="relative w-full overflow-hidden bg-[#14232b] py-2 text-[#ffffff]">
       <motion.div
         className="flex w-max items-center whitespace-nowrap"
         animate={{ x: ['0%', '-50%'] }}
@@ -34,7 +34,7 @@ export default function ScrollingTicker({ content, speed = 50 }: ScrollingTicker
           messages.map((message, index) => (
             <span key={`${copy}-${index}`} className="inline-flex shrink-0 items-center text-sm font-medium tracking-wide">
               <span className="px-6">{message}</span>
-              <span aria-hidden="true" className="text-[#c27d56]">
+              <span aria-hidden="true" className="text-[#e08a5a]">
                 ●
               </span>
             </span>

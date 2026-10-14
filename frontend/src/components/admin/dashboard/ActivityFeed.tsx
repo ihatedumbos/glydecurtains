@@ -41,16 +41,16 @@ function getActivityColor(actionType: string): string {
   switch (actionType) {
     case 'ORDER_PLACED':
     case 'ORDER_UPDATED':
-      return 'bg-[#c27d56]/15';
+      return 'bg-[#a8400f]/15';
     case 'USER_REGISTERED':
     case 'USER_APPROVED':
       return 'bg-[#2e7d32]/15';
     case 'PRODUCT_CREATED':
     case 'PRODUCT_UPDATED':
-      return 'bg-[#2f3e46]/15';
+      return 'bg-[#14232b]/15';
     case 'LOGIN':
     case 'LOGOUT':
-      return 'bg-[#c27d56]/20';
+      return 'bg-[#a8400f]/20';
     default:
       return 'bg-[#ffffff]';
   }
@@ -107,7 +107,7 @@ export default function ActivityFeed({ activities, loading = false }: ActivityFe
             {getActivityIcon(activity.actionType)}
           </div>
           <div className="flex-1 min-w-0">
-            <p className="text-sm text-[#2f3e46] truncate">
+            <p className="text-sm text-[#14232b] truncate">
               {activity.details || `${activity.actionType.replace(/_/g, ' ').toLowerCase()} on ${activity.entityType}`}
             </p>
             <p className="text-xs text-[#8a97a0] mt-0.5">

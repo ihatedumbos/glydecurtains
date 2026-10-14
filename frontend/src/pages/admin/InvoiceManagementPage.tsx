@@ -324,7 +324,7 @@ export default function InvoiceManagementPage() {
                       sx={{
                         width: 48,
                         height: 48,
-                        backgroundColor: 'rgba(47, 62, 70, 0.15)',
+                        backgroundColor: 'rgba(20, 35, 43, 0.15)',
                         borderRadius: 1,
                         display: 'flex',
                         alignItems: 'center',

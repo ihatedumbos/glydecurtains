@@ -49,24 +49,24 @@ export default function CheckoutPage() {
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
             </svg>
           </div>
-          <h1 className="text-3xl font-bold text-[#2f3e46] mb-2">Order Placed Successfully!</h1>
-          <p className="text-lg text-[#5c6b73] mb-2">Thank you for your order.</p>
-          <p className="text-[#5c6b73] mb-6">
-            Order Number: <span className="font-semibold text-[#2f3e46]">{placedOrder.orderNumber}</span>
+          <h1 className="text-3xl font-bold text-[#14232b] mb-2">Order Placed Successfully!</h1>
+          <p className="text-lg text-[#4b5b63] mb-2">Thank you for your order.</p>
+          <p className="text-[#4b5b63] mb-6">
+            Order Number: <span className="font-semibold text-[#14232b]">{placedOrder.orderNumber}</span>
           </p>
-          <p className="text-[#5c6b73] mb-8">
+          <p className="text-[#4b5b63] mb-8">
             Total: <span className="font-semibold">₹{placedOrder.grandTotal.toLocaleString('en-IN')}</span>
           </p>
           <div className="flex gap-4 justify-center">
             <button
               onClick={() => navigate(`/orders/${placedOrder.id}`)}
-              className="px-6 py-2 bg-[#c27d56] text-white rounded-lg hover:bg-[#925e41] transition-colors"
+              className="px-6 py-2 bg-[#a8400f] text-white rounded-lg hover:bg-[#7c2f0b] transition-colors"
             >
               View Order
             </button>
             <button
               onClick={() => navigate('/products')}
-              className="px-6 py-2 border border-[#2f3e46]/15 text-[#2f3e46] rounded-lg hover:bg-[#ffffff] transition-colors"
+              className="px-6 py-2 border border-[#14232b]/15 text-[#14232b] rounded-lg hover:bg-[#ffffff] transition-colors"
             >
               Continue Shopping
             </button>
@@ -78,7 +78,7 @@ export default function CheckoutPage() {
 
   return (
     <div className="max-w-3xl mx-auto p-6">
-      <h1 className="font-display text-2xl text-[#2f3e46] mb-6">Confirm Your Order</h1>
+      <h1 className="font-display text-2xl text-[#14232b] mb-6">Confirm Your Order</h1>
 
       {error && (
         <div className="mb-4 p-4 bg-red-50 border border-red-200 text-red-700 rounded-lg">
@@ -88,10 +88,10 @@ export default function CheckoutPage() {
 
       {items.length === 0 ? (
         <div className="text-center py-12">
-          <p className="text-[#5c6b73] mb-4">Your cart is empty.</p>
+          <p className="text-[#4b5b63] mb-4">Your cart is empty.</p>
           <button
             onClick={() => navigate('/products')}
-            className="px-6 py-2 bg-[#c27d56] text-white rounded-lg hover:bg-[#925e41]"
+            className="px-6 py-2 bg-[#a8400f] text-white rounded-lg hover:bg-[#7c2f0b]"
           >
             Browse Products
           </button>
@@ -110,10 +110,10 @@ export default function CheckoutPage() {
                   />
                 )}
                 <div className="flex-1">
-                  <p className="font-medium text-[#2f3e46]">{item.productName}</p>
-                  <p className="text-sm text-[#5c6b73]">Qty: {item.quantity}</p>
+                  <p className="font-medium text-[#14232b]">{item.productName}</p>
+                  <p className="text-sm text-[#4b5b63]">Qty: {item.quantity}</p>
                 </div>
-                <p className="font-medium text-[#2f3e46]">
+                <p className="font-medium text-[#14232b]">
                   ₹{(item.unitPrice * item.quantity).toLocaleString('en-IN')}
                 </p>
               </div>
@@ -132,14 +132,14 @@ export default function CheckoutPage() {
           <div className="mt-6 flex gap-4 justify-end">
             <button
               onClick={() => navigate('/cart')}
-              className="px-6 py-2 border border-[#2f3e46]/15 text-[#2f3e46] rounded-lg hover:bg-[#ffffff] transition-colors"
+              className="px-6 py-2 border border-[#14232b]/15 text-[#14232b] rounded-lg hover:bg-[#ffffff] transition-colors"
             >
               Back to Cart
             </button>
             <button
               onClick={handlePlaceOrder}
               disabled={step === 'placing'}
-              className="px-6 py-2 bg-[#c27d56] text-white rounded-lg hover:bg-[#925e41] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              className="px-6 py-2 bg-[#a8400f] text-white rounded-lg hover:bg-[#7c2f0b] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {step === 'placing' ? 'Placing Order...' : 'Place Order'}
             </button>

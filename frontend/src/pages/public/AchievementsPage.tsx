@@ -101,7 +101,7 @@ function AchievementCard({ achievement, index }: { achievement: Achievement; ind
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: '-30px' }}
       transition={{ delay: index * 0.1, duration: 0.5, ease: 'easeOut' }}
-      className="group relative bg-[#ffffff] rounded-2xl p-8 shadow-md hover:shadow-xl transition-shadow duration-300 border border-[#2f3e46]/12"
+      className="group relative bg-[#ffffff] rounded-2xl p-8 shadow-md hover:shadow-xl transition-shadow duration-300 border border-[#14232b]/12"
     >
       {/* Icon */}
       <div className="w-16 h-16 mb-5 rounded-xl bg-primary/10 flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
@@ -122,13 +122,13 @@ function AchievementCard({ achievement, index }: { achievement: Achievement; ind
       </div>
 
       {/* Title */}
-      <h3 className="text-lg font-semibold text-[#2f3e46] mb-2">
+      <h3 className="text-lg font-semibold text-[#14232b] mb-2">
         {achievement.title}
       </h3>
 
       {/* Description */}
       {achievement.description && (
-        <p className="text-sm text-[#5c6b73] leading-relaxed">
+        <p className="text-sm text-[#4b5b63] leading-relaxed">
           {achievement.description}
         </p>
       )}
@@ -171,7 +171,7 @@ export default function AchievementsPage() {
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
-            className="text-3xl md:text-5xl font-bold text-[#2f3e46] mb-4"
+            className="text-3xl md:text-5xl font-bold text-[#14232b] mb-4"
           >
             Our Achievements
           </motion.h1>
@@ -179,7 +179,7 @@ export default function AchievementsPage() {
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.2 }}
-            className="text-lg text-[#5c6b73] max-w-2xl mx-auto"
+            className="text-lg text-[#4b5b63] max-w-2xl mx-auto"
           >
             Milestones that define our journey of excellence in crafting premium curtains and home decor solutions.
           </motion.p>
@@ -201,7 +201,7 @@ export default function AchievementsPage() {
               ))}
             </div>
           ) : achievements.length === 0 ? (
-            <div className="text-center py-20 text-[#5c6b73]">
+            <div className="text-center py-20 text-[#4b5b63]">
               <p className="text-lg">No achievements to display yet.</p>
             </div>
           ) : (

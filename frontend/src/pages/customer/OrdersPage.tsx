@@ -54,7 +54,7 @@ export default function OrdersPage() {
 
   return (
     <div className="max-w-4xl mx-auto p-6">
-      <h1 className="font-display text-2xl text-[#2f3e46] mb-6">My Orders</h1>
+      <h1 className="font-display text-2xl text-[#14232b] mb-6">My Orders</h1>
 
       {error && (
         <div className="mb-4 p-4 bg-red-50 border border-red-200 text-red-700 rounded-lg">
@@ -76,10 +76,10 @@ export default function OrdersPage() {
           <svg className="w-16 h-16 mx-auto text-[#8a97a0] mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
           </svg>
-          <p className="text-[#5c6b73] mb-4">You haven't placed any orders yet.</p>
+          <p className="text-[#4b5b63] mb-4">You haven't placed any orders yet.</p>
           <button
             onClick={() => navigate('/products')}
-            className="px-6 py-2 bg-[#c27d56] text-white rounded-lg hover:bg-[#925e41]"
+            className="px-6 py-2 bg-[#a8400f] text-white rounded-lg hover:bg-[#7c2f0b]"
           >
             Start Shopping
           </button>
@@ -95,14 +95,14 @@ export default function OrdersPage() {
               >
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="font-semibold text-[#2f3e46]">{order.orderNumber}</p>
-                    <p className="text-sm text-[#5c6b73] mt-1">{formatDate(order.createdAt)}</p>
+                    <p className="font-semibold text-[#14232b]">{order.orderNumber}</p>
+                    <p className="text-sm text-[#4b5b63] mt-1">{formatDate(order.createdAt)}</p>
                   </div>
                   <div className="text-right">
-                    <span className={`inline-block px-3 py-1 rounded-full text-xs font-medium ${STATUS_COLORS[order.status] || 'bg-[#ffffff] text-[#2f3e46]'}`}>
+                    <span className={`inline-block px-3 py-1 rounded-full text-xs font-medium ${STATUS_COLORS[order.status] || 'bg-[#ffffff] text-[#14232b]'}`}>
                       {order.status}
                     </span>
-                    <p className="text-sm font-medium text-[#2f3e46] mt-1">
+                    <p className="text-sm font-medium text-[#14232b] mt-1">
                       ₹{order.grandTotal.toLocaleString('en-IN')}
                     </p>
                   </div>
@@ -122,17 +122,17 @@ export default function OrdersPage() {
               <button
                 onClick={() => setPage((p) => Math.max(0, p - 1))}
                 disabled={page === 0}
-                className="px-3 py-1 border border-[#2f3e46]/15 rounded text-sm disabled:opacity-50 disabled:cursor-not-allowed hover:bg-[#ffffff]"
+                className="px-3 py-1 border border-[#14232b]/15 rounded text-sm disabled:opacity-50 disabled:cursor-not-allowed hover:bg-[#ffffff]"
               >
                 Previous
               </button>
-              <span className="text-sm text-[#5c6b73]">
+              <span className="text-sm text-[#4b5b63]">
                 Page {page + 1} of {pagination.totalPages}
               </span>
               <button
                 onClick={() => setPage((p) => Math.min(pagination.totalPages - 1, p + 1))}
                 disabled={page >= pagination.totalPages - 1}
-                className="px-3 py-1 border border-[#2f3e46]/15 rounded text-sm disabled:opacity-50 disabled:cursor-not-allowed hover:bg-[#ffffff]"
+                className="px-3 py-1 border border-[#14232b]/15 rounded text-sm disabled:opacity-50 disabled:cursor-not-allowed hover:bg-[#ffffff]"
               >
                 Next
               </button>

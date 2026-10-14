@@ -26,7 +26,7 @@ export default function TrendChart({
   title,
   labels,
   data,
-  color = '#c27d56',
+  color = '#a8400f',
   chartType = 'bar',
   onPeriodChange,
   loading = false,
@@ -39,9 +39,9 @@ export default function TrendChart({
   };
 
   return (
-    <div className="bg-[#ffffff] rounded-xl shadow-sm border border-[#2f3e46]/12 p-5">
+    <div className="bg-[#ffffff] rounded-xl shadow-sm border border-[#14232b]/12 p-5">
       <div className="flex items-center justify-between mb-4">
-        <h3 className="text-sm font-semibold text-[#2f3e46]">{title}</h3>
+        <h3 className="text-sm font-semibold text-[#14232b]">{title}</h3>
         <div className="flex gap-1 bg-[#ffffff] rounded-lg p-0.5">
           {PERIODS.map((period) => (
             <button
@@ -49,8 +49,8 @@ export default function TrendChart({
               onClick={() => handlePeriodChange(period.value)}
               className={`px-2.5 py-1 text-xs font-medium rounded-md transition-colors ${
                 activePeriod === period.value
-                  ? 'bg-[#ffffff] text-[#2f3e46] shadow-sm'
-                  : 'text-[#5c6b73] hover:text-[#2f3e46]'
+                  ? 'bg-[#ffffff] text-[#14232b] shadow-sm'
+                  : 'text-[#4b5b63] hover:text-[#14232b]'
               }`}
             >
               {period.label}
@@ -60,7 +60,7 @@ export default function TrendChart({
       </div>
       {loading ? (
         <div className="flex items-center justify-center h-[200px]">
-          <div className="animate-spin h-6 w-6 border-2 border-[#f2f4f5] border-t-[#c27d56] rounded-full" />
+          <div className="animate-spin h-6 w-6 border-2 border-[#f2f4f5] border-t-[#a8400f] rounded-full" />
         </div>
       ) : chartType === 'bar' ? (
         <BarChart labels={labels} data={data} color={color} />

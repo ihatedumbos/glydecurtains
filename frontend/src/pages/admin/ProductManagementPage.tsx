@@ -159,7 +159,7 @@ function SpecificationEditor({ specs, onChange }: { specs: ProductSpecification[
         </Box>
       ))}
       {specs.length === 0 && (
-        <Typography variant="body2" className="text-[#5c6b73] italic">No specifications added yet.</Typography>
+        <Typography variant="body2" className="text-[#4b5b63] italic">No specifications added yet.</Typography>
       )}
     </Box>
   );
@@ -221,7 +221,7 @@ function VariantEditor({ variants, onChange }: { variants: ProductVariant[]; onC
         </TableContainer>
       )}
       {variants.length === 0 && (
-        <Typography variant="body2" className="text-[#5c6b73] italic">No variants configured. Base price will apply.</Typography>
+        <Typography variant="body2" className="text-[#4b5b63] italic">No variants configured. Base price will apply.</Typography>
       )}
     </Box>
   );
@@ -584,13 +584,13 @@ export default function ProductManagementPage() {
               </TableRow>
             ) : products.length === 0 ? (
               <TableRow>
-                <TableCell colSpan={9} align="center" className="py-8 text-[#5c6b73]">No products found</TableCell>
+                <TableCell colSpan={9} align="center" className="py-8 text-[#4b5b63]">No products found</TableCell>
               </TableRow>
             ) : (
               products.map((product) => (
                 <TableRow key={product.id} hover>
                   <TableCell className="font-medium">{product.name}</TableCell>
-                  <TableCell className="text-[#5c6b73] text-sm">{product.sku}</TableCell>
+                  <TableCell className="text-[#4b5b63] text-sm">{product.sku}</TableCell>
                   <TableCell>{product.categoryName || '—'}</TableCell>
                   <TableCell align="right">{formatCurrency(product.basePrice)}</TableCell>
                   <TableCell align="right">
@@ -829,7 +829,7 @@ export default function ProductManagementPage() {
           {formTab === 1 && (
             <Box>
               <Typography variant="subtitle2" gutterBottom>Upload Images & Videos</Typography>
-              <Typography variant="body2" className="text-[#5c6b73] mb-3">
+              <Typography variant="body2" className="text-[#4b5b63] mb-3">
                 Upload product images (JPEG, PNG, WebP, SVG up to 5MB) and videos (MP4, WebM up to 10MB, max 10s).
                 Click a thumbnail to set it as the main product image.
               </Typography>
@@ -852,7 +852,7 @@ export default function ProductManagementPage() {
                         onClick={() => handleThumbnailSelect(m.id)}
                         sx={{
                           width: 80, height: 80, borderRadius: 1, overflow: 'hidden', cursor: 'pointer',
-                          border: m.isThumbnail ? '3px solid #c27d56' : '2px solid rgba(47, 62, 70, 0.2)',
+                          border: m.isThumbnail ? '3px solid #a8400f' : '2px solid rgba(20, 35, 43, 0.2)',
                           opacity: m.isThumbnail ? 1 : 0.7,
                           '&:hover': { opacity: 1 },
                         }}
@@ -900,7 +900,7 @@ export default function ProductManagementPage() {
           {formTab === 4 && (
             <Box>
               <Typography variant="subtitle2" gutterBottom>Multi-language Content</Typography>
-              <Typography variant="body2" className="text-[#5c6b73] mb-3">
+              <Typography variant="body2" className="text-[#4b5b63] mb-3">
                 Provide translations for product fields. English (EN) is the default language.
                 Hindi (HI) and Gujarati (GU) translations are optional and will fall back to English if empty.
               </Typography>

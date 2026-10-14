@@ -99,7 +99,7 @@ export default function ProductSection({ title, sectionType }: ProductSectionPro
     return (
       <section className="bg-[#ffffff] px-4 py-12 md:px-8">
         <div className="mx-auto max-w-7xl">
-          <h2 className="mb-8 text-center font-display text-2xl text-[#2f3e46] md:text-3xl">{displayTitle}</h2>
+          <h2 className="mb-8 text-center font-display text-2xl text-[#14232b] md:text-3xl">{displayTitle}</h2>
           <div className="grid grid-cols-2 gap-6 md:grid-cols-3 lg:grid-cols-4">
             {Array.from({ length: 4 }).map((_, i) => (
               <div key={i} className="animate-pulse">
@@ -117,11 +117,11 @@ export default function ProductSection({ title, sectionType }: ProductSectionPro
   if (failed) {
     return (
       <section className="bg-[#ffffff] px-4 py-12 text-center md:px-8">
-        <p className="text-sm text-[#5c6b73]">Couldn&apos;t load {displayTitle.toLowerCase()} right now.</p>
+        <p className="text-sm text-[#4b5b63]">Couldn&apos;t load {displayTitle.toLowerCase()} right now.</p>
         <button
           type="button"
           onClick={() => setRetryToken((n) => n + 1)}
-          className="mt-2 text-sm font-semibold text-[#c27d56] underline underline-offset-2 hover:text-[#925e41]"
+          className="mt-2 text-sm font-semibold text-[#a8400f] underline underline-offset-2 hover:text-[#7c2f0b]"
         >
           Try again
         </button>
@@ -134,19 +134,19 @@ export default function ProductSection({ title, sectionType }: ProductSectionPro
   return (
     <section className="bg-[#ffffff] px-4 py-12 md:px-8 md:py-16">
       <div className="mx-auto max-w-7xl">
-        <div className="mb-8 flex items-end justify-between border-b border-[#2f3e46]/15 pb-4">
+        <div className="mb-8 flex items-end justify-between border-b border-[#14232b]/15 pb-4">
           <div>
-            <p className="text-xs font-semibold uppercase tracking-[0.16em] text-[#5c6b73]">Glyde accessories</p>
+            <p className="text-xs font-semibold uppercase tracking-[0.16em] text-[#4b5b63]">Glyde accessories</p>
             <motion.h2
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              className="mt-1 font-display text-2xl text-[#2f3e46] md:text-3xl"
+              className="mt-1 font-display text-2xl text-[#14232b] md:text-3xl"
             >
               {displayTitle}
             </motion.h2>
           </div>
-          <Link to="/products" className="text-sm font-semibold text-[#2f3e46] hover:text-[#2f3e46]">View all →</Link>
+          <Link to="/products" className="text-sm font-semibold text-[#14232b] hover:text-[#14232b]">View all →</Link>
         </div>
         <div className="grid grid-cols-2 gap-6 md:grid-cols-3 lg:grid-cols-4">
           {products.map((product, idx) => (
@@ -159,7 +159,7 @@ export default function ProductSection({ title, sectionType }: ProductSectionPro
             >
               <Link
                 to={`/products/${product.id}`}
-                className="group block overflow-hidden rounded-sm border border-[#2f3e46]/12 bg-[#ffffff] shadow-[0_1px_2px_rgba(44,34,24,0.08)] transition-all hover:-translate-y-0.5 hover:shadow-[0_4px_14px_rgba(44,34,24,0.14)]"
+                className="group block overflow-hidden rounded-sm border border-[#14232b]/12 bg-[#ffffff] shadow-[0_1px_2px_rgba(44,34,24,0.08)] transition-all hover:-translate-y-0.5 hover:shadow-[0_4px_14px_rgba(44,34,24,0.14)]"
               >
                 <div className="relative h-60 overflow-hidden bg-[#f2f4f5] p-3">
                   {product.thumbnailUrl ? (
@@ -182,11 +182,11 @@ export default function ProductSection({ title, sectionType }: ProductSectionPro
                   )}
                 </div>
                 <div className="p-4">
-                  <h3 className="truncate text-sm font-semibold text-[#2f3e46]">
+                  <h3 className="truncate text-sm font-semibold text-[#14232b]">
                     {product.name}
                   </h3>
                   <div className="mt-2 flex items-center gap-2">
-                    <span className="text-lg font-bold text-[#2f3e46]">
+                    <span className="text-lg font-bold text-[#14232b]">
                       ₹{product.offerPrice || product.basePrice}
                     </span>
                     {product.offerPrice && product.offerPrice < product.basePrice && (

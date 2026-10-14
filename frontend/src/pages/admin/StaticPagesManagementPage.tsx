@@ -92,13 +92,13 @@ function RichTextEditor({
   };
 
   return (
-    <div className="border border-[#2f3e46]/15 rounded-lg overflow-hidden">
+    <div className="border border-[#14232b]/15 rounded-lg overflow-hidden">
       {/* Toolbar */}
-      <div className="flex items-center gap-1 p-2 border-b border-[#2f3e46]/12 bg-[#ffffff] flex-wrap">
+      <div className="flex items-center gap-1 p-2 border-b border-[#14232b]/12 bg-[#ffffff] flex-wrap">
         <button
           type="button"
           onClick={() => execCommand('bold')}
-          className="p-1.5 rounded text-sm font-bold hover:bg-[#f2f4f5] text-[#2f3e46]"
+          className="p-1.5 rounded text-sm font-bold hover:bg-[#f2f4f5] text-[#14232b]"
           title="Bold"
         >
           B
@@ -106,7 +106,7 @@ function RichTextEditor({
         <button
           type="button"
           onClick={() => execCommand('italic')}
-          className="p-1.5 rounded text-sm italic hover:bg-[#f2f4f5] text-[#2f3e46]"
+          className="p-1.5 rounded text-sm italic hover:bg-[#f2f4f5] text-[#14232b]"
           title="Italic"
         >
           I
@@ -114,16 +114,16 @@ function RichTextEditor({
         <button
           type="button"
           onClick={() => execCommand('underline')}
-          className="p-1.5 rounded text-sm underline hover:bg-[#f2f4f5] text-[#2f3e46]"
+          className="p-1.5 rounded text-sm underline hover:bg-[#f2f4f5] text-[#14232b]"
           title="Underline"
         >
           U
         </button>
-        <span className="w-px h-5 bg-[#2f3e46]/15 mx-1" />
+        <span className="w-px h-5 bg-[#14232b]/15 mx-1" />
         <button
           type="button"
           onClick={() => execCommand('formatBlock', '<h2>')}
-          className="p-1.5 rounded text-xs font-bold hover:bg-[#f2f4f5] text-[#2f3e46]"
+          className="p-1.5 rounded text-xs font-bold hover:bg-[#f2f4f5] text-[#14232b]"
           title="Heading"
         >
           H2
@@ -131,7 +131,7 @@ function RichTextEditor({
         <button
           type="button"
           onClick={() => execCommand('formatBlock', '<h3>')}
-          className="p-1.5 rounded text-xs font-bold hover:bg-[#f2f4f5] text-[#2f3e46]"
+          className="p-1.5 rounded text-xs font-bold hover:bg-[#f2f4f5] text-[#14232b]"
           title="Heading 3"
         >
           H3
@@ -139,16 +139,16 @@ function RichTextEditor({
         <button
           type="button"
           onClick={() => execCommand('formatBlock', '<p>')}
-          className="p-1.5 rounded text-xs hover:bg-[#f2f4f5] text-[#2f3e46]"
+          className="p-1.5 rounded text-xs hover:bg-[#f2f4f5] text-[#14232b]"
           title="Paragraph"
         >
           P
         </button>
-        <span className="w-px h-5 bg-[#2f3e46]/15 mx-1" />
+        <span className="w-px h-5 bg-[#14232b]/15 mx-1" />
         <button
           type="button"
           onClick={() => execCommand('insertUnorderedList')}
-          className="p-1.5 rounded text-xs hover:bg-[#f2f4f5] text-[#2f3e46]"
+          className="p-1.5 rounded text-xs hover:bg-[#f2f4f5] text-[#14232b]"
           title="Bullet List"
         >
           • List
@@ -156,19 +156,19 @@ function RichTextEditor({
         <button
           type="button"
           onClick={() => execCommand('insertOrderedList')}
-          className="p-1.5 rounded text-xs hover:bg-[#f2f4f5] text-[#2f3e46]"
+          className="p-1.5 rounded text-xs hover:bg-[#f2f4f5] text-[#14232b]"
           title="Numbered List"
         >
           1. List
         </button>
-        <span className="w-px h-5 bg-[#2f3e46]/15 mx-1" />
+        <span className="w-px h-5 bg-[#14232b]/15 mx-1" />
         <button
           type="button"
           onClick={() => {
             const url = prompt('Enter link URL:');
             if (url) execCommand('createLink', url);
           }}
-          className="p-1.5 rounded text-xs hover:bg-[#f2f4f5] text-[#2f3e46]"
+          className="p-1.5 rounded text-xs hover:bg-[#f2f4f5] text-[#14232b]"
           title="Insert Link"
         >
           🔗
@@ -176,7 +176,7 @@ function RichTextEditor({
         <button
           type="button"
           onClick={() => execCommand('removeFormat')}
-          className="p-1.5 rounded text-xs hover:bg-[#f2f4f5] text-[#2f3e46]"
+          className="p-1.5 rounded text-xs hover:bg-[#f2f4f5] text-[#14232b]"
           title="Clear Format"
         >
           ✕
@@ -187,8 +187,8 @@ function RichTextEditor({
           onClick={() => setMode(mode === 'visual' ? 'html' : 'visual')}
           className={`px-2 py-1 rounded text-xs font-medium transition-colors ${
             mode === 'html'
-              ? 'bg-[#ffffff] text-[#c27d56]'
-              : 'text-[#5c6b73] hover:bg-[#f2f4f5]'
+              ? 'bg-[#ffffff] text-[#a8400f]'
+              : 'text-[#4b5b63] hover:bg-[#f2f4f5]'
           }`}
         >
           {mode === 'visual' ? '</>' : 'Visual'}
@@ -199,7 +199,7 @@ function RichTextEditor({
       {mode === 'visual' ? (
         <div
           contentEditable
-          className="min-h-[200px] p-3 text-sm text-[#2f3e46] bg-[#ffffff] focus:outline-none prose max-w-none"
+          className="min-h-[200px] p-3 text-sm text-[#14232b] bg-[#ffffff] focus:outline-none prose max-w-none"
           dangerouslySetInnerHTML={{ __html: value }}
           onBlur={(e) => onChange(e.currentTarget.innerHTML)}
           data-placeholder={placeholder}
@@ -211,7 +211,7 @@ function RichTextEditor({
           onChange={(e) => onChange(e.target.value)}
           placeholder={placeholder}
           rows={10}
-          className="w-full p-3 text-sm font-mono text-[#2f3e46] bg-[#ffffff] focus:outline-none resize-y min-h-[200px]"
+          className="w-full p-3 text-sm font-mono text-[#14232b] bg-[#ffffff] focus:outline-none resize-y min-h-[200px]"
         />
       )}
     </div>
@@ -348,16 +348,16 @@ export default function StaticPagesManagementPage() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-[#2f3e46]">
+          <h1 className="text-2xl font-bold text-[#14232b]">
             Static Pages
           </h1>
-          <p className="text-sm text-[#5c6b73] mt-1">
+          <p className="text-sm text-[#4b5b63] mt-1">
             Manage static content pages (About, Terms, Privacy, etc.)
           </p>
         </div>
         <button
           onClick={openCreate}
-          className="px-4 py-2 bg-[#c27d56] text-white text-sm font-medium rounded-lg hover:bg-[#925e41] transition-colors"
+          className="px-4 py-2 bg-[#a8400f] text-white text-sm font-medium rounded-lg hover:bg-[#7c2f0b] transition-colors"
         >
           + New Page
         </button>
@@ -366,51 +366,51 @@ export default function StaticPagesManagementPage() {
       {/* Page List */}
       {loading ? (
         <div className="flex justify-center py-12">
-          <div className="animate-spin h-8 w-8 border-4 border-[#c27d56] border-t-transparent rounded-full" />
+          <div className="animate-spin h-8 w-8 border-4 border-[#a8400f] border-t-transparent rounded-full" />
         </div>
       ) : pages.length === 0 ? (
-        <div className="text-center py-12 text-[#5c6b73]">
+        <div className="text-center py-12 text-[#4b5b63]">
           No static pages found. Create your first page.
         </div>
       ) : (
-        <div className="bg-[#ffffff] rounded-xl shadow-sm border border-[#2f3e46]/12 overflow-hidden">
+        <div className="bg-[#ffffff] rounded-xl shadow-sm border border-[#14232b]/12 overflow-hidden">
           <table className="w-full text-sm">
-            <thead className="bg-[#ffffff] border-b border-[#2f3e46]/12">
+            <thead className="bg-[#ffffff] border-b border-[#14232b]/12">
               <tr>
-                <th className="text-left px-4 py-3 font-medium text-[#5c6b73]">
+                <th className="text-left px-4 py-3 font-medium text-[#4b5b63]">
                   Title
                 </th>
-                <th className="text-left px-4 py-3 font-medium text-[#5c6b73]">
+                <th className="text-left px-4 py-3 font-medium text-[#4b5b63]">
                   Slug
                 </th>
-                <th className="text-left px-4 py-3 font-medium text-[#5c6b73]">
+                <th className="text-left px-4 py-3 font-medium text-[#4b5b63]">
                   Type
                 </th>
-                <th className="text-center px-4 py-3 font-medium text-[#5c6b73]">
+                <th className="text-center px-4 py-3 font-medium text-[#4b5b63]">
                   Visible
                 </th>
-                <th className="text-left px-4 py-3 font-medium text-[#5c6b73]">
+                <th className="text-left px-4 py-3 font-medium text-[#4b5b63]">
                   Updated
                 </th>
-                <th className="text-right px-4 py-3 font-medium text-[#5c6b73]">
+                <th className="text-right px-4 py-3 font-medium text-[#4b5b63]">
                   Actions
                 </th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-[#2f3e46]/12">
+            <tbody className="divide-y divide-[#14232b]/12">
               {pages.map((page) => (
                 <tr
                   key={page.id}
                   className="hover:bg-[#ffffff] transition-colors"
                 >
-                  <td className="px-4 py-3 font-medium text-[#2f3e46]">
+                  <td className="px-4 py-3 font-medium text-[#14232b]">
                     {getPageTitle(page)}
                   </td>
-                  <td className="px-4 py-3 text-[#5c6b73] font-mono text-xs">
+                  <td className="px-4 py-3 text-[#4b5b63] font-mono text-xs">
                     /{page.slug}
                   </td>
                   <td className="px-4 py-3">
-                    <span className="px-2 py-0.5 text-xs rounded-full bg-[#ffffff] text-[#c27d56] font-medium">
+                    <span className="px-2 py-0.5 text-xs rounded-full bg-[#ffffff] text-[#a8400f] font-medium">
                       {getPageTypeLabel(page.pageType)}
                     </span>
                   </td>
@@ -427,7 +427,7 @@ export default function StaticPagesManagementPage() {
                       {page.isVisible ? '👁️' : '🙈'}
                     </button>
                   </td>
-                  <td className="px-4 py-3 text-[#5c6b73] text-xs">
+                  <td className="px-4 py-3 text-[#4b5b63] text-xs">
                     {page.updatedAt
                       ? new Date(page.updatedAt).toLocaleDateString()
                       : '—'}
@@ -436,7 +436,7 @@ export default function StaticPagesManagementPage() {
                     <div className="flex items-center justify-end gap-1">
                       <button
                         onClick={() => openEdit(page)}
-                        className="p-1.5 rounded-md text-[#c27d56] hover:bg-[#ffffff] transition-colors"
+                        className="p-1.5 rounded-md text-[#a8400f] hover:bg-[#ffffff] transition-colors"
                         title="Edit page"
                       >
                         ✏️
@@ -462,13 +462,13 @@ export default function StaticPagesManagementPage() {
         <div className="fixed inset-0 z-50 flex items-start justify-center bg-black/40 overflow-y-auto py-8">
           <div className="bg-[#ffffff] rounded-xl shadow-xl w-full max-w-3xl p-6 m-4">
             <div className="flex items-center justify-between mb-6">
-              <h2 className="text-lg font-bold text-[#2f3e46]">
+              <h2 className="text-lg font-bold text-[#14232b]">
                 {editingPage ? 'Edit Page' : 'Create New Page'}
               </h2>
               <button
                 type="button"
                 onClick={() => setShowForm(false)}
-                className="p-2 rounded-lg text-[#8a97a0] hover:text-[#5c6b73] hover:bg-[#ffffff] transition-colors"
+                className="p-2 rounded-lg text-[#8a97a0] hover:text-[#4b5b63] hover:bg-[#ffffff] transition-colors"
               >
                 ✕
               </button>
@@ -478,7 +478,7 @@ export default function StaticPagesManagementPage() {
               {/* Page Type & Visibility Row */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm font-medium text-[#2f3e46] mb-1">
+                  <label className="block text-sm font-medium text-[#14232b] mb-1">
                     Page Type *
                   </label>
                   <select
@@ -489,7 +489,7 @@ export default function StaticPagesManagementPage() {
                         pageType: e.target.value as PageType,
                       }))
                     }
-                    className="w-full px-3 py-2 border border-[#2f3e46]/15 rounded-lg bg-[#ffffff] text-[#2f3e46] text-sm focus:ring-2 focus:ring-[#c27d56] focus:border-transparent"
+                    className="w-full px-3 py-2 border border-[#14232b]/15 rounded-lg bg-[#ffffff] text-[#14232b] text-sm focus:ring-2 focus:ring-[#a8400f] focus:border-transparent"
                   >
                     {PAGE_TYPES.map((pt) => (
                       <option key={pt.value} value={pt.value}>
@@ -507,9 +507,9 @@ export default function StaticPagesManagementPage() {
                       onChange={(e) =>
                         setFormData((prev) => ({ ...prev, isVisible: e.target.checked }))
                       }
-                      className="w-4 h-4 text-[#c27d56] border-[#2f3e46]/15 rounded focus:ring-[#c27d56]"
+                      className="w-4 h-4 text-[#a8400f] border-[#14232b]/15 rounded focus:ring-[#a8400f]"
                     />
-                    <span className="text-sm text-[#2f3e46]">
+                    <span className="text-sm text-[#14232b]">
                       Visible on website
                     </span>
                   </label>
@@ -518,12 +518,12 @@ export default function StaticPagesManagementPage() {
 
               {/* Slug */}
               <div>
-                <label className="block text-sm font-medium text-[#2f3e46] mb-1">
+                <label className="block text-sm font-medium text-[#14232b] mb-1">
                   URL Slug *
                 </label>
                 <div className="flex items-center gap-2">
-                  <div className="flex-1 flex items-center border border-[#2f3e46]/15 rounded-lg overflow-hidden bg-[#ffffff]">
-                    <span className="px-3 text-sm text-[#8a97a0] bg-[#ffffff] border-r border-[#2f3e46]/15 py-2">
+                  <div className="flex-1 flex items-center border border-[#14232b]/15 rounded-lg overflow-hidden bg-[#ffffff]">
+                    <span className="px-3 text-sm text-[#8a97a0] bg-[#ffffff] border-r border-[#14232b]/15 py-2">
                       /page/
                     </span>
                     <input
@@ -538,7 +538,7 @@ export default function StaticPagesManagementPage() {
                         }));
                       }}
                       placeholder="my-page-slug"
-                      className="flex-1 px-3 py-2 text-sm text-[#2f3e46] bg-transparent focus:outline-none"
+                      className="flex-1 px-3 py-2 text-sm text-[#14232b] bg-transparent focus:outline-none"
                     />
                   </div>
                   {!editingPage && (
@@ -547,8 +547,8 @@ export default function StaticPagesManagementPage() {
                       onClick={() => setAutoSlug(!autoSlug)}
                       className={`px-3 py-2 text-xs font-medium rounded-lg transition-colors ${
                         autoSlug
-                          ? 'bg-[#ffffff] text-[#c27d56]'
-                          : 'bg-[#ffffff] text-[#5c6b73]'
+                          ? 'bg-[#ffffff] text-[#a8400f]'
+                          : 'bg-[#ffffff] text-[#4b5b63]'
                       }`}
                       title={autoSlug ? 'Auto-slug enabled' : 'Auto-slug disabled'}
                     >
@@ -560,7 +560,7 @@ export default function StaticPagesManagementPage() {
 
               {/* Language Tabs */}
               <div>
-                <div className="flex gap-1 border-b border-[#2f3e46]/12 mb-4">
+                <div className="flex gap-1 border-b border-[#14232b]/12 mb-4">
                   {LANGUAGES.map((lang) => (
                     <button
                       key={lang.code}
@@ -568,8 +568,8 @@ export default function StaticPagesManagementPage() {
                       onClick={() => setActiveLang(lang.code)}
                       className={`px-4 py-2 text-sm font-medium rounded-t-md transition-colors ${
                         activeLang === lang.code
-                          ? 'bg-[#ffffff] text-[#c27d56] border-b-2 border-[#c27d56]'
-                          : 'text-[#5c6b73] hover:text-[#2f3e46]'
+                          ? 'bg-[#ffffff] text-[#a8400f] border-b-2 border-[#a8400f]'
+                          : 'text-[#4b5b63] hover:text-[#14232b]'
                       }`}
                     >
                       {lang.label}
@@ -580,7 +580,7 @@ export default function StaticPagesManagementPage() {
                 {/* Localized Content Fields */}
                 <div className="space-y-4">
                   <div>
-                    <label className="block text-sm font-medium text-[#2f3e46] mb-1">
+                    <label className="block text-sm font-medium text-[#14232b] mb-1">
                       Title ({LANGUAGES.find((l) => l.code === activeLang)?.label}) *
                     </label>
                     <input
@@ -589,12 +589,12 @@ export default function StaticPagesManagementPage() {
                       value={formData.content[activeLang]?.title || ''}
                       onChange={(e) => updateTitle(activeLang, e.target.value)}
                       placeholder={`Page title in ${LANGUAGES.find((l) => l.code === activeLang)?.label}`}
-                      className="w-full px-3 py-2 border border-[#2f3e46]/15 rounded-lg bg-[#ffffff] text-[#2f3e46] text-sm focus:ring-2 focus:ring-[#c27d56] focus:border-transparent"
+                      className="w-full px-3 py-2 border border-[#14232b]/15 rounded-lg bg-[#ffffff] text-[#14232b] text-sm focus:ring-2 focus:ring-[#a8400f] focus:border-transparent"
                     />
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium text-[#2f3e46] mb-1">
+                    <label className="block text-sm font-medium text-[#14232b] mb-1">
                       Content ({LANGUAGES.find((l) => l.code === activeLang)?.label})
                     </label>
                     <RichTextEditor
@@ -607,7 +607,7 @@ export default function StaticPagesManagementPage() {
                   {/* SEO Fields */}
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
-                      <label className="block text-sm font-medium text-[#2f3e46] mb-1">
+                      <label className="block text-sm font-medium text-[#14232b] mb-1">
                         Meta Title
                       </label>
                       <input
@@ -617,11 +617,11 @@ export default function StaticPagesManagementPage() {
                           updateContent(activeLang, 'metaTitle', e.target.value)
                         }
                         placeholder="SEO title"
-                        className="w-full px-3 py-2 border border-[#2f3e46]/15 rounded-lg bg-[#ffffff] text-[#2f3e46] text-sm focus:ring-2 focus:ring-[#c27d56] focus:border-transparent"
+                        className="w-full px-3 py-2 border border-[#14232b]/15 rounded-lg bg-[#ffffff] text-[#14232b] text-sm focus:ring-2 focus:ring-[#a8400f] focus:border-transparent"
                       />
                     </div>
                     <div>
-                      <label className="block text-sm font-medium text-[#2f3e46] mb-1">
+                      <label className="block text-sm font-medium text-[#14232b] mb-1">
                         Meta Description
                       </label>
                       <input
@@ -631,7 +631,7 @@ export default function StaticPagesManagementPage() {
                           updateContent(activeLang, 'metaDescription', e.target.value)
                         }
                         placeholder="SEO description"
-                        className="w-full px-3 py-2 border border-[#2f3e46]/15 rounded-lg bg-[#ffffff] text-[#2f3e46] text-sm focus:ring-2 focus:ring-[#c27d56] focus:border-transparent"
+                        className="w-full px-3 py-2 border border-[#14232b]/15 rounded-lg bg-[#ffffff] text-[#14232b] text-sm focus:ring-2 focus:ring-[#a8400f] focus:border-transparent"
                       />
                     </div>
                   </div>
@@ -639,17 +639,17 @@ export default function StaticPagesManagementPage() {
               </div>
 
               {/* Form Actions */}
-              <div className="flex justify-end gap-3 pt-4 border-t border-[#2f3e46]/12">
+              <div className="flex justify-end gap-3 pt-4 border-t border-[#14232b]/12">
                 <button
                   type="button"
                   onClick={() => setShowForm(false)}
-                  className="px-4 py-2 text-sm font-medium text-[#2f3e46] bg-[#ffffff] rounded-lg hover:bg-[#f2f4f5] transition-colors"
+                  className="px-4 py-2 text-sm font-medium text-[#14232b] bg-[#ffffff] rounded-lg hover:bg-[#f2f4f5] transition-colors"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
-                  className="px-5 py-2 text-sm font-medium text-white bg-[#c27d56] rounded-lg hover:bg-[#925e41] transition-colors"
+                  className="px-5 py-2 text-sm font-medium text-white bg-[#a8400f] rounded-lg hover:bg-[#7c2f0b] transition-colors"
                 >
                   {editingPage ? 'Update Page' : 'Create Page'}
                 </button>

@@ -78,15 +78,15 @@ export default function ResetPasswordPage() {
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
               </svg>
             </div>
-            <h2 className="text-2xl font-bold text-[#2f3e46]">Password Reset Successful</h2>
-            <p className="mt-2 text-sm text-[#5c6b73]">
+            <h2 className="text-2xl font-bold text-[#14232b]">Password Reset Successful</h2>
+            <p className="mt-2 text-sm text-[#4b5b63]">
               Your password has been updated. You can now sign in with your new password.
             </p>
           </div>
           <div className="text-center">
             <button
               onClick={() => navigate('/login')}
-              className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-[#c27d56] hover:bg-[#925e41] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#c27d56]"
+              className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-[#a8400f] hover:bg-[#7c2f0b] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#a8400f]"
             >
               Go to Sign In
             </button>
@@ -106,15 +106,15 @@ export default function ResetPasswordPage() {
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
               </svg>
             </div>
-            <h2 className="text-2xl font-bold text-[#2f3e46]">Invalid Reset Link</h2>
-            <p className="mt-2 text-sm text-[#5c6b73]">
+            <h2 className="text-2xl font-bold text-[#14232b]">Invalid Reset Link</h2>
+            <p className="mt-2 text-sm text-[#4b5b63]">
               This password reset link is invalid or missing a token. Please request a new one.
             </p>
           </div>
           <div className="text-center">
             <Link
               to="/forgot-password"
-              className="text-sm font-medium text-[#c27d56] hover:text-[#925e41]"
+              className="text-sm font-medium text-[#a8400f] hover:text-[#7c2f0b]"
             >
               Request New Reset Link
             </Link>
@@ -128,15 +128,15 @@ export default function ResetPasswordPage() {
     <div className="min-h-screen flex items-center justify-center bg-[#ffffff] px-4">
       <div className="max-w-md w-full space-y-6 bg-[#ffffff] p-8 rounded-lg shadow-md">
         <div className="text-center">
-          <h1 className="text-2xl font-bold text-[#2f3e46]">Reset Password</h1>
-          <p className="mt-2 text-sm text-[#5c6b73]">
+          <h1 className="text-2xl font-bold text-[#14232b]">Reset Password</h1>
+          <p className="mt-2 text-sm text-[#4b5b63]">
             Enter your new password below.
           </p>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-4" noValidate>
           <div>
-            <label htmlFor="newPassword" className="block text-sm font-medium text-[#2f3e46]">
+            <label htmlFor="newPassword" className="block text-sm font-medium text-[#14232b]">
               New Password
             </label>
             <input
@@ -147,13 +147,13 @@ export default function ResetPasswordPage() {
               required
               value={newPassword}
               onChange={(e) => setNewPassword(e.target.value)}
-              className="mt-1 block w-full rounded-md border border-[#2f3e46]/15 px-3 py-2 shadow-sm placeholder:text-[#8a97a0] focus:border-[#c27d56] focus:outline-none focus:ring-1 focus:ring-[#c27d56] sm:text-sm"
+              className="mt-1 block w-full rounded-md border border-[#14232b]/15 px-3 py-2 shadow-sm placeholder:text-[#8a97a0] focus:border-[#a8400f] focus:outline-none focus:ring-1 focus:ring-[#a8400f] sm:text-sm"
               placeholder="Minimum 8 characters"
             />
           </div>
 
           <div>
-            <label htmlFor="confirmPassword" className="block text-sm font-medium text-[#2f3e46]">
+            <label htmlFor="confirmPassword" className="block text-sm font-medium text-[#14232b]">
               Confirm Password
             </label>
             <input
@@ -164,7 +164,7 @@ export default function ResetPasswordPage() {
               required
               value={confirmPassword}
               onChange={(e) => setConfirmPassword(e.target.value)}
-              className="mt-1 block w-full rounded-md border border-[#2f3e46]/15 px-3 py-2 shadow-sm placeholder:text-[#8a97a0] focus:border-[#c27d56] focus:outline-none focus:ring-1 focus:ring-[#c27d56] sm:text-sm"
+              className="mt-1 block w-full rounded-md border border-[#14232b]/15 px-3 py-2 shadow-sm placeholder:text-[#8a97a0] focus:border-[#a8400f] focus:outline-none focus:ring-1 focus:ring-[#a8400f] sm:text-sm"
               placeholder="Re-enter your new password"
             />
           </div>
@@ -178,7 +178,7 @@ export default function ResetPasswordPage() {
           <button
             type="submit"
             disabled={loading}
-            className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-[#c27d56] hover:bg-[#925e41] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#c27d56] disabled:opacity-50 disabled:cursor-not-allowed"
+            className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-[#a8400f] hover:bg-[#7c2f0b] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#a8400f] disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {loading ? 'Resetting...' : 'Reset Password'}
           </button>
@@ -187,7 +187,7 @@ export default function ResetPasswordPage() {
         <div className="text-center">
           <Link
             to="/login"
-            className="text-sm font-medium text-[#c27d56] hover:text-[#925e41]"
+            className="text-sm font-medium text-[#a8400f] hover:text-[#7c2f0b]"
           >
             Back to Sign In
           </Link>

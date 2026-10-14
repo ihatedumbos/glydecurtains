@@ -5,7 +5,7 @@ interface LineChartProps {
   height?: number;
 }
 
-export default function LineChart({ labels, data, color = '#925e41', height = 200 }: LineChartProps) {
+export default function LineChart({ labels, data, color = '#7c2f0b', height = 200 }: LineChartProps) {
   const maxValue = Math.max(...data, 1);
   const padding = 20;
   const chartWidth = 100; // percentage-based via viewBox

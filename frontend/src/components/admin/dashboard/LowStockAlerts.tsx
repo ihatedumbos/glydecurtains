@@ -13,7 +13,7 @@ interface LowStockAlertsProps {
 
 function getStockLevel(qty: number): { label: string; color: string } {
   if (qty === 0) return { label: 'Out of stock', color: 'text-[#b3261e] bg-[#b3261e]/10' };
-  if (qty <= 5) return { label: 'Critical', color: 'text-[#c27d56] bg-[#c27d56]/15' };
+  if (qty <= 5) return { label: 'Critical', color: 'text-[#a8400f] bg-[#a8400f]/15' };
   return { label: 'Low', color: 'text-[#6d787e] bg-[#6d787e]/15' };
 }
 
@@ -49,13 +49,13 @@ export default function LowStockAlerts({ products, loading = false }: LowStockAl
         return (
           <div
             key={product.id}
-            className="flex items-center gap-3 p-2.5 rounded-lg border border-[#2f3e46]/10 hover:bg-[#ffffff] transition-colors"
+            className="flex items-center gap-3 p-2.5 rounded-lg border border-[#14232b]/10 hover:bg-[#ffffff] transition-colors"
           >
             <div className="w-10 h-10 rounded bg-[#ffffff] flex items-center justify-center text-lg">
               📦
             </div>
             <div className="flex-1 min-w-0">
-              <p className="text-sm font-medium text-[#2f3e46] truncate">
+              <p className="text-sm font-medium text-[#14232b] truncate">
                 {product.name}
               </p>
               <p className="text-xs text-[#8a97a0]">
@@ -63,7 +63,7 @@ export default function LowStockAlerts({ products, loading = false }: LowStockAl
               </p>
             </div>
             <div className="flex flex-col items-end gap-1">
-              <span className="text-sm font-semibold text-[#2f3e46]">
+              <span className="text-sm font-semibold text-[#14232b]">
                 {product.stockQuantity}
               </span>
               <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${level.color}`}>
