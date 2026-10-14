@@ -22,7 +22,8 @@ export default function ProductCard({ product, variants = [], onAddToCart, onCli
   const showTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const hideTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  const hasDiscount = product.discountPercentage && product.discountPercentage > 0;
+  // Boolean() so a 0% discount doesn't render a stray "0" via `{hasDiscount && ...}`.
+  const hasDiscount = Boolean(product.discountPercentage && product.discountPercentage > 0);
   const displayPrice = product.offerPrice ?? product.basePrice;
 
   const handleMouseEnter = useCallback(() => {

@@ -31,7 +31,7 @@ export interface ProductFilters {
   colors?: string[];
   sizes?: string[];
   materials?: string[];
-  status?: string;
+  inStock?: boolean;
   sortBy?: string;
   sortDirection?: 'asc' | 'desc';
 }

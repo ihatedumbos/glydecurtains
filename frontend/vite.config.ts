@@ -24,7 +24,8 @@ export default defineConfig({
         target: 'http://localhost:8080',
         changeOrigin: true,
       },
-      '/products': {
+      // Only product media, like nginx in production - /products and /products/:id are app routes.
+      '/products/accessories': {
         target: 'http://localhost:8080',
         changeOrigin: true,
       },

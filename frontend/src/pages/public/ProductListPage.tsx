@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useMemo } from 'react';
 import {
   Box,
   Container,
@@ -19,10 +19,10 @@ import CloseIcon from '@mui/icons-material/Close';
 import HomeIcon from '@mui/icons-material/Home';
 import { useSearchParams, Link as RouterLink, useNavigate } from 'react-router-dom';
 import { useAppSelector, useAppDispatch } from '@/store/hooks';
-import { setProducts, setFilters, setProductLoading, type Product, type ProductFilters } from '@/store/slices/productSlice';
+import { setProducts, setProductLoading, type Product, type ProductFilters } from '@/store/slices/productSlice';
 import { addCartItem } from '@/store/slices/cartSlice';
 import { addToast } from '@/store/slices/uiSlice';
-import { setQuery, setSuggestions, setRecentSearches } from '@/store/slices/searchSlice';
+import { setSuggestions, setRecentSearches } from '@/store/slices/searchSlice';
 import axiosInstance from '@/api/axiosInstance';
 import ProductCard from '@/components/product/ProductCard';
 import ProductCardSkeleton from '@/components/product/ProductCardSkeleton';
@@ -38,6 +38,54 @@ interface FilterOption {
 
 // Sidebar drawer width
 const DRAWER_WIDTH = 280;
+const PAGE_SIZE = 20;
+const DEFAULT_SORT = 'popularity';
+
+const toNumber = (value: string | null) => {
+  if (value === null || value.trim() === '') return undefined;
+  const n = Number(value);
+  return Number.isFinite(n) ? n : undefined;
+};
+
+const toList = (value: string | null) => {
+  const list = (value || '').split(',').map((v) => v.trim()).filter(Boolean);
+  return list.length ? list : undefined;
+};
+
+/**
+ * The URL is the single source of truth for filters, sort, search text and page, so
+ * links like /products?categoryId=3 work, filtered views can be shared or bookmarked,
+ * and the browser back button steps through filter changes.
+ */
+function readFilters(params: URLSearchParams): ProductFilters {
+  return {
+    categoryId: toNumber(params.get('categoryId')),
+    subCategoryId: toNumber(params.get('subCategoryId')),
+    collectionId: toNumber(params.get('collectionId')),
+    colors: toList(params.get('colors')),
+    sizes: toList(params.get('sizes')),
+    materials: toList(params.get('materials')),
+    minPrice: toNumber(params.get('minPrice')),
+    maxPrice: toNumber(params.get('maxPrice')),
+    inStock: params.get('inStock') === 'true' || undefined,
+  };
+}
+
+function writeFilters(filters: ProductFilters, params: URLSearchParams) {
+  const set = (key: string, value: string | number | boolean | undefined) => {
+    if (value === undefined || value === '' || value === false) params.delete(key);
+    else params.set(key, String(value));
+  };
+  set('categoryId', filters.categoryId);
+  set('subCategoryId', filters.subCategoryId);
+  set('collectionId', filters.collectionId);
+  set('colors', filters.colors?.join(','));
+  set('sizes', filters.sizes?.join(','));
+  set('materials', filters.materials?.join(','));
+  set('minPrice', filters.minPrice);
+  set('maxPrice', filters.maxPrice);
+  set('inStock', filters.inStock);
+}
 
 export default function ProductListPage() {
   const theme = useTheme();
@@ -47,35 +95,69 @@ export default function ProductListPage() {
   const [searchParams, setSearchParams] = useSearchParams();
 
   // Redux state
-  const { list: products, filters, pagination, loading } = useAppSelector((state) => state.products);
-  const { query, suggestions } = useAppSelector((state) => state.search);
+  const { list: products, pagination, loading } = useAppSelector((state) => state.products);
+  const { suggestions } = useAppSelector((state) => state.search);
   const { isAuthenticated } = useAppSelector((state) => state.auth);
+
+  // Everything that changes the result list is derived from the URL.
+  const searchKey = searchParams.toString();
+  const filters = useMemo(() => readFilters(new URLSearchParams(searchKey)), [searchKey]);
+  const query = searchParams.get('q')?.trim() || '';
+  // With a search term and no explicit choice, rank by how well products match it.
+  const sortBy = searchParams.get('sort') || (query ? 'relevance' : DEFAULT_SORT);
+  const page = Math.max(1, toNumber(searchParams.get('page')) || 1);
 
   // Local state
   const [mobileFilterOpen, setMobileFilterOpen] = useState(false);
-  const [sortBy, setSortBy] = useState(searchParams.get('sort') || 'popularity');
-  const [page, setPage] = useState(Number(searchParams.get('page')) || 1);
 
   // Filter metadata (loaded from API)
   const [categories, setCategories] = useState<FilterOption[]>([]);
   const [subCategories, setSubCategories] = useState<FilterOption[]>([]);
-  const [colors] = useState<string[]>(['White', 'Cream', 'Beige', 'Grey', 'Black', 'Blue', 'Green', 'Red', 'Brown', 'Gold']);
-  const [sizes] = useState<string[]>(['Small', 'Medium', 'Large', 'Extra Large', 'Custom']);
-  const [materials] = useState<string[]>(['Cotton', 'Polyester', 'Silk', 'Velvet', 'Linen', 'Sheer', 'Aluminium', 'Stainless Steel']);
+  // Colour/size/material options come from the catalogue itself, so every option matches something.
+  const [colors, setColors] = useState<string[]>([]);
+  const [sizes, setSizes] = useState<string[]>([]);
+  const [materials, setMaterials] = useState<string[]>([]);
+  const [maxPrice, setMaxPrice] = useState<number | undefined>(undefined);
   const [collections, setCollections] = useState<FilterOption[]>([]);
+
+  /** Applies URL changes; any change other than paging returns to page 1. */
+  const updateParams = useCallback(
+    (mutate: (params: URLSearchParams) => void, keepPage = false) => {
+      setSearchParams((current) => {
+        const next = new URLSearchParams(current);
+        mutate(next);
+        if (!keepPage) next.delete('page');
+        return next;
+      });
+    },
+    [setSearchParams],
+  );
 
   // Load categories and collections on mount
   useEffect(() => {
     const fetchFilterMeta = async () => {
       try {
-        const [catRes, colRes] = await Promise.all([
+        const [catRes, colRes, facetRes] = await Promise.allSettled([
           axiosInstance.get('/categories/public/tree'),
           axiosInstance.get('/collections/public'),
+          axiosInstance.get('/search/facets'),
         ]);
-        const catData = catRes.data?.data || catRes.data || [];
-        const colData = colRes.data?.data || colRes.data || [];
-        setCategories(catData.map((c: { id: number; name: string }) => ({ id: c.id, name: c.name })));
-        setCollections(colData.map((c: { id: number; name: string }) => ({ id: c.id, name: c.name })));
+        // Each request is independent: one failing shouldn't hide the other filter groups.
+        if (catRes.status === 'fulfilled') {
+          const catData = catRes.value.data?.data || catRes.value.data || [];
+          setCategories(catData.map((c: { id: number; name: string }) => ({ id: c.id, name: c.name })));
+        }
+        if (colRes.status === 'fulfilled') {
+          const colData = colRes.value.data?.data || colRes.value.data || [];
+          setCollections(colData.map((c: { id: number; name: string }) => ({ id: c.id, name: c.name })));
+        }
+        if (facetRes.status === 'fulfilled') {
+          const facets = facetRes.value.data?.data || {};
+          setColors(facets.colors || []);
+          setSizes(facets.sizes || []);
+          setMaterials(facets.materials || []);
+          if (facets.maxPrice) setMaxPrice(Number(facets.maxPrice));
+        }
       } catch {
         // Silently handle - filters will remain empty
       }
@@ -117,101 +199,68 @@ export default function ProductListPage() {
     }
   }, [isAuthenticated, dispatch]);
 
-  // Fetch products based on filters, sort, page, query
-  const fetchProducts = useCallback(async () => {
+  // Fetch products whenever the URL changes. Every listing goes through /search/products
+  // so sorting and filtering behave the same with or without a category or search term.
+  useEffect(() => {
+    const controller = new AbortController();
+    const params: Record<string, string | number | boolean | undefined> = {
+      page: page - 1, // Backend is 0-indexed
+      size: PAGE_SIZE,
+      sortBy,
+      query: query || undefined,
+      categoryId: filters.categoryId,
+      subCategoryId: filters.subCategoryId,
+      collectionId: filters.collectionId,
+      colors: filters.colors?.join(','),
+      sizes: filters.sizes?.join(','),
+      materials: filters.materials?.join(','),
+      minPrice: filters.minPrice,
+      maxPrice: filters.maxPrice,
+      inStock: filters.inStock,
+    };
+    const cleanParams = Object.fromEntries(Object.entries(params).filter(([, v]) => v !== undefined));
+
     dispatch(setProductLoading(true));
-    try {
-      const shouldUseSearchEndpoint =
-        Boolean(query?.trim()) ||
-        filters.categoryId !== undefined ||
-        filters.subCategoryId !== undefined ||
-        filters.collectionId !== undefined;
+    axiosInstance
+      .get('/search/products', { params: cleanParams, signal: controller.signal })
+      .then((res) => {
+        const data = res.data?.data || res.data;
+        dispatch(
+          setProducts({
+            content: data.content || [],
+            totalElements: data.totalElements || 0,
+            totalPages: data.totalPages || 0,
+            page: data.number ?? page - 1,
+          }),
+        );
+        dispatch(setProductLoading(false));
+      })
+      .catch(() => {
+        // A newer request replaced this one; let it own the loading state.
+        if (controller.signal.aborted) return;
+        dispatch(setProducts({ content: [], totalElements: 0, totalPages: 0, page: 0 }));
+        dispatch(setProductLoading(false));
+      });
 
-      // The two backend endpoints accept sorting differently:
-      // - /search/products (SearchRequest) takes a single `sortBy` string: popularity|newest|price_asc|price_desc|featured
-      // - /products/public (Spring Pageable) takes a `sort` param as "field,direction" and has no popularity concept
-      const publicSortMap: Record<string, string | undefined> = {
-        popularity: undefined,
-        newest: 'createdAt,desc',
-        price_asc: 'basePrice,asc',
-        price_desc: 'basePrice,desc',
-        featured: 'isFeatured,desc',
-      };
-
-      const params: Record<string, string | number | undefined> = {
-        page: page - 1, // Backend is 0-indexed
-        size: 20,
-        sortBy: shouldUseSearchEndpoint ? sortBy : undefined,
-        sort: shouldUseSearchEndpoint ? undefined : publicSortMap[sortBy],
-        query: query?.trim() || undefined,
-        categoryId: filters.categoryId,
-        subCategoryId: filters.subCategoryId,
-        collectionId: filters.collectionId,
-        minPrice: filters.minPrice,
-        maxPrice: filters.maxPrice,
-        // Backend only supports a single color/material value per request today,
-        // so we send the first selected chip from each multi-select filter group.
-        // NOTE: a product "size" filter can't be wired here - the backend binds both
-        // Pageable's page-size and ProductFilterRequest/SearchRequest's size filter field
-        // to the same `size` query param, so they'd collide. Needs a backend param rename.
-        color: filters.colors?.[0],
-        material: filters.materials?.[0],
-      };
-
-      // Remove undefined params
-      const cleanParams = Object.fromEntries(
-        Object.entries(params).filter(([, v]) => v !== undefined),
-      );
-
-      const res = shouldUseSearchEndpoint
-        ? await axiosInstance.get('/search/products', { params: cleanParams })
-        : await axiosInstance.get('/products/public', { params: cleanParams });
-      const data = res.data?.data || res.data;
-
-      dispatch(
-        setProducts({
-          content: data.content || [],
-          totalElements: data.totalElements || 0,
-          totalPages: data.totalPages || 0,
-          page: data.number ?? page - 1,
-        }),
-      );
-    } catch {
-      dispatch(
-        setProducts({ content: [], totalElements: 0, totalPages: 0, page: 0 }),
-      );
-    } finally {
-      dispatch(setProductLoading(false));
-    }
+    return () => controller.abort();
   }, [dispatch, page, sortBy, query, filters]);
-
-  useEffect(() => {
-    fetchProducts();
-  }, [fetchProducts]);
-
-  // Sync URL params
-  useEffect(() => {
-    const params: Record<string, string> = {};
-    if (page > 1) params.page = String(page);
-    if (sortBy !== 'popularity') params.sort = sortBy;
-    if (query) params.q = query;
-    setSearchParams(params, { replace: true });
-  }, [page, sortBy, query, setSearchParams]);
 
   // Handlers
   const handleFilterChange = (newFilters: ProductFilters) => {
-    dispatch(setFilters(newFilters));
-    setPage(1);
+    updateParams((params) => writeFilters(newFilters, params));
   };
 
   const handleSortChange = (newSort: string) => {
-    setSortBy(newSort);
-    setPage(1);
+    updateParams((params) => params.set('sort', newSort));
   };
 
   const handleSearch = (searchQuery: string) => {
-    dispatch(setQuery(searchQuery));
-    setPage(1);
+    updateParams((params) => {
+      if (searchQuery.trim()) params.set('q', searchQuery.trim());
+      else params.delete('q');
+      // Let the default (relevance when searching) apply to the new search.
+      params.delete('sort');
+    });
   };
 
   const handleFetchSuggestions = async (q: string) => {
@@ -225,7 +274,10 @@ export default function ProductListPage() {
   };
 
   const handlePageChange = (_event: React.ChangeEvent<unknown>, newPage: number) => {
-    setPage(newPage);
+    updateParams((params) => {
+      if (newPage > 1) params.set('page', String(newPage));
+      else params.delete('page');
+    }, true);
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
@@ -287,9 +339,12 @@ export default function ProductListPage() {
       }});
     });
   }
+  if (filters.inStock) {
+    activeFilterChips.push({ label: 'In stock', onDelete: () => handleFilterChange({ ...filters, inStock: undefined }) });
+  }
   if (filters.minPrice || filters.maxPrice) {
     activeFilterChips.push({
-      label: `₹${filters.minPrice || 0} - ₹${filters.maxPrice || '50,000'}`,
+      label: `₹${(filters.minPrice || 0).toLocaleString('en-IN')} - ${filters.maxPrice ? `₹${filters.maxPrice.toLocaleString('en-IN')}` : 'max'}`,
       onDelete: () => handleFilterChange({ ...filters, minPrice: undefined, maxPrice: undefined }),
     });
   }
@@ -320,6 +375,7 @@ export default function ProductListPage() {
       sizes={sizes}
       materials={materials}
       collections={collections}
+      maxPrice={maxPrice}
     />
   );
 
@@ -346,7 +402,6 @@ export default function ProductListPage() {
       >
         <ProductSearchBar
           value={query}
-          onChange={(q) => dispatch(setQuery(q))}
           onSearch={handleSearch}
           suggestions={suggestions}
           onFetchSuggestions={handleFetchSuggestions}
@@ -362,7 +417,7 @@ export default function ProductListPage() {
               Filters
             </Button>
           )}
-          <ProductSortDropdown value={sortBy} onChange={handleSortChange} />
+          <ProductSortDropdown value={sortBy} onChange={handleSortChange} showRelevance={Boolean(query)} />
         </Box>
       </Box>
 

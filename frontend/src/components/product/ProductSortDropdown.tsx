@@ -4,7 +4,11 @@ import type { SelectChangeEvent } from '@mui/material';
 interface ProductSortDropdownProps {
   value: string;
   onChange: (sortBy: string) => void;
+  /** Offer "Best match" ordering - only meaningful while a search term is active. */
+  showRelevance?: boolean;
 }
+
+const RELEVANCE_OPTION = { value: 'relevance', label: 'Best Match' };
 
 const SORT_OPTIONS = [
   { value: 'popularity', label: 'Popularity' },
@@ -14,7 +18,10 @@ const SORT_OPTIONS = [
   { value: 'featured', label: 'Featured' },
 ];
 
-export default function ProductSortDropdown({ value, onChange }: ProductSortDropdownProps) {
+export default function ProductSortDropdown({ value, onChange, showRelevance = false }: ProductSortDropdownProps) {
+  const options = showRelevance ? [RELEVANCE_OPTION, ...SORT_OPTIONS] : SORT_OPTIONS;
+  const selected = options.some((o) => o.value === value) ? value : 'popularity';
+
   const handleChange = (event: SelectChangeEvent<string>) => {
     onChange(event.target.value);
   };
@@ -25,11 +32,11 @@ export default function ProductSortDropdown({ value, onChange }: ProductSortDrop
       <Select
         labelId="product-sort-label"
         id="product-sort"
-        value={value || 'popularity'}
+        value={selected}
         label="Sort By"
         onChange={handleChange}
       >
-        {SORT_OPTIONS.map((option) => (
+        {options.map((option) => (
           <MenuItem key={option.value} value={option.value}>
             {option.label}
           </MenuItem>

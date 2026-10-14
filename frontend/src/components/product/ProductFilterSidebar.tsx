@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import {
   Box,
   Typography,
@@ -30,7 +30,11 @@ interface ProductFilterSidebarProps {
   sizes: string[];
   materials: string[];
   collections: FilterOption[];
+  /** Highest price in the catalogue; sets the slider range. */
+  maxPrice?: number;
 }
+
+const DEFAULT_PRICE_CEILING = 50000;
 
 export default function ProductFilterSidebar({
   filters,
@@ -41,11 +45,19 @@ export default function ProductFilterSidebar({
   sizes,
   materials,
   collections,
+  maxPrice,
 }: ProductFilterSidebarProps) {
+  const priceStep = maxPrice && maxPrice <= 10000 ? 100 : 500;
+  const priceCeiling = maxPrice ? Math.ceil(maxPrice / priceStep) * priceStep : DEFAULT_PRICE_CEILING;
   const [priceRange, setPriceRange] = useState<[number, number]>([
     filters.minPrice ?? 0,
-    filters.maxPrice ?? 50000,
+    filters.maxPrice ?? priceCeiling,
   ]);
+
+  // Keep the slider in step when filters change elsewhere (chip removed, Clear All, back button).
+  useEffect(() => {
+    setPriceRange([filters.minPrice ?? 0, filters.maxPrice ?? priceCeiling]);
+  }, [filters.minPrice, filters.maxPrice, priceCeiling]);
 
   const handleCategoryChange = (categoryId: number) => {
     onFilterChange({
@@ -95,11 +107,10 @@ export default function ProductFilterSidebar({
 
   const handlePriceCommit = (_event: Event | React.SyntheticEvent, value: number | number[]) => {
     const [min, max] = value as [number, number];
-    onFilterChange({ ...filters, minPrice: min > 0 ? min : undefined, maxPrice: max < 50000 ? max : undefined });
+    onFilterChange({ ...filters, minPrice: min > 0 ? min : undefined, maxPrice: max < priceCeiling ? max : undefined });
   };
 
   const handleClearFilters = () => {
-    setPriceRange([0, 50000]);
     onFilterChange({});
   };
 
@@ -111,7 +122,8 @@ export default function ProductFilterSidebar({
     filters.sizes?.length ||
     filters.materials?.length ||
     filters.minPrice ||
-    filters.maxPrice;
+    filters.maxPrice ||
+    filters.inStock;
 
   return (
     <Box sx={{ width: '100%' }}>
@@ -179,70 +191,76 @@ export default function ProductFilterSidebar({
       )}
 
       {/* Color */}
-      <Accordion disableGutters elevation={0}>
-        <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-          <Typography fontWeight={500}>Color</Typography>
-        </AccordionSummary>
-        <AccordionDetails sx={{ pt: 0 }}>
-          <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
-            {colors.map((color) => (
-              <Chip
-                key={color}
-                label={color}
-                size="small"
-                variant={filters.colors?.includes(color) ? 'filled' : 'outlined'}
-                color={filters.colors?.includes(color) ? 'primary' : 'default'}
-                onClick={() => handleColorToggle(color)}
-              />
-            ))}
-          </Box>
-        </AccordionDetails>
-      </Accordion>
+      {colors.length > 0 && (
+        <Accordion disableGutters elevation={0}>
+          <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+            <Typography fontWeight={500}>Color</Typography>
+          </AccordionSummary>
+          <AccordionDetails sx={{ pt: 0 }}>
+            <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
+              {colors.map((color) => (
+                <Chip
+                  key={color}
+                  label={color}
+                  size="small"
+                  variant={filters.colors?.includes(color) ? 'filled' : 'outlined'}
+                  color={filters.colors?.includes(color) ? 'primary' : 'default'}
+                  onClick={() => handleColorToggle(color)}
+                />
+              ))}
+            </Box>
+          </AccordionDetails>
+        </Accordion>
+      )}
 
       {/* Size */}
-      <Accordion disableGutters elevation={0}>
-        <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-          <Typography fontWeight={500}>Size</Typography>
-        </AccordionSummary>
-        <AccordionDetails sx={{ pt: 0 }}>
-          <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
-            {sizes.map((size) => (
-              <Chip
-                key={size}
-                label={size}
-                size="small"
-                variant={filters.sizes?.includes(size) ? 'filled' : 'outlined'}
-                color={filters.sizes?.includes(size) ? 'primary' : 'default'}
-                onClick={() => handleSizeToggle(size)}
-              />
-            ))}
-          </Box>
-        </AccordionDetails>
-      </Accordion>
+      {sizes.length > 0 && (
+        <Accordion disableGutters elevation={0}>
+          <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+            <Typography fontWeight={500}>Size</Typography>
+          </AccordionSummary>
+          <AccordionDetails sx={{ pt: 0 }}>
+            <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
+              {sizes.map((size) => (
+                <Chip
+                  key={size}
+                  label={size}
+                  size="small"
+                  variant={filters.sizes?.includes(size) ? 'filled' : 'outlined'}
+                  color={filters.sizes?.includes(size) ? 'primary' : 'default'}
+                  onClick={() => handleSizeToggle(size)}
+                />
+              ))}
+            </Box>
+          </AccordionDetails>
+        </Accordion>
+      )}
 
       {/* Material */}
-      <Accordion disableGutters elevation={0}>
-        <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-          <Typography fontWeight={500}>Material</Typography>
-        </AccordionSummary>
-        <AccordionDetails sx={{ pt: 0 }}>
-          <FormGroup>
-            {materials.map((material) => (
-              <FormControlLabel
-                key={material}
-                control={
-                  <Checkbox
-                    checked={filters.materials?.includes(material) || false}
-                    onChange={() => handleMaterialToggle(material)}
-                    size="small"
-                  />
-                }
-                label={<Typography variant="body2">{material}</Typography>}
-              />
-            ))}
-          </FormGroup>
-        </AccordionDetails>
-      </Accordion>
+      {materials.length > 0 && (
+        <Accordion disableGutters elevation={0}>
+          <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+            <Typography fontWeight={500}>Material</Typography>
+          </AccordionSummary>
+          <AccordionDetails sx={{ pt: 0 }}>
+            <FormGroup>
+              {materials.map((material) => (
+                <FormControlLabel
+                  key={material}
+                  control={
+                    <Checkbox
+                      checked={filters.materials?.includes(material) || false}
+                      onChange={() => handleMaterialToggle(material)}
+                      size="small"
+                    />
+                  }
+                  label={<Typography variant="body2">{material}</Typography>}
+                />
+              ))}
+            </FormGroup>
+          </AccordionDetails>
+        </Accordion>
+      )}
 
       {/* Collection */}
       {collections.length > 0 && (
@@ -283,8 +301,8 @@ export default function ProductFilterSidebar({
               onChangeCommitted={handlePriceCommit}
               valueLabelDisplay="auto"
               min={0}
-              max={50000}
-              step={500}
+              max={priceCeiling}
+              step={priceStep}
               valueLabelFormat={(v) => `₹${v.toLocaleString('en-IN')}`}
             />
             <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
@@ -309,11 +327,11 @@ export default function ProductFilterSidebar({
             <FormControlLabel
               control={
                 <Checkbox
-                  checked={filters.status === 'ACTIVE'}
+                  checked={Boolean(filters.inStock)}
                   onChange={() =>
                     onFilterChange({
                       ...filters,
-                      status: filters.status === 'ACTIVE' ? undefined : 'ACTIVE',
+                      inStock: filters.inStock ? undefined : true,
                     })
                   }
                   size="small"
