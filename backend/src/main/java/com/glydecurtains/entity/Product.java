@@ -129,6 +129,8 @@ public class Product extends BaseEntity {
     @Column(name = "meta_keywords")
     private String metaKeywords;
 
+    // Batch-load images for a page of products (thumbnails) instead of one query per product.
+    @org.hibernate.annotations.BatchSize(size = 50)
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ProductImage> images = new ArrayList<>();
 

@@ -14,7 +14,9 @@ import com.glydecurtains.service.ProductService;
 import com.glydecurtains.service.TranslationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -25,6 +27,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @Service
@@ -269,11 +274,17 @@ public class ProductServiceImpl implements ProductService {
         // Specification applies every populated filter field (category, sub-category,
         // collection, color, size, material, price range, status, merchandising flags)
         // - previously subCategoryId/color/size/material/price were silently ignored here.
-        Page<Product> page = productRepository.findAll(ProductSpecifications.fromFilter(filter), pageable);
+        Specification<Product> spec = ProductSpecifications.fromFilter(filter);
+        String sortBy = filter != null ? filter.getSortBy() : null;
+        if ((sortBy != null && !sortBy.isBlank()) || pageable.getSort().isUnsorted()) {
+            // Named sorts (popularity, effective price, relevance...) are expressions, not
+            // plain columns, so they are applied by the specification instead of the Pageable.
+            spec = spec.and(ProductSpecifications.orderedBy(sortBy, filter != null ? filter.getQuery() : null));
+            pageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize());
+        }
+        Page<Product> page = productRepository.findAll(spec, pageable);
 
-        List<ProductResponse> content = page.getContent().stream()
-                .map(this::mapToProductResponse)
-                .collect(Collectors.toList());
+        List<ProductResponse> content = mapToProductResponses(page.getContent());
 
         return PageResponse.of(content, page.getNumber(), page.getSize(),
                 page.getTotalElements(), page.getTotalPages(), page.isLast());
@@ -505,6 +516,46 @@ public class ProductServiceImpl implements ProductService {
             collectionName = collectionRepository.findById(product.getCollectionId())
                     .map(Collection::getName).orElse(null);
         }
+
+        return mapToProductResponse(product, categoryName, subCategoryName, collectionName);
+    }
+
+    /**
+     * Maps a page of products, looking up category/sub-category/collection names with one
+     * query per type instead of three queries per product.
+     */
+    private List<ProductResponse> mapToProductResponses(List<Product> products) {
+        Map<Long, String> categoryNames = namesById(products, Product::getCategoryId,
+                ids -> categoryRepository.findAllById(ids), Category::getId, Category::getName);
+        Map<Long, String> subCategoryNames = namesById(products, Product::getSubCategoryId,
+                ids -> subCategoryRepository.findAllById(ids), SubCategory::getId, SubCategory::getName);
+        Map<Long, String> collectionNames = namesById(products, Product::getCollectionId,
+                ids -> collectionRepository.findAllById(ids), Collection::getId, Collection::getName);
+
+        return products.stream()
+                .map(p -> mapToProductResponse(p,
+                        categoryNames.get(p.getCategoryId()),
+                        subCategoryNames.get(p.getSubCategoryId()),
+                        collectionNames.get(p.getCollectionId())))
+                .collect(Collectors.toList());
+    }
+
+    private static <T> Map<Long, String> namesById(List<Product> products,
+                                                   Function<Product, Long> idOf,
+                                                   Function<Set<Long>, List<T>> loader,
+                                                   Function<T, Long> entityId,
+                                                   Function<T, String> entityName) {
+        Set<Long> ids = products.stream().map(idOf).filter(Objects::nonNull).collect(Collectors.toSet());
+        if (ids.isEmpty()) {
+            return Collections.emptyMap();
+        }
+        return loader.apply(ids).stream()
+                .filter(e -> entityName.apply(e) != null)
+                .collect(Collectors.toMap(entityId, entityName, (a, b) -> a));
+    }
+
+    private ProductResponse mapToProductResponse(Product product, String categoryName,
+                                                 String subCategoryName, String collectionName) {
 
         // Get thumbnail image
         String thumbnailBase64 = null;
