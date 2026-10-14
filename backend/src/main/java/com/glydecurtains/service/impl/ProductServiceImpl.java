@@ -384,8 +384,21 @@ public class ProductServiceImpl implements ProductService {
                 variant.setStockQuantity(variantReq.getStockQuantity() != null ? variantReq.getStockQuantity() : 0);
                 product.getVariants().add(variant);
             }
+            // List the product at its default option's price, and offer every variant's size and colour.
+            VariantDefaults.defaultVariant(product.getVariants()).ifPresent(v -> product.setBasePrice(v.getPrice()));
+            product.setColors(toJson(mergeOptions(fromJson(product.getColors()),
+                    product.getVariants().stream().map(ProductVariant::getColor).toList())));
+            product.setSizes(toJson(mergeOptions(fromJson(product.getSizes()),
+                    product.getVariants().stream().map(ProductVariant::getSize).toList())));
             productRepository.save(product);
         }
+    }
+
+    private static List<String> mergeOptions(List<String> existing, List<String> fromVariants) {
+        java.util.LinkedHashSet<String> merged = new java.util.LinkedHashSet<>();
+        if (existing != null) merged.addAll(existing);
+        fromVariants.stream().filter(o -> o != null && !o.isBlank()).map(String::trim).forEach(merged::add);
+        return new java.util.ArrayList<>(merged);
     }
 
     // --- Translation methods ---

@@ -22,13 +22,18 @@ import {
   CardActionArea,
   Alert,
   Button,
+  IconButton,
 } from '@mui/material';
 import WhatsAppIcon from '@mui/icons-material/WhatsApp';
 import PhoneIcon from '@mui/icons-material/Phone';
+import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
+import ChevronRightIcon from '@mui/icons-material/ChevronRight';
+import PlayCircleOutlineIcon from '@mui/icons-material/PlayCircleOutline';
 import Breadcrumb, { BreadcrumbItem } from '@/components/layout/Breadcrumb';
 import axiosInstance from '@/api/axiosInstance';
 import { resolveMediaUrl } from '@/utils/mediaUrl';
 import { CONTACT, productEnquiryLink } from '@/config/contact';
+import { formatPrice, sizeNumber } from '@/utils/price';
 
 // ─── Types ──────────────────────────────────────────────────────────────────
 
@@ -209,6 +214,7 @@ export default function ProductDetailPage() {
     if (!id) return;
     setLoading(true);
     setError(null);
+    setSelectedImageIndex(0);
 
     axiosInstance
       .get(`/products/public/${id}`)
@@ -261,6 +267,33 @@ export default function ProductDetailPage() {
       .catch(() => {});
   }, [id]);
 
+  // ─── Size / colour options and the default selection ──────────────────
+
+  const colorOptions = useMemo(() => {
+    if (!product) return [];
+    const fromVariants = (product.variants || []).map((v) => v.color?.trim()).filter((c): c is string => !!c);
+    return Array.from(new Set([...(product.colors || []), ...fromVariants]));
+  }, [product]);
+
+  const sizeOptions = useMemo(() => {
+    if (!product) return [];
+    const fromVariants = (product.variants || []).map((v) => v.size?.trim()).filter((s): s is string => !!s);
+    return Array.from(new Set([...(product.sizes || []), ...fromVariants])).sort(
+      (a, b) => sizeNumber(a) - sizeNumber(b),
+    );
+  }, [product]);
+
+  // Start on the smallest size and the first colour, so the price shown matches a real option.
+  useEffect(() => {
+    if (!product) return;
+    const smallest = sizeOptions[0] ?? null;
+    const variantForSize = (product.variants || []).find((v) => v.size?.trim() === smallest && v.color);
+    setSelectedSize(smallest);
+    setSelectedColor(variantForSize?.color?.trim() ?? colorOptions[0] ?? null);
+  }, [product, sizeOptions, colorOptions]);
+
+  const selectedOptionLabel = [selectedSize, selectedColor].filter(Boolean).join(', ');
+
   // ─── Availability based on variant selection ───────────────────────────
 
   const availability = useMemo(() => {
@@ -268,19 +301,27 @@ export default function ProductDetailPage() {
 
     // If user selected a color/size, find matching variant
     if (selectedColor || selectedSize) {
-      const matchingVariants = product.variants.filter((v) => {
-        const colorMatch = !selectedColor || v.color === selectedColor;
-        const sizeMatch = !selectedSize || v.size === selectedSize;
+      const matchingVariants = (product.variants || []).filter((v) => {
+        const colorMatch = !selectedColor || !v.color || v.color.trim() === selectedColor;
+        const sizeMatch = !selectedSize || !v.size || v.size.trim() === selectedSize;
         return colorMatch && sizeMatch;
       });
 
       if (matchingVariants.length > 0) {
         const totalStock = matchingVariants.reduce((sum, v) => sum + v.stockQuantity, 0);
         const minPrice = Math.min(...matchingVariants.map((v) => v.price));
-        return { available: totalStock > 0, stock: totalStock, price: minPrice };
+        // Variants entered without stock fall back to the product's own stock figure.
+        const stock = totalStock || product.stockQuantity;
+        return { available: stock > 0, stock, price: minPrice };
       }
 
-      return { available: false, stock: 0, price: product.offerPrice || product.basePrice };
+      // A size/colour combination without its own price is quoted on WhatsApp instead.
+      const hasVariants = (product.variants || []).length > 0;
+      return {
+        available: product.stockQuantity > 0,
+        stock: product.stockQuantity,
+        price: hasVariants ? 0 : product.offerPrice || product.basePrice,
+      };
     }
 
     return {
@@ -327,7 +368,27 @@ export default function ProductDetailPage() {
 
   const images = product?.images?.filter((img) => img.mediaType !== 'VIDEO') || [];
   const videos = product?.images?.filter((img) => img.mediaType === 'VIDEO') || [];
-  const mainImage = images[selectedImageIndex];
+  const media = [...images, ...videos];
+  const mainMedia = media[selectedImageIndex] ?? media[0];
+  const mainIsVideo = mainMedia?.mediaType === 'VIDEO';
+
+  // Wraps around at either end so the arrows always do something.
+  const showMedia = (index: number) => {
+    if (media.length === 0) return;
+    setIsZooming(false);
+    setZoomStyle({});
+    setSelectedImageIndex((index + media.length) % media.length);
+  };
+
+  const galleryArrowSx = {
+    position: 'absolute',
+    top: '50%',
+    transform: 'translateY(-50%)',
+    bgcolor: 'rgba(255, 255, 255, 0.92)',
+    color: '#14232b',
+    boxShadow: '0 1px 4px rgba(20, 35, 43, 0.25)',
+    '&:hover': { bgcolor: '#ffffff' },
+  } as const;
 
   const getImageSrc = (img?: Partial<ProductImage> | null) => {
     const fallbackImage = '/assets/logo/poster.png';
@@ -386,7 +447,7 @@ export default function ProductDetailPage() {
       <Grid container spacing={4}>
         {/* ─── Image Gallery ──────────────────────────────────────── */}
         <Grid size={{ xs: 12, md: 6 }}>
-          {/* Main image with zoom */}
+          {/* Main viewer: photos and videos share one space, stepped with the arrows or thumbnails */}
           <Box
             sx={{
               position: 'relative',
@@ -396,13 +457,25 @@ export default function ProductDetailPage() {
               borderRadius: 2,
               border: '1px solid',
               borderColor: 'divider',
-              cursor: isZooming ? 'zoom-out' : 'zoom-in',
-              bgcolor: 'background.paper',
+              cursor: mainIsVideo ? 'default' : isZooming ? 'zoom-out' : 'zoom-in',
+              bgcolor: mainIsVideo ? 'common.black' : 'background.paper',
             }}
           >
-            {mainImage ? (
+            {mainMedia && mainIsVideo ? (
+              <video
+                key={mainMedia.id}
+                controls
+                playsInline
+                preload="metadata"
+                style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'contain' }}
+              >
+                {/* "#t=0.1" makes browsers paint the first frame instead of a blank box before play. */}
+                <source src={`${getImageSrc(mainMedia)}#t=0.1`} type={mainMedia.mimeType} />
+                Your browser does not support this video.
+              </video>
+            ) : mainMedia ? (
               <img
-                src={getImageSrc(mainImage)}
+                src={getImageSrc(mainMedia)}
                 alt={product.name}
                 style={{
                   width: '100%',
@@ -428,68 +501,105 @@ export default function ProductDetailPage() {
                 <Typography color="text.secondary">No Image Available</Typography>
               </Box>
             )}
-          </Box>
 
-          {/* Thumbnails */}
-          {images.length > 1 && (
-            <Box sx={{ display: 'flex', gap: 1, mt: 2, overflowX: 'auto', pb: 1 }}>
-              {images.map((img, index) => (
+            {media.length > 1 && (
+              <>
+                <IconButton
+                  aria-label="Previous photo or video"
+                  onClick={() => showMedia(selectedImageIndex - 1)}
+                  sx={{ ...galleryArrowSx, left: 8 }}
+                >
+                  <ChevronLeftIcon />
+                </IconButton>
+                <IconButton
+                  aria-label="Next photo or video"
+                  onClick={() => showMedia(selectedImageIndex + 1)}
+                  sx={{ ...galleryArrowSx, right: 8 }}
+                >
+                  <ChevronRightIcon />
+                </IconButton>
                 <Box
-                  key={img.id}
-                  onClick={() => setSelectedImageIndex(index)}
+                  aria-live="polite"
                   sx={{
-                    width: 72,
-                    height: 72,
-                    minWidth: 72,
-                    borderRadius: 1,
-                    overflow: 'hidden',
-                    border: '2px solid',
-                    borderColor: index === selectedImageIndex ? 'primary.main' : 'divider',
-                    cursor: 'pointer',
-                    opacity: index === selectedImageIndex ? 1 : 0.7,
-                    transition: 'all 0.2s',
-                    '&:hover': { opacity: 1, borderColor: 'primary.light' },
+                    position: 'absolute',
+                    right: 12,
+                    px: 1.25,
+                    py: 0.25,
+                    borderRadius: 999,
+                    bgcolor: 'rgba(20, 35, 43, 0.75)',
+                    color: '#ffffff',
+                    fontSize: 13,
+                    fontWeight: 600,
+                    // Keep clear of the video controls bar.
+                    top: mainIsVideo ? 10 : 'auto',
+                    bottom: mainIsVideo ? 'auto' : 10,
                   }}
                 >
-                  <LazyImage
-                    src={getImageSrc(img)}
-                    alt={`${product.name} - ${index + 1}`}
-                    style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-                  />
+                  {selectedImageIndex + 1} / {media.length}
                 </Box>
-              ))}
-            </Box>
-          )}
+              </>
+            )}
+          </Box>
 
-          {videos.length > 0 && (
-            <Box sx={{ mt: 3 }}>
-              <Typography variant="subtitle1" sx={{ mb: 1, fontWeight: 600 }}>Product videos</Typography>
-              <Grid container spacing={1}>
-                {videos.map((video) => (
-                  <Grid key={video.id} size={{ xs: 12, sm: 6 }}>
-                    <Box
-                      sx={{
-                        position: 'relative',
-                        width: '100%',
-                        aspectRatio: '1',
-                        borderRadius: 2,
-                        overflow: 'hidden',
-                        bgcolor: 'common.black',
-                      }}
-                    >
-                      <video
-                        controls
-                        preload="metadata"
-                        style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'contain' }}
-                      >
-                        {/* "#t=0.1" makes browsers paint the first frame instead of a blank box before play. */}
-                        <source src={`${getImageSrc(video)}#t=0.1`} type={video.mimeType} />
-                        Your browser does not support this video.
-                      </video>
-                    </Box>
-                  </Grid>
-                ))}
-              </Grid>
+          {/* Thumbnails: photos first, then videos marked with a play icon */}
+          {media.length > 1 && (
+            <Box sx={{ display: 'flex', gap: 1, mt: 2, overflowX: 'auto', pb: 1 }}>
+              {media.map((item, index) => {
+                const isVideo = item.mediaType === 'VIDEO';
+                return (
+                  <Box
+                    key={item.id}
+                    component="button"
+                    type="button"
+                    aria-label={`${isVideo ? 'Video' : 'Photo'} ${index + 1} of ${media.length}`}
+                    aria-current={index === selectedImageIndex}
+                    onClick={() => showMedia(index)}
+                    sx={{
+                      position: 'relative',
+                      p: 0,
+                      width: 72,
+                      height: 72,
+                      minWidth: 72,
+                      borderRadius: 1,
+                      overflow: 'hidden',
+                      border: '2px solid',
+                      borderColor: index === selectedImageIndex ? 'primary.main' : 'divider',
+                      bgcolor: isVideo ? 'common.black' : 'background.paper',
+                      cursor: 'pointer',
+                      opacity: index === selectedImageIndex ? 1 : 0.7,
+                      transition: 'all 0.2s',
+                      '&:hover': { opacity: 1, borderColor: 'primary.light' },
+                    }}
+                  >
+                    {isVideo ? (
+                      <>
+                        <video
+                          muted
+                          preload="metadata"
+                          src={`${getImageSrc(item)}#t=0.1`}
+                          style={{ width: '100%', height: '100%', objectFit: 'cover', pointerEvents: 'none' }}
+                        />
+                        <PlayCircleOutlineIcon
+                          sx={{
+                            position: 'absolute',
+                            inset: 0,
+                            m: 'auto',
+                            fontSize: 32,
+                            color: '#ffffff',
+                            filter: 'drop-shadow(0 1px 2px rgba(0,0,0,0.6))',
+                          }}
+                        />
+                      </>
+                    ) : (
+                      <LazyImage
+                        src={getImageSrc(item)}
+                        alt=""
+                        style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                      />
+                    )}
+                  </Box>
+                );
+              })}
             </Box>
           )}
         </Grid>
@@ -542,7 +652,7 @@ export default function ProductDetailPage() {
               </Box>
             ) : (
               <Typography variant="h5" fontWeight={700} color="primary.main">
-                ₹{product.basePrice.toLocaleString('en-IN')}
+                {formatPrice(availability.price)}
               </Typography>
             )}
           </Box>
@@ -567,19 +677,20 @@ export default function ProductDetailPage() {
           )}
 
           {/* Colors */}
-          {product.colors && product.colors.length > 0 && (
+          {colorOptions.length > 0 && (
             <Box sx={{ mb: 2 }}>
               <Typography variant="subtitle2" fontWeight={600} sx={{ mb: 1 }}>
                 Colors
               </Typography>
               <Box sx={{ display: 'flex', gap: 1, flexWrap: 'wrap' }}>
-                {product.colors.map((color) => (
+                {colorOptions.map((color) => (
                   <Chip
                     key={color}
                     label={color}
                     variant={selectedColor === color ? 'filled' : 'outlined'}
                     color={selectedColor === color ? 'primary' : 'default'}
-                    onClick={() => setSelectedColor(selectedColor === color ? null : color)}
+                    aria-pressed={selectedColor === color}
+                    onClick={() => setSelectedColor(color)}
                     sx={{ cursor: 'pointer' }}
                   />
                 ))}
@@ -588,19 +699,20 @@ export default function ProductDetailPage() {
           )}
 
           {/* Sizes */}
-          {product.sizes && product.sizes.length > 0 && (
+          {sizeOptions.length > 0 && (
             <Box sx={{ mb: 2 }}>
               <Typography variant="subtitle2" fontWeight={600} sx={{ mb: 1 }}>
                 Sizes
               </Typography>
               <Box sx={{ display: 'flex', gap: 1, flexWrap: 'wrap' }}>
-                {product.sizes.map((size) => (
+                {sizeOptions.map((size) => (
                   <Chip
                     key={size}
                     label={size}
                     variant={selectedSize === size ? 'filled' : 'outlined'}
                     color={selectedSize === size ? 'primary' : 'default'}
-                    onClick={() => setSelectedSize(selectedSize === size ? null : size)}
+                    aria-pressed={selectedSize === size}
+                    onClick={() => setSelectedSize(size)}
                     sx={{ cursor: 'pointer' }}
                   />
                 ))}
@@ -637,7 +749,7 @@ export default function ProductDetailPage() {
               variant="contained"
               size="large"
               component="a"
-              href={productEnquiryLink(product, product.offerPrice || availability.price)}
+              href={productEnquiryLink(product, availability.price, selectedOptionLabel)}
               target="_blank"
               rel="noopener noreferrer"
               startIcon={<WhatsAppIcon />}
@@ -828,7 +940,7 @@ function ProductCard({ product }: { product: RelatedProduct }) {
           </Typography>
           <Box sx={{ display: 'flex', alignItems: 'baseline', gap: 0.5, mt: 0.5 }}>
             <Typography variant="body2" fontWeight={700} color="primary.main">
-              ₹{(product.offerPrice || product.basePrice).toLocaleString('en-IN')}
+              {formatPrice(product.offerPrice || product.basePrice)}
             </Typography>
             {(product.discountPercentage ?? 0) > 0 && (
               <Typography

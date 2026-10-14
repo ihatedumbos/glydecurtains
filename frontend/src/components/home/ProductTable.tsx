@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import axiosInstance from '@/api/axiosInstance';
 import { resolveMediaUrl } from '@/utils/mediaUrl';
 import { productEnquiryLink } from '@/config/contact';
+import { formatPrice, sizeNumber } from '@/utils/price';
 
 interface ProductRow {
   id: number;
@@ -11,6 +12,8 @@ interface ProductRow {
   categoryName?: string;
   subCategoryId?: number | null;
   subCategoryName?: string;
+  colors?: string[];
+  sizes?: string[];
   basePrice: number;
   offerPrice?: number | null;
   thumbnailUrl?: string;
@@ -46,7 +49,7 @@ export default function ProductTable() {
   useEffect(() => {
     // Only offer filters for product types that actually have products listed.
     Promise.all([
-      axiosInstance.get('/categories/public/tree'),
+      axiosInstance.get('/categories/public/tree', { params: { listedOnly: true } }),
       axiosInstance.get('/products/public', { params: { size: '200' } }),
     ])
       .then(([treeRes, productsRes]) => {
@@ -142,6 +145,9 @@ export default function ProductTable() {
           products.map((product, idx) => {
             const price = product.offerPrice || product.basePrice;
             const category = product.subCategoryName || product.categoryName;
+            // The listed price is for the default option: smallest size, first colour.
+            const defaultSize = [...(product.sizes || [])].sort((a, b) => sizeNumber(a) - sizeNumber(b))[0];
+            const defaultOption = [defaultSize, product.colors?.[0]].filter(Boolean).join(' · ');
             return (
               <div
                 key={product.id}
@@ -159,17 +165,18 @@ export default function ProductTable() {
                   <Link to={`/products/${product.id}`} className="block text-[17px] font-bold text-[#14232b] hover:text-[#a8400f]">
                     {product.name}
                   </Link>
+                  {defaultOption && <div className="text-sm text-[#3c4c54]">{defaultOption}</div>}
                   {product.sku && (
                     <div className="truncate text-[13px] text-[#4b5b63]" style={{ fontFamily: 'var(--font-mono)' }}>
                       {product.sku}
                     </div>
                   )}
                   <div className="text-sm text-[#4b5b63] md:hidden">
-                    {category} · <span className="font-bold text-[#14232b]">₹{price.toLocaleString('en-IN')}</span>
+                    {category} · <span className="font-bold text-[#14232b]">{formatPrice(price)}</span>
                   </div>
                 </div>
                 <span className="hidden text-[#14232b] md:block">{category}</span>
-                <span className="hidden font-bold text-[#14232b] md:block">₹{price.toLocaleString('en-IN')}</span>
+                <span className="hidden font-bold text-[#14232b] md:block">{formatPrice(price)}</span>
                 <a
                   href={productEnquiryLink(product, price)}
                   target="_blank"

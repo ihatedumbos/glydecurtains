@@ -18,8 +18,13 @@ export function whatsappLink(message?: string): string {
 }
 
 /** Pre-filled enquiry for a product, including its page link so the team knows exactly which item. */
-export function productEnquiryLink(product: { id: number; name: string }, price?: number | null): string {
+export function productEnquiryLink(
+  product: { id: number; name: string },
+  price?: number | null,
+  option?: string,
+): string {
   const origin = typeof window !== 'undefined' ? window.location.origin : '';
+  const optionText = option ? `, ${option}` : '';
   const priceText = price ? ` (₹${price.toLocaleString('en-IN')})` : '';
-  return whatsappLink(`Hi Glyde, I'm interested in ${product.name}${priceText}. ${origin}/products/${product.id}`);
+  return whatsappLink(`Hi Glyde, I'm interested in ${product.name}${optionText}${priceText}. ${origin}/products/${product.id}`);
 }
