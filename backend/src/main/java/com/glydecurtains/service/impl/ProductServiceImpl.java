@@ -618,11 +618,22 @@ public class ProductServiceImpl implements ProductService {
             return mediaData;
         }
 
-        if (mediaData.startsWith("/9j/") || mediaData.startsWith("/iVB") || mediaData.startsWith("/R0lG") || mediaData.startsWith("/UklGR")) {
-            return "data:" + mimeType + ";base64," + mediaData.substring(1);
+        // "/9j/" is the genuine start of base64 JPEG data, so it must be kept intact
+        // (stripping the slash corrupted every JPEG thumbnail). Other formats never start
+        // with "/" in base64; a leading slash there is a stray prefix and is removed.
+        String base64 = mediaData;
+        if (base64.startsWith("/iVB") || base64.startsWith("/R0lG") || base64.startsWith("/UklGR")) {
+            base64 = base64.substring(1);
         }
+        return "data:" + detectImageMimeType(base64, mimeType) + ";base64," + base64;
+    }
 
-        return "data:" + mimeType + ";base64," + mediaData;
+    private static String detectImageMimeType(String base64, String fallback) {
+        if (base64.startsWith("/9j/")) return "image/jpeg";
+        if (base64.startsWith("iVBOR")) return "image/png";
+        if (base64.startsWith("R0lG")) return "image/gif";
+        if (base64.startsWith("UklGR")) return "image/webp";
+        return fallback;
     }
 
     private ProductDetailResponse mapToProductDetailResponse(Product product) {

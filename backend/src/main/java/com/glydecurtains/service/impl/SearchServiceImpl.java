@@ -4,6 +4,7 @@ import com.glydecurtains.dto.request.ProductFilterRequest;
 import com.glydecurtains.dto.request.SearchRequest;
 import com.glydecurtains.dto.response.PageResponse;
 import com.glydecurtains.dto.response.ProductResponse;
+import com.glydecurtains.dto.response.SearchFacetsResponse;
 import com.glydecurtains.entity.Product;
 import com.glydecurtains.entity.RecentSearch;
 import com.glydecurtains.entity.enums.ProductStatus;
@@ -12,6 +13,9 @@ import com.glydecurtains.repository.RecentSearchRepository;
 import com.glydecurtains.repository.TranslatedContentRepository;
 import com.glydecurtains.service.ProductService;
 import com.glydecurtains.service.SearchService;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -21,11 +25,13 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.TreeMap;
 import java.util.stream.Collectors;
 
 @Service
@@ -39,6 +45,7 @@ public class SearchServiceImpl implements SearchService {
     private final ProductRepository productRepository;
     private final TranslatedContentRepository translatedContentRepository;
     private final RecentSearchRepository recentSearchRepository;
+    private final ObjectMapper objectMapper;
 
     /**
      * Filters, sorts and paginates active products in the database, sharing the exact same
@@ -97,6 +104,17 @@ public class SearchServiceImpl implements SearchService {
     }
 
     @Override
+    @Transactional(readOnly = true)
+    public SearchFacetsResponse getFacets() {
+        return SearchFacetsResponse.builder()
+                .materials(distinctIgnoreCase(productRepository.findDistinctMaterials(ProductStatus.ACTIVE)))
+                .colors(distinctIgnoreCase(flattenJsonLists(productRepository.findColorLists(ProductStatus.ACTIVE))))
+                .sizes(distinctIgnoreCase(flattenJsonLists(productRepository.findSizeLists(ProductStatus.ACTIVE))))
+                .maxPrice(productRepository.findMaxEffectivePrice(ProductStatus.ACTIVE))
+                .build();
+    }
+
+    @Override
     public List<String> getRecentSearches() {
         Long currentUserId = getCurrentUserId();
         if (currentUserId == null) {
@@ -140,6 +158,29 @@ public class SearchServiceImpl implements SearchService {
         }
 
         recentSearchRepository.save(new RecentSearch(userId, query));
+    }
+
+    private List<String> flattenJsonLists(List<String> jsonLists) {
+        List<String> values = new ArrayList<>();
+        for (String json : jsonLists) {
+            if (json == null || json.isBlank()) continue;
+            try {
+                values.addAll(objectMapper.readValue(json, new TypeReference<List<String>>() {}));
+            } catch (JsonProcessingException e) {
+                // Ignore malformed values; they can't be matched by the filter either.
+            }
+        }
+        return values;
+    }
+
+    /** Trimmed, de-duplicated ignoring case (first spelling wins), sorted alphabetically. */
+    private static List<String> distinctIgnoreCase(List<String> values) {
+        TreeMap<String, String> byKey = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
+        values.stream()
+                .filter(v -> v != null && !v.isBlank())
+                .map(String::trim)
+                .forEach(v -> byKey.putIfAbsent(v, v));
+        return List.copyOf(byKey.values());
     }
 
     private Long getCurrentUserId() {

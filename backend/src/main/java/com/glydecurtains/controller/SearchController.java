@@ -4,6 +4,7 @@ import com.glydecurtains.dto.request.SearchRequest;
 import com.glydecurtains.dto.response.ApiResponse;
 import com.glydecurtains.dto.response.PageResponse;
 import com.glydecurtains.dto.response.ProductResponse;
+import com.glydecurtains.dto.response.SearchFacetsResponse;
 import com.glydecurtains.service.SearchService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
@@ -43,6 +44,15 @@ public class SearchController {
             @RequestParam String query) {
         List<String> suggestions = searchService.autocomplete(query);
         return ResponseEntity.ok(ApiResponse.success(suggestions));
+    }
+
+    /**
+     * Filter options (materials, colours, sizes, price ceiling) present on active products.
+     * Public endpoint - no authentication required.
+     */
+    @GetMapping("/facets")
+    public ResponseEntity<ApiResponse<SearchFacetsResponse>> facets() {
+        return ResponseEntity.ok(ApiResponse.success(searchService.getFacets()));
     }
 
     /**

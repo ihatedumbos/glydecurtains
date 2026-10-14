@@ -64,6 +64,13 @@ public class SecurityConfig {
                     .authorizeHttpRequests(auth -> auth
                             .requestMatchers("/api/auth/**", "/api/health", "/h2-console/**", "/api/products/public/**", "/api/categories/public/**", "/api/stores/public/**", "/api/feedback/public/**", "/api/achievements/public/**", "/api/enquiries/public/**", "/api/cms/public/**", "/api/pages/**").permitAll()
                             .requestMatchers(HttpMethod.GET, "/api/images/**").permitAll()
+                            // Storefront reads used by anonymous visitors: product search/filtering,
+                            // collection filter options and related products on the detail page.
+                            .requestMatchers(HttpMethod.GET, "/api/search/products", "/api/search/autocomplete",
+                                    "/api/search/facets", "/api/search/recent", "/api/collections/public/**",
+                                    "/api/products/*/related", "/api/products/*/similar").permitAll()
+                            // Public catalogue media served from resources/static (product photos, logo).
+                            .requestMatchers(HttpMethod.GET, "/products/**", "/assets/**").permitAll()
                             .anyRequest().authenticated()
                     );
         } else {

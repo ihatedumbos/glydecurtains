@@ -19,6 +19,18 @@ public interface ProductRepository extends JpaRepository<Product, Long>, org.spr
 
     List<Product> findByStatus(ProductStatus status);
 
+    @Query("SELECT DISTINCT p.material FROM Product p WHERE p.status = :status AND p.material IS NOT NULL AND p.material <> ''")
+    List<String> findDistinctMaterials(@Param("status") ProductStatus status);
+
+    @Query("SELECT p.colors FROM Product p WHERE p.status = :status AND p.colors IS NOT NULL")
+    List<String> findColorLists(@Param("status") ProductStatus status);
+
+    @Query("SELECT p.sizes FROM Product p WHERE p.status = :status AND p.sizes IS NOT NULL")
+    List<String> findSizeLists(@Param("status") ProductStatus status);
+
+    @Query("SELECT MAX(COALESCE(p.offerPrice, p.basePrice)) FROM Product p WHERE p.status = :status")
+    java.math.BigDecimal findMaxEffectivePrice(@Param("status") ProductStatus status);
+
     List<Product> findTop10ByStatusAndNameStartingWithIgnoreCaseOrderByNameAsc(ProductStatus status, String prefix);
 
     List<Product> findTop20ByStatusAndNameContainingIgnoreCaseOrderByNameAsc(ProductStatus status, String text);
