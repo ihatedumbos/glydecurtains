@@ -8,6 +8,7 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
@@ -55,6 +56,16 @@ public class DataSeeder implements CommandLineRunner {
     @PersistenceContext
     private EntityManager entityManager;
 
+    @Value("${app.admin.email:admin@glydecurtains.com}")
+    private String adminEmail;
+
+    @Value("${app.admin.password:}")
+    private String adminPassword;
+
+    /** Demo logins, sample orders, enquiries and reviews. Off in production. */
+    @Value("${app.seed-demo-data:true}")
+    private boolean seedDemoData;
+
     @Override
     @Transactional
     public void run(String... args) {
@@ -64,12 +75,16 @@ public class DataSeeder implements CommandLineRunner {
         }
         log.info("Seeding database with initial data...");
         seedSuperAdmin();
-        seedDemoCustomer();
-        seedDemoEmployees();
+        if (seedDemoData) {
+            seedDemoCustomer();
+            seedDemoEmployees();
+        }
         seedCategories();
         seedProducts();
-        seedSampleDataFile();
-        seedDemoOrdersAndActivity();
+        if (seedDemoData) {
+            seedSampleDataFile();
+            seedDemoOrdersAndActivity();
+        }
         seedPermissions();
         seedHomepageSections();
         seedStoreLocations();
@@ -82,13 +97,31 @@ public class DataSeeder implements CommandLineRunner {
     private void seedSuperAdmin() {
         User admin = new User();
         admin.setName("Super Admin");
-        admin.setEmail("admin@glydecurtains.com");
-        admin.setPassword(passwordEncoder.encode("admin123"));
+        admin.setEmail(adminEmail);
+        admin.setPassword(passwordEncoder.encode(initialAdminPassword()));
         admin.setRole(UserRole.SUPER_ADMIN);
         admin.setStatus(UserStatus.APPROVED);
         admin.setPasswordChangedAt(null);
         userRepository.save(admin);
         log.info("Super Admin account created.");
+    }
+
+    /**
+     * ADMIN_PASSWORD when set. Otherwise demo setups keep the old local password, and production
+     * gets a random one written to the log once, so the published default never works there.
+     */
+    private String initialAdminPassword() {
+        if (adminPassword != null && !adminPassword.isBlank()) {
+            return adminPassword;
+        }
+        if (seedDemoData) {
+            log.warn("ADMIN_PASSWORD is not set; the admin login uses the local demo password.");
+            return DemoAccounts.DEMO_ADMIN_PASSWORD;
+        }
+        String generated = DemoAccounts.randomPassword();
+        log.warn("ADMIN_PASSWORD is not set. Generated admin password for {}: {} "
+                + "(set ADMIN_PASSWORD so it stays the same after redeploys)", adminEmail, generated);
+        return generated;
     }
 
     private void seedDemoCustomer() {
@@ -704,7 +737,7 @@ public class DataSeeder implements CommandLineRunner {
         settings.setContactEmail(BusinessContact.EMAIL);
         settings.setContactPhone(BusinessContact.PHONE);
         settings.setAddress(BusinessContact.FULL_ADDRESS);
-        settings.setSocialLinks("{\"facebook\":\"https://facebook.com/glydecurtains\",\"instagram\":\"https://instagram.com/glydecurtains\",\"twitter\":\"https://twitter.com/glydecurtains\",\"pinterest\":\"https://pinterest.com/glydecurtains\"}");
+        settings.setSocialLinks("{}");
         settings.setAnnouncementBar(BusinessContact.ANNOUNCEMENT);
         siteSettingsRepository.save(settings);
         log.info("Site settings seeded.");
