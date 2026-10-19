@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
+import { PageHeader } from '@/components/admin/AdminUi';
 import {
   Box,
   Typography,
@@ -275,19 +276,12 @@ export default function StoreManagementPage() {
   // ─── Render ───────────────────────────────────────────────────────────────
 
   return (
-    <Box className="p-6 max-w-full">
-      <Box className="flex items-center justify-between mb-6">
-        <Typography variant="h4" className="font-bold">
-          Store Management
-        </Typography>
-        <Button
-          variant="contained"
-          startIcon={<AddIcon />}
-          onClick={openCreateDialog}
-        >
-          Add Store
-        </Button>
-      </Box>
+    <Box className="max-w-full">
+      <PageHeader
+        title="Store location"
+        subtitle="Shops listed on the Store page, with address, phone and opening hours."
+        actions={<Button variant="contained" startIcon={<AddIcon />} onClick={openCreateDialog}>Add a store</Button>}
+      />
 
       {/* Search */}
       <Paper className="p-4 mb-4">

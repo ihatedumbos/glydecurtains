@@ -1,38 +1,185 @@
-import { useEffect, useCallback, useState } from 'react';
-import { useAppDispatch, useAppSelector } from '@/store/hooks';
-import { setSummary, setRecentActivity, setOrderTrends, setRevenueTrends, setUserTrends, setDashboardLoading } from '@/store/slices/dashboardSlice';
-import type { ChartDataPoint, DashboardSummary } from '@/store/slices/dashboardSlice';
+import { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
+import { Button, Skeleton } from '@mui/material';
+import AddIcon from '@mui/icons-material/Add';
+import CheckCircleIcon from '@mui/icons-material/CheckCircle';
+import RadioButtonUncheckedIcon from '@mui/icons-material/RadioButtonUnchecked';
+import WhatsAppIcon from '@mui/icons-material/WhatsApp';
 import axiosInstance from '@/api/axiosInstance';
-import SummaryCard from '@/components/admin/dashboard/SummaryCard';
-import TrendChart from '@/components/admin/dashboard/TrendChart';
-import ActivityFeed from '@/components/admin/dashboard/ActivityFeed';
-import LowStockAlerts from '@/components/admin/dashboard/LowStockAlerts';
+import { useAppSelector } from '@/store/hooks';
+import { EmptyState, PageHeader, Panel, Pill, StatTile } from '@/components/admin/AdminUi';
+import { describeActivity, timeAgo } from '@/pages/admin/activityText';
 
-interface LowStockProduct { id: number; name: string; sku: string; stockQuantity: number; thumbnailUrl?: string | null; }
-const demoSummary: DashboardSummary = { totalOrders: 48, totalProducts: 13, totalUsers: 22, totalEmployees: 4, pendingApprovals: 3, lowStockCount: 2, revenue: 128450, totalEnquiries: 17 };
-const demoOrders: ChartDataPoint[] = [{ label: 'Mon', value: 4 }, { label: 'Tue', value: 7 }, { label: 'Wed', value: 5 }, { label: 'Thu', value: 9 }, { label: 'Fri', value: 12 }, { label: 'Sat', value: 8 }, { label: 'Sun', value: 11 }];
-const demoRevenue: ChartDataPoint[] = [{ label: 'Mon', value: 8200 }, { label: 'Tue', value: 15400 }, { label: 'Wed', value: 11900 }, { label: 'Thu', value: 21600 }, { label: 'Fri', value: 28900 }, { label: 'Sat', value: 18750 }, { label: 'Sun', value: 23700 }];
-const demoUsers: ChartDataPoint[] = [{ label: 'Mon', value: 2 }, { label: 'Tue', value: 4 }, { label: 'Wed', value: 3 }, { label: 'Thu', value: 5 }, { label: 'Fri', value: 6 }, { label: 'Sat', value: 4 }, { label: 'Sun', value: 5 }];
-const demoActivity = [{ id: -1, userId: null, actionType: 'ORDER_PLACED', entityType: 'demo', entityId: null, details: '[DEMO] GC-DEMO-1048 placed for Rs. 4,899', ipAddress: null, timestamp: new Date(Date.now() - 12 * 60000).toISOString() }, { id: -2, userId: null, actionType: 'ORDER_UPDATED', entityType: 'demo', entityId: null, details: '[DEMO] GC-DEMO-1047 marked as dispatched', ipAddress: null, timestamp: new Date(Date.now() - 48 * 60000).toISOString() }];
+interface ProductRow { id: number; name: string; status: string; basePrice: number; imageCount?: number; }
+interface Enquiry { id: number; name: string; phone?: string; email?: string; subject?: string; message?: string; status: string; createdAt: string; }
+interface Achievement { id: number; title: string; metricValue: string; }
+interface Activity { id: number; userName?: string | null; actionType: string; entityType?: string | null; entityId?: number | null; details?: string | null; timestamp: string; }
+
+/** Figures from the original demo data; real ones still need to come from the owner. */
+const DEMO_ACHIEVEMENT_VALUES = new Set(['10000+', '50000+', '9+', '150+', '98%']);
+
+/** wa.me link for a customer's phone number (Indian numbers without a country code get +91). */
+function customerWhatsApp(phone?: string, name?: string): string | null {
+  const digits = (phone || '').replace(/\D/g, '');
+  if (digits.length < 10) return null;
+  const number = digits.length === 10 ? `91${digits}` : digits;
+  return `https://wa.me/${number}?text=${encodeURIComponent(`Hi ${name || ''}, this is Glyde Curtains replying to your enquiry.`)}`;
+}
+
+function greeting(): string {
+  const hour = new Date().getHours();
+  if (hour < 12) return 'Good morning';
+  if (hour < 17) return 'Good afternoon';
+  return 'Good evening';
+}
 
 export default function DashboardPage() {
-  const dispatch = useAppDispatch();
-  const { summary, recentActivity, orderTrends, revenueTrends, userTrends, loading } = useAppSelector((state) => state.dashboard);
-  const [lowStockProducts, setLowStockProducts] = useState<LowStockProduct[]>([]);
-  const [lowStockLoading, setLowStockLoading] = useState(false);
-  const fetchSummary = useCallback(async () => { try { const res = await axiosInstance.get('/dashboard/summary'); const d = res.data.data; dispatch(setSummary({ totalOrders: d.totalOrders, totalProducts: d.totalProducts, totalUsers: d.totalUsers, totalEmployees: d.totalEmployees, pendingApprovals: d.pendingApprovals, lowStockCount: d.lowStockCount, revenue: d.totalRevenue ?? d.revenue ?? 0, totalEnquiries: d.totalEnquiries })); } catch {} }, [dispatch]);
-  const fetchActivity = useCallback(async () => { try { const res = await axiosInstance.get('/dashboard/activity', { params: { limit: 20 } }); dispatch(setRecentActivity(res.data.data)); } catch {} }, [dispatch]);
-  const fetchChart = useCallback(async (endpoint: string, setter: (data: ChartDataPoint[]) => void, period = '30d') => { try { const res = await axiosInstance.get(endpoint, { params: { period } }); const chart = res.data.data; setter(chart.labels?.map((label: string, index: number) => ({ label, value: chart.datasets?.[0]?.data?.[index] ?? 0 })) ?? []); } catch {} }, []);
-  const fetchLowStock = useCallback(async () => { setLowStockLoading(true); try { const res = await axiosInstance.get('/dashboard/low-stock', { params: { threshold: 10 } }); setLowStockProducts(res.data.data ?? []); } catch {} finally { setLowStockLoading(false); } }, []);
-  useEffect(() => { dispatch(setDashboardLoading(true)); Promise.all([fetchSummary(), fetchActivity(), fetchChart('/dashboard/charts/orders', (data) => dispatch(setOrderTrends(data))), fetchChart('/dashboard/charts/revenue', (data) => dispatch(setRevenueTrends(data))), fetchChart('/dashboard/charts/users', (data) => dispatch(setUserTrends(data))), fetchLowStock()]).finally(() => dispatch(setDashboardLoading(false))); }, [dispatch, fetchSummary, fetchActivity, fetchChart, fetchLowStock]);
-  const isDemo = !loading && (!summary || summary.totalOrders === 0);
-  const s = isDemo ? demoSummary : summary;
-  const money = (value: number) => new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR', maximumFractionDigits: 0 }).format(value);
-  const cards = [['Total Orders', s?.totalOrders ?? '-', '🛒', '#a8400f'], ['Total Products', s?.totalProducts ?? '-', '📦', '#6d787e'], ['Total Users', s?.totalUsers ?? '-', '👥', '#14232b'], ['Revenue', s ? money(s.revenue) : '-', '💰', '#7c2f0b']] as const;
-  return <div className="min-h-full space-y-6 bg-[#ffffff] p-6">
-    <section className="rounded-2xl bg-gradient-to-r from-[#7c2f0b] via-[#a8400f] to-[#6d787e] px-6 py-5 text-white shadow-[0_18px_42px_rgba(122,79,40,0.18)]"><div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between"><div><p className="text-xs font-semibold uppercase tracking-[0.22em] text-[#ffffff]">Glyde experience centre</p><h1 className="mt-1 font-display text-3xl font-semibold">Store dashboard</h1><p className="mt-1 text-sm text-[#ffffff]/80">Orders, customer interest and stock movement at a glance.</p></div>{isDemo && <span className="w-fit rounded-full border border-white/20 bg-white/10 px-3 py-1.5 text-xs font-semibold text-[#ffffff]">DEMO DATA · NOT REAL SALES</span>}</div></section>
-    <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">{cards.map(([title, value, icon, color]) => <SummaryCard key={title} title={title} value={value} icon={<span>{icon}</span>} color={color} />)}</div>
-    <div className="grid grid-cols-1 gap-4 lg:grid-cols-3"><TrendChart title="Order Trends" labels={(orderTrends.length ? orderTrends : demoOrders).map(p => p.label)} data={(orderTrends.length ? orderTrends : demoOrders).map(p => p.value)} color="#a8400f" chartType="bar" loading={loading} onPeriodChange={(period) => fetchChart('/dashboard/charts/orders', (data) => dispatch(setOrderTrends(data)), period)} /><TrendChart title="Revenue Trends" labels={(revenueTrends.length ? revenueTrends : demoRevenue).map(p => p.label)} data={(revenueTrends.length ? revenueTrends : demoRevenue).map(p => p.value)} color="#7c2f0b" chartType="line" loading={loading} onPeriodChange={(period) => fetchChart('/dashboard/charts/revenue', (data) => dispatch(setRevenueTrends(data)), period)} /><TrendChart title="Customer Trends" labels={(userTrends.length ? userTrends : demoUsers).map(p => p.label)} data={(userTrends.length ? userTrends : demoUsers).map(p => p.value)} color="#6d787e" chartType="bar" loading={loading} onPeriodChange={(period) => fetchChart('/dashboard/charts/users', (data) => dispatch(setUserTrends(data)), period)} /></div>
-    <div className="grid grid-cols-1 gap-4 lg:grid-cols-3"><div className="lg:col-span-2 rounded-xl border border-[#14232b]/12 bg-[#ffffff] p-5 shadow-sm"><h3 className="mb-4 text-sm font-semibold text-[#14232b]">Recent Activity</h3><ActivityFeed activities={(recentActivity.length ? recentActivity : demoActivity) as any[]} loading={loading} /></div><div className="rounded-xl border border-[#14232b]/12 bg-[#ffffff] p-5 shadow-sm"><h3 className="mb-4 text-sm font-semibold text-[#14232b]">Low Stock Alerts</h3><LowStockAlerts products={lowStockProducts} loading={lowStockLoading} /></div></div>
-  </div>;
+  const user = useAppSelector((state) => state.auth.user);
+  const [products, setProducts] = useState<ProductRow[] | null>(null);
+  const [enquiries, setEnquiries] = useState<{ total: number; items: Enquiry[] } | null>(null);
+  const [achievements, setAchievements] = useState<Achievement[]>([]);
+  const [activity, setActivity] = useState<Activity[] | null>(null);
+
+  useEffect(() => {
+    axiosInstance.get('/products', { params: { page: 0, size: 500 } })
+      .then((res) => setProducts(res.data.data.content ?? []))
+      .catch(() => setProducts([]));
+    axiosInstance.get('/enquiries', { params: { status: 'NEW', page: 0, size: 5 } })
+      .then((res) => setEnquiries({ total: res.data.data.totalElements ?? 0, items: res.data.data.content ?? [] }))
+      .catch(() => setEnquiries({ total: 0, items: [] }));
+    axiosInstance.get('/achievements')
+      .then((res) => setAchievements(res.data.data ?? []))
+      .catch(() => setAchievements([]));
+    axiosInstance.get('/activity-logs', { params: { page: 0, size: 6, entityType: 'PRODUCT' } })
+      .then((res) => setActivity(res.data.data.content ?? []))
+      .catch(() => setActivity([]));
+  }, []);
+
+  const live = products?.filter((p) => p.status === 'ACTIVE').length ?? 0;
+  const hidden = products ? products.length - live : 0;
+  const noPhoto = products?.filter((p) => (p.imageCount ?? 0) === 0).length ?? 0;
+  const noPrice = products?.filter((p) => !p.basePrice || p.basePrice <= 0).length ?? 0;
+  const demoAchievements = achievements.filter((a) => DEMO_ACHIEVEMENT_VALUES.has(String(a.metricValue).replace(/,/g, ''))).length;
+
+  const checklist = [
+    {
+      done: noPhoto === 0,
+      title: noPhoto === 0 ? 'Every product has a photo' : `Add photos to ${noPhoto} product${noPhoto === 1 ? '' : 's'}`,
+      hint: 'They show a “Photo coming soon” picture until you do.',
+      to: '/admin/products?show=no-photo',
+    },
+    {
+      done: noPrice === 0,
+      title: noPrice === 0 ? 'Every product has a price' : `Set prices for ${noPrice} product${noPrice === 1 ? '' : 's'}`,
+      hint: 'They show “Price on request” and customers ask on WhatsApp.',
+      to: '/admin/products?show=no-price',
+    },
+    {
+      done: demoAchievements === 0,
+      title: demoAchievements === 0 ? 'Achievement numbers are your own' : 'Replace the sample achievement numbers',
+      hint: 'Customers, cities and years figures still come from the demo data.',
+      to: '/admin/achievements',
+    },
+  ];
+
+  return (
+    <div className="space-y-6">
+      <PageHeader
+        title={`${greeting()}${user?.name ? `, ${user.name.split(' ')[0]}` : ''}`}
+        subtitle="Here's what's on the website right now and what still needs doing."
+        actions={
+          <>
+            <Button component={Link} to="/admin/cms" variant="outlined">Edit announcement</Button>
+            <Button component={Link} to="/admin/products/new" variant="contained" startIcon={<AddIcon />}>Add a product</Button>
+          </>
+        }
+      />
+
+      <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
+        <StatTile label="On the website" value={products ? live : '–'} hint={hidden ? `${hidden} hidden` : 'products listed'} to="/admin/products" />
+        <StatTile label="New enquiries" value={enquiries ? enquiries.total : '–'} hint="waiting for a reply" tone={enquiries?.total ? 'accent' : 'neutral'} to="/admin/enquiries" />
+        <StatTile label="Need photos" value={products ? noPhoto : '–'} hint="show “coming soon”" tone={noPhoto ? 'attention' : 'good'} to="/admin/products?show=no-photo" />
+        <StatTile label="Price on request" value={products ? noPrice : '–'} hint="no price set" tone={noPrice ? 'attention' : 'good'} to="/admin/products?show=no-price" />
+      </div>
+
+      <div className="grid gap-6 lg:grid-cols-5">
+        <Panel
+          className="lg:col-span-3"
+          title="New enquiries"
+          description="Messages from the contact and quote forms. Reply on WhatsApp in one tap."
+          actions={<Button component={Link} to="/admin/enquiries" size="small">See all</Button>}
+        >
+          {!enquiries ? (
+            <Skeleton variant="rounded" height={120} />
+          ) : enquiries.items.length === 0 ? (
+            <EmptyState title="No new enquiries">Most customers message you on WhatsApp directly.</EmptyState>
+          ) : (
+            <ul className="-my-3 divide-y divide-[#14232b]/8">
+              {enquiries.items.map((enquiry) => {
+                const wa = customerWhatsApp(enquiry.phone, enquiry.name);
+                return (
+                  <li key={enquiry.id} className="flex items-start gap-3 py-3">
+                    <div className="min-w-0 flex-1">
+                      <p className="flex flex-wrap items-center gap-2 text-sm font-medium">
+                        {enquiry.name}
+                        <span className="text-xs font-normal text-[#4b5b63]">{timeAgo(enquiry.createdAt)}</span>
+                      </p>
+                      <p className="mt-0.5 line-clamp-2 text-sm text-[#4b5b63]">{enquiry.subject ? `${enquiry.subject}: ` : ''}{enquiry.message}</p>
+                    </div>
+                    {wa ? (
+                      <Button size="small" variant="outlined" color="success" href={wa} target="_blank" rel="noreferrer" startIcon={<WhatsAppIcon />}>Reply</Button>
+                    ) : (
+                      <Button size="small" component={Link} to="/admin/enquiries">Open</Button>
+                    )}
+                  </li>
+                );
+              })}
+            </ul>
+          )}
+        </Panel>
+
+        <Panel className="lg:col-span-2" title="Before customers see it" description="Things that still show sample or missing content.">
+          <ul className="-my-1 space-y-1">
+            {checklist.map((item) => (
+              <li key={item.title}>
+                <Link to={item.to} className="flex gap-3 rounded-lg p-2 hover:bg-[#14232b]/4">
+                  {item.done ? (
+                    <CheckCircleIcon sx={{ color: '#1a7f45', fontSize: 22 }} />
+                  ) : (
+                    <RadioButtonUncheckedIcon sx={{ color: '#b45309', fontSize: 22 }} />
+                  )}
+                  <span className="min-w-0">
+                    <span className={`block text-sm font-medium ${item.done ? 'text-[#4b5b63]' : ''}`}>{item.title}</span>
+                    {!item.done && <span className="block text-xs text-[#4b5b63]">{item.hint}</span>}
+                  </span>
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </Panel>
+      </div>
+
+      <Panel
+        title="Recent product changes"
+        actions={<Button component={Link} to="/admin/activity-logs" size="small">Full activity</Button>}
+      >
+        {!activity ? (
+          <Skeleton variant="rounded" height={80} />
+        ) : activity.length === 0 ? (
+          <EmptyState title="No changes yet">Edits to products will be listed here with who made them.</EmptyState>
+        ) : (
+          <ul className="-my-2 divide-y divide-[#14232b]/8">
+            {activity.map((entry) => (
+              <li key={entry.id} className="flex flex-wrap items-center justify-between gap-2 py-2 text-sm">
+                <span>
+                  <span className="font-medium">{entry.userName || 'Someone'}</span> {describeActivity(entry)}
+                </span>
+                <Pill>{timeAgo(entry.timestamp)}</Pill>
+              </li>
+            ))}
+          </ul>
+        )}
+      </Panel>
+    </div>
+  );
 }

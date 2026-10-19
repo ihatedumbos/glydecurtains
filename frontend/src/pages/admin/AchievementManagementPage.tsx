@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
+import { PageHeader } from '@/components/admin/AdminUi';
 import {
   Box,
   Typography,
@@ -31,7 +32,6 @@ import {
   Edit as EditIcon,
   Delete as DeleteIcon,
   DragIndicator as DragIcon,
-  EmojiEvents as TrophyIcon,
 } from '@mui/icons-material';
 import axiosInstance from '@/api/axiosInstance';
 
@@ -276,19 +276,12 @@ export default function AchievementManagementPage() {
   }
 
   return (
-    <Box p={3}>
-      {/* Header */}
-      <Box display="flex" alignItems="center" justifyContent="space-between" mb={3}>
-        <Box display="flex" alignItems="center" gap={1}>
-          <TrophyIcon fontSize="large" color="primary" />
-          <Typography variant="h4" fontWeight={700}>
-            Achievement Management
-          </Typography>
-        </Box>
-        <Button variant="contained" startIcon={<AddIcon />} onClick={handleOpenCreate}>
-          Add Achievement
-        </Button>
-      </Box>
+    <Box>
+      <PageHeader
+        title="Achievements"
+        subtitle="The numbers on the Achievements page. The ones below came with the demo data, so replace them with your real figures."
+        actions={<Button variant="contained" startIcon={<AddIcon />} onClick={handleOpenCreate}>Add a number</Button>}
+      />
 
       {/* Achievement List Table with Drag-to-Reorder */}
       <TableContainer component={Paper}>

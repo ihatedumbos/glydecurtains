@@ -38,6 +38,9 @@ const FeedbackPage = lazy(() => import('@/pages/customer/FeedbackPage'));
 // ---------- Admin pages (lazy) ----------
 const DashboardPage = lazy(() => import('@/pages/admin/DashboardPage'));
 const ProductManagementPage = lazy(() => import('@/pages/admin/ProductManagementPage'));
+const ProductEditorPage = lazy(() => import('@/pages/admin/ProductEditorPage'));
+const HomePageEditorPage = lazy(() => import('@/pages/admin/HomePageEditorPage'));
+const StaticPagesManagementPage = lazy(() => import('@/pages/admin/StaticPagesManagementPage'));
 const CategoryManagementPage = lazy(() => import('@/pages/admin/CategoryManagementPage'));
 const OrderManagementPage = lazy(() => import('@/pages/admin/OrderManagementPage'));
 const UserManagementPage = lazy(() => import('@/pages/admin/UserManagementPage'));
@@ -102,12 +105,16 @@ export default function AppRoutes() {
           <Route path="/admin" element={<Navigate to="/admin/dashboard" replace />} />
           <Route path="/admin/dashboard" element={<DashboardPage />} />
           <Route path="/admin/products" element={<ProductManagementPage />} />
+          <Route path="/admin/products/new" element={<ProductEditorPage />} />
+          <Route path="/admin/products/:id" element={<ProductEditorPage />} />
           <Route path="/admin/categories" element={<CategoryManagementPage />} />
           <Route path="/admin/orders" element={<OrderManagementPage />} />
           <Route path="/admin/users" element={<UserManagementPage />} />
           <Route path="/admin/employees" element={<EmployeeManagementPage />} />
           <Route path="/admin/permissions" element={<PermissionManagementPage />} />
-          <Route path="/admin/cms" element={<CmsManagementPage />} />
+          <Route path="/admin/cms" element={<HomePageEditorPage />} />
+          <Route path="/admin/cms/sections" element={<CmsManagementPage />} />
+          <Route path="/admin/pages" element={<StaticPagesManagementPage />} />
           <Route path="/admin/site-settings" element={<SiteSettingsPage />} />
           <Route path="/admin/settings" element={<SiteSettingsPage />} />
           <Route path="/admin/stores" element={<StoreManagementPage />} />
