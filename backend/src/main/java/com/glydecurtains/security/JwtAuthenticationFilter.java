@@ -38,6 +38,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             "/api/achievements/public/**",
             "/api/enquiries/public/**",
             "/api/cms/public/**",
+            "/api/cms/pages/slug/**",
             "/api/pages/**"
     );
 

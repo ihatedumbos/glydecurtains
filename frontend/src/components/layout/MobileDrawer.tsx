@@ -114,8 +114,12 @@ export default function MobileDrawer({
 
         <Divider sx={{ my: 1 }} />
 
-        <ListItemButton onClick={() => handleNavigate('/store-locator')}>
+        <ListItemButton onClick={() => handleNavigate('/stores')}>
           <ListItemText primary="Store Locator" />
+        </ListItemButton>
+
+        <ListItemButton onClick={() => handleNavigate('/pages/about-us')}>
+          <ListItemText primary="About" />
         </ListItemButton>
 
         <ListItemButton onClick={() => handleNavigate('/contact')}>

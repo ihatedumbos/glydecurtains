@@ -51,16 +51,17 @@ export default function StoreLocatorPage() {
     dispatch(setStoreLoading(true));
     dispatch(setStoreError(null));
     try {
-      const res = await axiosInstance.get('/stores', {
-        params: { page: page - 1, size: 20 },
-      });
-      const data = res.data?.data || res.data;
+      // The public list (active stores only); the paged /stores endpoint is admin-only.
+      const res = await axiosInstance.get('/stores/public');
+      const data = res.data?.data || res.data || [];
+      const all = Array.isArray(data) ? data : data.content || [];
+      const pageSize = 20;
       dispatch(
         setStores({
-          content: data.content || [],
-          totalElements: data.totalElements || 0,
-          totalPages: data.totalPages || 0,
-          page: data.number ?? page - 1,
+          content: all.slice((page - 1) * pageSize, page * pageSize),
+          totalElements: all.length,
+          totalPages: Math.ceil(all.length / pageSize),
+          page: page - 1,
         }),
       );
     } catch {
@@ -77,7 +78,7 @@ export default function StoreLocatorPage() {
       dispatch(setStoreLoading(true));
       dispatch(setStoreError(null));
       try {
-        const res = await axiosInstance.get('/stores/search', {
+        const res = await axiosInstance.get('/stores/public/search', {
           params: { query },
         });
         const data = res.data?.data || res.data || [];

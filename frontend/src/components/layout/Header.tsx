@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Link as RouterLink, useLocation, useNavigate } from 'react-router-dom';
 import {
   AppBar,
@@ -49,6 +49,11 @@ export default function Header({ categories = [] }: HeaderProps) {
   const [megaMenuOpen, setMegaMenuOpen] = useState(false);
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [profileAnchor, setProfileAnchor] = useState<null | HTMLElement>(null);
+
+  // Close the mobile menu whenever the page changes, however the navigation happened.
+  useEffect(() => {
+    setDrawerOpen(false);
+  }, [location.pathname]);
 
 
   const handleSearch = (e: React.FormEvent) => {
