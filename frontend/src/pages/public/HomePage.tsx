@@ -12,8 +12,22 @@ import StoreBand from '@/components/home/StoreBand';
  * with codes and prices, then the Pune store. Only the announcement ticker still comes from
  * the CMS, so it can be edited from the admin panel.
  */
+/** The API sends a section's config as a JSON string; older data may already be an object. */
+function tickerConfig(section?: HomepageSection): Record<string, unknown> {
+  const config: unknown = section?.config;
+  if (typeof config === 'string') {
+    try {
+      return JSON.parse(config) as Record<string, unknown>;
+    } catch {
+      return {};
+    }
+  }
+  return (config as Record<string, unknown> | undefined) ?? {};
+}
+
 export default function HomePage() {
   const [tickerSection, setTickerSection] = useState<HomepageSection | undefined>();
+  const [tickerHidden, setTickerHidden] = useState(false);
 
   useEffect(() => {
     let cancelled = false;
@@ -22,7 +36,9 @@ export default function HomePage() {
       .then((res) => {
         if (cancelled) return;
         const sections: HomepageSection[] = res.data?.data || res.data || [];
-        setTickerSection(sections.find((s) => s.isEnabled && s.sectionType === 'SCROLLING_TICKER'));
+        const section = sections.find((s) => s.sectionType === 'SCROLLING_TICKER');
+        setTickerSection(section);
+        setTickerHidden(section?.isEnabled === false);
       })
       // The ticker falls back to its default text when the CMS can't be reached.
       .catch(() => undefined);
@@ -30,6 +46,8 @@ export default function HomePage() {
       cancelled = true;
     };
   }, []);
+
+  const ticker = tickerConfig(tickerSection);
 
   return (
     <motion.div
@@ -39,10 +57,12 @@ export default function HomePage() {
       transition={{ duration: 0.3 }}
       className="min-h-screen bg-[#f3f5f6]"
     >
-      <ScrollingTicker
-        content={tickerSection?.config?.content as string | undefined}
-        speed={tickerSection?.config?.speed as number | undefined}
-      />
+      {!tickerHidden && (
+        <ScrollingTicker
+          content={typeof ticker.content === 'string' ? ticker.content : undefined}
+          speed={typeof ticker.speed === 'number' ? ticker.speed : undefined}
+        />
+      )}
       <QuoteHero />
       <ProductTable />
       <StoreBand />

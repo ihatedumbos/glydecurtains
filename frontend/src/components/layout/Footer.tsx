@@ -4,7 +4,7 @@ import PhoneIcon from '@mui/icons-material/Phone';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
 import WhatsAppIcon from '@mui/icons-material/WhatsApp';
 import { Link, useNavigate } from 'react-router-dom';
-import { CONTACT, whatsappLink } from '@/config/contact';
+import { CONTACT, whatsappLink, useContact } from '@/config/contact';
 import Logo from './Logo';
 
 const quickLinks = [
@@ -25,6 +25,7 @@ const categoryLinks = [
 ];
 
 export default function Footer() {
+  useContact();
   const navigate = useNavigate();
 
   return (

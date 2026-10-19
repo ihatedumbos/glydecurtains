@@ -33,7 +33,8 @@ export default function OrdersPage() {
         totalPages: data.totalPages || 0,
         page: pageNum,
       }));
-    } catch (err: any) {
+    } catch (caught: unknown) {
+      const err = caught as { response?: { data?: { message?: string } } };
       dispatch(setOrderError(err?.response?.data?.message || 'Failed to load orders'));
     } finally {
       dispatch(setOrderLoading(false));

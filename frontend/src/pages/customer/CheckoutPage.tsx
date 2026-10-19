@@ -34,7 +34,8 @@ export default function CheckoutPage() {
       });
       dispatch(clearCart());
       setStep('success');
-    } catch (err: any) {
+    } catch (caught: unknown) {
+      const err = caught as { response?: { data?: { message?: string } } };
       setError(err?.response?.data?.message || 'Failed to place order. Please try again.');
       setStep('confirm');
     }

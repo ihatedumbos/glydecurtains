@@ -22,7 +22,7 @@ import LogoutIcon from '@mui/icons-material/Logout';
 import DashboardIcon from '@mui/icons-material/Dashboard';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import WhatsAppIcon from '@mui/icons-material/WhatsApp';
-import { whatsappLink } from '@/config/contact';
+import { whatsappLink, useContact } from '@/config/contact';
 import { useAppSelector } from '@/store/hooks';
 import { useLogout } from '@/hooks/useLogout';
 import Logo from './Logo';
@@ -35,6 +35,7 @@ interface HeaderProps {
 }
 
 export default function Header({ categories = [] }: HeaderProps) {
+  useContact();
   const navigate = useNavigate();
   const location = useLocation();
   const theme = useTheme();

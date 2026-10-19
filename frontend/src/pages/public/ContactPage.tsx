@@ -13,7 +13,7 @@ import PhoneIcon from '@mui/icons-material/Phone';
 import EmailIcon from '@mui/icons-material/Email';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
 import axiosInstance from '@/api/axiosInstance';
-import { CONTACT, whatsappLink } from '@/config/contact';
+import { CONTACT, whatsappLink, useContact } from '@/config/contact';
 
 interface ContactFormData {
   name: string;
@@ -66,6 +66,7 @@ function validateForm(data: ContactFormData): FormErrors {
 }
 
 export default function ContactPage() {
+  useContact();
   const [formData, setFormData] = useState<ContactFormData>({
     name: '',
     email: '',

@@ -6,6 +6,17 @@ import Header from './Header';
 import Footer from './Footer';
 import WhatsAppButton from '@/components/common/WhatsAppButton';
 import type { Category } from './MegaMenu';
+import { useAppDispatch } from '@/store/hooks';
+import { setSiteSettings } from '@/store/slices/cmsSlice';
+import { applySiteSettings } from '@/config/contact';
+
+interface ApiCategory {
+  id: number;
+  name: string;
+  slug?: string;
+  subCategories?: ApiCategory[];
+  children?: ApiCategory[];
+}
 
 const fallbackCategories: Category[] = [
   {
@@ -49,6 +60,19 @@ interface MainLayoutProps {
  */
 export default function MainLayout({ categories: providedCategories }: MainLayoutProps) {
   const [categories, setCategories] = useState<Category[]>(providedCategories || fallbackCategories);
+  const dispatch = useAppDispatch();
+
+  // Contact details and logo from Business details in the admin panel.
+  useEffect(() => {
+    axiosInstance.get('/cms/public/settings')
+      .then((res) => {
+        const settings = res.data?.data;
+        if (!settings) return;
+        applySiteSettings(settings);
+        dispatch(setSiteSettings(settings));
+      })
+      .catch(() => undefined);
+  }, [dispatch]);
 
   useEffect(() => {
     if (providedCategories && providedCategories.length > 0) {
@@ -68,11 +92,11 @@ export default function MainLayout({ categories: providedCategories }: MainLayou
           return;
         }
 
-        const normalized = data.map((category: any) => ({
+        const normalized = data.map((category: ApiCategory) => ({
           id: category.id,
           name: category.name,
           slug: category.slug || category.name.toLowerCase().replace(/\s+/g, '-'),
-          subCategories: (category.subCategories || category.children || []).map((sub: any) => ({
+          subCategories: (category.subCategories || category.children || []).map((sub: ApiCategory) => ({
             id: sub.id,
             name: sub.name,
             slug: sub.slug || sub.name.toLowerCase().replace(/\s+/g, '-'),

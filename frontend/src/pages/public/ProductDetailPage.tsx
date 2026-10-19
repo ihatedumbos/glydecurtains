@@ -32,7 +32,7 @@ import PlayCircleOutlineIcon from '@mui/icons-material/PlayCircleOutline';
 import Breadcrumb, { BreadcrumbItem } from '@/components/layout/Breadcrumb';
 import axiosInstance from '@/api/axiosInstance';
 import { resolveMediaUrl } from '@/utils/mediaUrl';
-import { CONTACT, productEnquiryLink } from '@/config/contact';
+import { CONTACT, productEnquiryLink, useContact } from '@/config/contact';
 import { formatPrice, sizeNumber } from '@/utils/price';
 
 // ─── Types ──────────────────────────────────────────────────────────────────
@@ -191,6 +191,7 @@ function LazyImage({
 // ─── Main Component ─────────────────────────────────────────────────────────
 
 export default function ProductDetailPage() {
+  useContact();
   const { id } = useParams<{ id: string }>();
   const [product, setProduct] = useState<ProductDetail | null>(null);
   const [loading, setLoading] = useState(true);
@@ -393,7 +394,7 @@ export default function ProductDetailPage() {
   const getImageSrc = (img?: Partial<ProductImage> | null) => {
     const fallbackImage = '/assets/logo/poster.png';
     if (!img || !img.base64Data) return fallbackImage;
-    if (img.base64Data.startsWith('/')) return resolveMediaUrl(img.base64Data) || fallbackImage;
+    if (img.base64Data.startsWith('/') && !img.base64Data.startsWith('/9j/')) return resolveMediaUrl(img.base64Data) || fallbackImage;
     if (img.base64Data.startsWith('http') || img.base64Data.startsWith('data:')) return img.base64Data;
     return `data:${img.mimeType || 'image/jpeg'};base64,${img.base64Data}`;
   };

@@ -23,7 +23,7 @@ axiosInstance.interceptors.request.use(
       config.headers = {
         ...config.headers,
         Authorization: 'Bearer ' + accessToken,
-      } as any;
+      } as unknown as InternalAxiosRequestConfig['headers'];
     }
 
     // Inject Accept-Language header based on current i18n language
@@ -31,7 +31,7 @@ axiosInstance.interceptors.request.use(
     config.headers = {
       ...config.headers,
       'Accept-Language': currentLanguage,
-    } as any;
+    } as unknown as InternalAxiosRequestConfig['headers'];
 
     return config;
   },
@@ -85,7 +85,7 @@ axiosInstance.interceptors.response.use(
                 originalRequest.headers = {
                   ...originalRequest.headers,
                   Authorization: 'Bearer ' + token,
-                } as any;
+                } as unknown as InternalAxiosRequestConfig['headers'];
               }
               resolve(axiosInstance(originalRequest));
             },
@@ -120,7 +120,7 @@ axiosInstance.interceptors.response.use(
           originalRequest.headers = {
             ...originalRequest.headers,
             Authorization: 'Bearer ' + newAccessToken,
-          } as any;
+          } as unknown as InternalAxiosRequestConfig['headers'];
         }
         return axiosInstance(originalRequest);
       } catch (refreshError) {
