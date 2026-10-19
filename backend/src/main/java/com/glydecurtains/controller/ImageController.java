@@ -12,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 @RestController
@@ -41,7 +42,7 @@ public class ImageController {
 
     /**
      * Upload a video file.
-     * Accepts MP4, WebM formats. Max size: 10MB. Max duration: 10 seconds.
+     * Accepts MP4, WebM formats. Max size: 20MB. Max duration: 30 seconds.
      * Video is Base64-encoded and stored with mediaType=VIDEO.
      */
     @PostMapping("/upload-video")
@@ -76,5 +77,26 @@ public class ImageController {
     public ResponseEntity<ApiResponse<Void>> deleteImage(@PathVariable Long id) {
         imageService.deleteImage(id);
         return ResponseEntity.ok(ApiResponse.success("Image deleted successfully", null));
+    }
+
+    /**
+     * Make an image the main photo of its product.
+     */
+    @PutMapping("/{id}/thumbnail")
+    @RequiresPermission(entity = "products", operation = "UPDATE")
+    public ResponseEntity<ApiResponse<Void>> setThumbnail(@PathVariable Long id) {
+        imageService.setProductThumbnail(id);
+        return ResponseEntity.ok(ApiResponse.success("Main photo updated", null));
+    }
+
+    /**
+     * Save the display order of a product's photos and videos.
+     */
+    @PutMapping("/product/{productId}/order")
+    @RequiresPermission(entity = "products", operation = "UPDATE")
+    public ResponseEntity<ApiResponse<Void>> reorderProductMedia(@PathVariable Long productId,
+                                                                 @RequestBody List<Long> orderedIds) {
+        imageService.reorderProductMedia(productId, orderedIds);
+        return ResponseEntity.ok(ApiResponse.success("Media order saved", null));
     }
 }

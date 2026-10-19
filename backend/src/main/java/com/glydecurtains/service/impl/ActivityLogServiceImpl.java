@@ -3,7 +3,9 @@ package com.glydecurtains.service.impl;
 import com.glydecurtains.dto.response.ActivityLogResponse;
 import com.glydecurtains.dto.response.PageResponse;
 import com.glydecurtains.entity.ActivityLog;
+import com.glydecurtains.entity.User;
 import com.glydecurtains.repository.ActivityLogRepository;
+import com.glydecurtains.repository.UserRepository;
 import com.glydecurtains.service.ActivityLogService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -21,6 +23,7 @@ import java.time.LocalTime;
 public class ActivityLogServiceImpl implements ActivityLogService {
 
     private final ActivityLogRepository activityLogRepository;
+    private final UserRepository userRepository;
 
     @Override
     @Transactional
@@ -89,13 +92,30 @@ public class ActivityLogServiceImpl implements ActivityLogService {
         }
 
         Page<ActivityLog> page = activityLogRepository.findAll(spec, pageable);
-        return PageResponse.from(page.map(this::toResponse));
+        java.util.Map<Long, String> names = userNames(page.getContent());
+        return PageResponse.from(page.map(log -> toResponse(log, names.get(log.getUserId()))));
     }
 
-    private ActivityLogResponse toResponse(ActivityLog log) {
+    private java.util.Map<Long, String> userNames(java.util.List<ActivityLog> logs) {
+        java.util.Set<Long> ids = logs.stream()
+                .map(ActivityLog::getUserId)
+                .filter(java.util.Objects::nonNull)
+                .collect(java.util.stream.Collectors.toSet());
+        if (ids.isEmpty() || userRepository == null) {
+            return java.util.Map.of();
+        }
+        java.util.Map<Long, String> names = new java.util.HashMap<>();
+        for (User user : userRepository.findAllById(ids)) {
+            names.put(user.getId(), user.getName());
+        }
+        return names;
+    }
+
+    private ActivityLogResponse toResponse(ActivityLog log, String userName) {
         return ActivityLogResponse.builder()
                 .id(log.getId())
                 .userId(log.getUserId())
+                .userName(userName)
                 .actionType(log.getActionType())
                 .entityType(log.getEntityType())
                 .entityId(log.getEntityId())

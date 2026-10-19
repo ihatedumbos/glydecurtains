@@ -59,7 +59,7 @@ public class ProductCreateRequest {
     private Integer stockQuantity;
 
     @NotNull(message = "Base price is required")
-    @DecimalMin(value = "0.01", message = "Base price must be greater than zero")
+    @DecimalMin(value = "0.00", message = "Base price cannot be negative (0 means price on request)")
     private BigDecimal basePrice;
 
     @DecimalMin(value = "0.00", message = "Discount percentage must be zero or greater")

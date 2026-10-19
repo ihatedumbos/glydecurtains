@@ -2,10 +2,13 @@ package com.glydecurtains.service;
 
 import com.glydecurtains.dto.response.ImageDataResponse;
 import com.glydecurtains.dto.response.ImageResponse;
+import com.glydecurtains.entity.Product;
 import com.glydecurtains.entity.ProductImage;
 import com.glydecurtains.entity.enums.MediaType;
 import com.glydecurtains.exception.BusinessException;
 import com.glydecurtains.repository.ProductImageRepository;
+import com.glydecurtains.repository.ProductRepository;
+import com.glydecurtains.repository.spec.ProductSpecifications;
 import com.glydecurtains.service.impl.ImageServiceImpl;
 import com.glydecurtains.util.ImageCompressor;
 import org.junit.jupiter.api.BeforeEach;
@@ -19,7 +22,9 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Base64;
+import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -38,11 +43,136 @@ class ImageServiceTest {
     @Mock
     private ImageCompressor imageCompressor;
 
+    @Mock
+    private ProductRepository productRepository;
+
     @InjectMocks
     private ImageServiceImpl imageService;
 
     private static final String ENTITY_TYPE = "product";
     private static final Long ENTITY_ID = 1L;
+
+    private Product product;
+
+    @BeforeEach
+    void setUpProduct() {
+        product = new Product();
+        product.setId(ENTITY_ID);
+        product.setName("Silent Runner");
+        lenient().when(productRepository.findById(ENTITY_ID)).thenReturn(Optional.of(product));
+    }
+
+    private static ProductImage media(long id, String filename, boolean thumbnail, int sortOrder) {
+        ProductImage image = new ProductImage();
+        image.setId(id);
+        image.setBase64Data("/products/" + filename);
+        image.setMimeType("image/jpeg");
+        image.setMediaType(MediaType.IMAGE);
+        image.setOriginalFilename(filename);
+        image.setIsThumbnail(thumbnail);
+        image.setSortOrder(sortOrder);
+        return image;
+    }
+
+    private MultipartFile jpeg(byte[] bytes) throws IOException {
+        MultipartFile file = mock(MultipartFile.class);
+        when(file.isEmpty()).thenReturn(false);
+        when(file.getContentType()).thenReturn("image/jpeg");
+        when(file.getSize()).thenReturn((long) bytes.length);
+        when(file.getBytes()).thenReturn(bytes);
+        when(file.getOriginalFilename()).thenReturn("new.jpg");
+        String base64 = Base64.getEncoder().encodeToString(bytes);
+        when(imageCompressor.getDimensions(base64)).thenReturn(new int[]{800, 600});
+        when(imageCompressor.compress(base64, "image/jpeg")).thenReturn(base64);
+        return file;
+    }
+
+    @Nested
+    @DisplayName("Product photos")
+    class ProductPhotoTests {
+
+        @Test
+        @DisplayName("an upload is linked to its product, replaces the coming-soon picture and becomes the main photo")
+        void upload_replacesPlaceholder_andBecomesMainPhoto() throws IOException {
+            ProductImage placeholder = media(5L, ProductSpecifications.PLACEHOLDER_IMAGE_FILENAME, true, 0);
+            placeholder.setProduct(product);
+            product.getImages().add(placeholder);
+            when(productImageRepository.findByProductId(ENTITY_ID)).thenReturn(new ArrayList<>(List.of(placeholder)));
+            when(productImageRepository.save(any(ProductImage.class))).thenAnswer(invocation -> invocation.getArgument(0));
+
+            imageService.uploadImage(jpeg(new byte[]{1, 2, 3}), "product", ENTITY_ID);
+
+            verify(productImageRepository).deleteAll(List.of(placeholder));
+            ProductImage uploaded = product.getImages().get(0);
+            assertThat(product.getImages()).hasSize(1);
+            assertThat(uploaded.getProduct()).isSameAs(product);
+            assertThat(uploaded.getIsThumbnail()).isTrue();
+            assertThat(uploaded.getSortOrder()).isZero();
+        }
+
+        @Test
+        @DisplayName("an upload goes after existing photos and keeps the current main photo")
+        void upload_afterExistingPhotos_keepsMainPhoto() throws IOException {
+            ProductImage first = media(6L, "a.jpg", true, 0);
+            ProductImage second = media(7L, "b.jpg", false, 1);
+            when(productImageRepository.findByProductId(ENTITY_ID)).thenReturn(new ArrayList<>(List.of(first, second)));
+            when(productImageRepository.save(any(ProductImage.class))).thenAnswer(invocation -> invocation.getArgument(0));
+
+            imageService.uploadImage(jpeg(new byte[]{4, 5, 6}), "product", ENTITY_ID);
+
+            ProductImage uploaded = product.getImages().get(product.getImages().size() - 1);
+            assertThat(uploaded.getSortOrder()).isEqualTo(2);
+            assertThat(uploaded.getIsThumbnail()).isFalse();
+            verify(productImageRepository, never()).deleteAll(any());
+        }
+
+        @Test
+        @DisplayName("choosing a main photo clears the flag on the product's other photos")
+        void setProductThumbnail_movesTheFlag() {
+            ProductImage first = media(6L, "a.jpg", true, 0);
+            ProductImage second = media(7L, "b.jpg", false, 1);
+            first.setProduct(product);
+            second.setProduct(product);
+            when(productImageRepository.findById(7L)).thenReturn(Optional.of(second));
+            when(productImageRepository.findByProductId(ENTITY_ID)).thenReturn(List.of(first, second));
+
+            imageService.setProductThumbnail(7L);
+
+            assertThat(first.getIsThumbnail()).isFalse();
+            assertThat(second.getIsThumbnail()).isTrue();
+        }
+
+        @Test
+        @DisplayName("media are saved in the given order")
+        void reorderProductMedia_followsGivenOrder() {
+            ProductImage first = media(6L, "a.jpg", true, 0);
+            ProductImage second = media(7L, "b.jpg", false, 1);
+            when(productImageRepository.findByProductId(ENTITY_ID)).thenReturn(List.of(first, second));
+
+            imageService.reorderProductMedia(ENTITY_ID, List.of(7L, 6L));
+
+            assertThat(second.getSortOrder()).isZero();
+            assertThat(first.getSortOrder()).isEqualTo(1);
+        }
+
+        @Test
+        @DisplayName("deleting the last photo puts the coming-soon picture back")
+        void deleteLastPhoto_restoresPlaceholder() {
+            ProductImage only = media(6L, "a.jpg", true, 0);
+            only.setProduct(product);
+            product.getImages().add(only);
+            when(productImageRepository.findById(6L)).thenReturn(Optional.of(only));
+            when(productImageRepository.findByProductIdOrderBySortOrderAsc(ENTITY_ID)).thenReturn(List.of());
+
+            imageService.deleteImage(6L);
+
+            assertThat(product.getImages()).singleElement()
+                    .satisfies(image -> {
+                        assertThat(image.getOriginalFilename()).isEqualTo(ProductSpecifications.PLACEHOLDER_IMAGE_FILENAME);
+                        assertThat(image.getIsThumbnail()).isTrue();
+                    });
+        }
+    }
 
     @Nested
     @DisplayName("Upload Image")

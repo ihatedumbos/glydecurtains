@@ -21,7 +21,7 @@ public interface ImageService {
 
     /**
      * Uploads and processes a video file.
-     * Validates format (MP4, WebM), size (max 10MB), duration (max 10 seconds).
+     * Validates format (MP4, WebM), size (max 20MB), duration (max 30 seconds).
      * Video is Base64-encoded and stored with mediaType=VIDEO.
      *
      * @param file       the uploaded video file
@@ -45,4 +45,14 @@ public interface ImageService {
      * @param imageId the image/video ID to delete
      */
     void deleteImage(Long imageId);
+
+    /**
+     * Makes the given image the main photo of the product it belongs to.
+     */
+    void setProductThumbnail(Long imageId);
+
+    /**
+     * Orders a product's photos and videos as given; media not listed keep their place at the end.
+     */
+    void reorderProductMedia(Long productId, java.util.List<Long> orderedIds);
 }
