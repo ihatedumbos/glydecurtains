@@ -1,10 +1,7 @@
 import { motion, AnimatePresence } from 'framer-motion';
-import { useLocation } from 'react-router-dom';
-import type { ReactNode } from 'react';
-
-interface PageTransitionProps {
-  children: ReactNode;
-}
+import { Suspense } from 'react';
+import { useLocation, useOutlet } from 'react-router-dom';
+import { PageSkeleton } from '@/components/common/SkeletonLoader';
 
 const pageVariants = {
   initial: {
@@ -29,8 +26,15 @@ const pageVariants = {
   },
 };
 
-export default function PageTransition({ children }: PageTransitionProps) {
+/**
+ * Fades the current page in and out. Use it in place of <Outlet /> inside a layout, so only the
+ * page animates and the header, menus and drawers stay mounted across navigation. (Wrapping the
+ * whole router left the old header and its open mobile menu on screen during the fade.)
+ */
+export default function PageTransition() {
   const location = useLocation();
+  // Captured per render, so the page that is fading out keeps showing its own content.
+  const outlet = useOutlet();
 
   return (
     <AnimatePresence mode="wait">
@@ -40,9 +44,8 @@ export default function PageTransition({ children }: PageTransitionProps) {
         initial="initial"
         animate="animate"
         exit="exit"
-        className="min-h-screen"
       >
-        {children}
+        <Suspense fallback={<PageSkeleton />}>{outlet}</Suspense>
       </motion.div>
     </AnimatePresence>
   );

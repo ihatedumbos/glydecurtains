@@ -1,11 +1,12 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { IconButton, Menu, MenuItem, ListItemIcon, Divider, useMediaQuery, useTheme } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
 import LogoutIcon from '@mui/icons-material/Logout';
 import KeyOutlinedIcon from '@mui/icons-material/KeyOutlined';
 import OpenInNewIcon from '@mui/icons-material/OpenInNew';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import { Outlet, useLocation } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
+import PageTransition from '@/components/common/PageTransition';
 import { useLogout } from '@/hooks/useLogout';
 import { useAppSelector } from '@/store/hooks';
 import ChangePasswordDialog from '@/components/admin/ChangePasswordDialog';
@@ -32,6 +33,12 @@ export default function AdminLayout() {
   const user = useAppSelector((state) => state.auth.user);
   const { pathname } = useLocation();
   const page = findAdminPage(pathname);
+
+  // Close the mobile menu whenever the page changes, however the navigation happened.
+  useEffect(() => {
+    setSidebarOpen(false);
+  }, [pathname]);
+
   const initials = (user?.name || user?.email || '?')
     .split(/\s+/)
     .map((part) => part[0])
@@ -90,7 +97,7 @@ export default function AdminLayout() {
         </header>
 
         <main className="mx-auto w-full max-w-[1200px] flex-1 px-4 py-6 sm:px-6 lg:px-8">
-          <Outlet />
+          <PageTransition />
         </main>
       </div>
 

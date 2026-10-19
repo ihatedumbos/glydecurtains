@@ -2,7 +2,6 @@ import { lazy, Suspense } from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import ProtectedRoute from '@/routes/ProtectedRoute';
 import AdminRoute from '@/routes/AdminRoute';
-import PageTransition from '@/components/common/PageTransition';
 import { PageSkeleton } from '@/components/common/SkeletonLoader';
 import AdminLayout from '@/components/layout/AdminLayout';
 import MainLayout from '@/components/layout/MainLayout';
@@ -64,8 +63,7 @@ const ForbiddenPage = lazy(() => import('@/pages/ForbiddenPage'));
 export default function AppRoutes() {
   return (
     <Suspense fallback={<PageSkeleton />}>
-      <PageTransition>
-        <Routes>
+      <Routes>
         <Route element={<MainLayout />}>
         {/* ===== Public routes ===== */}
         <Route path="/" element={<HomePage />} />
@@ -132,7 +130,6 @@ export default function AppRoutes() {
         <Route path="/forbidden" element={<ForbiddenPage />} />
         <Route path="*" element={<NotFoundPage />} />
       </Routes>
-      </PageTransition>
     </Suspense>
   );
 }

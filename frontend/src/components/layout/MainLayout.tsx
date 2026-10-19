@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Box } from '@mui/material';
-import { Outlet } from 'react-router-dom';
+import PageTransition from '@/components/common/PageTransition';
 import axiosInstance from '@/api/axiosInstance';
 import Header from './Header';
 import Footer from './Footer';
@@ -131,7 +131,7 @@ export default function MainLayout({ categories: providedCategories }: MainLayou
     >
       <Header categories={categories} />
       <Box component="main" sx={{ flex: 1, background: 'transparent' }}>
-        <Outlet />
+        <PageTransition />
       </Box>
       <Footer />
       <WhatsAppButton />
