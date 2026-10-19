@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { CONTACT, whatsappLink } from '@/config/contact';
+import { CONTACT, whatsappLink, useContact } from '@/config/contact';
 
 const highlights = [
   { title: 'Factory direct', detail: 'No middlemen' },
@@ -15,6 +15,7 @@ const inputClass =
  * (the site takes no orders, so the form just pre-fills a chat message).
  */
 export default function QuoteHero() {
+  useContact();
   const [name, setName] = useState('');
   const [city, setCity] = useState('');
   const [need, setNeed] = useState('');

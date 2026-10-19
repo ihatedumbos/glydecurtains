@@ -72,7 +72,8 @@ export default function OrderDetailPage() {
           const settings = settingsRes.data.data || settingsRes.data;
           setInvoiceSettings(settings);
         }
-      } catch (err: any) {
+      } catch (caught: unknown) {
+      const err = caught as { response?: { data?: { message?: string } } };
         setError(err?.response?.data?.message || 'Failed to load order details');
       } finally {
         setLoading(false);
@@ -89,7 +90,8 @@ export default function OrderDetailPage() {
       const response = await axiosInstance.put(`/orders/${order.id}/cancel`);
       const updated = response.data.data || response.data;
       setOrder((prev) => prev ? { ...prev, status: updated.status || 'CANCELLED' } : prev);
-    } catch (err: any) {
+    } catch (caught: unknown) {
+      const err = caught as { response?: { data?: { message?: string } } };
       setError(err?.response?.data?.message || 'Failed to cancel order');
     } finally {
       setCancelling(false);
@@ -112,7 +114,8 @@ export default function OrderDetailPage() {
       link.click();
       document.body.removeChild(link);
       window.URL.revokeObjectURL(url);
-    } catch (err: any) {
+    } catch (caught: unknown) {
+      const err = caught as { response?: { data?: { message?: string } } };
       setError(err?.response?.data?.message || 'Failed to download invoice');
     } finally {
       setDownloading(false);

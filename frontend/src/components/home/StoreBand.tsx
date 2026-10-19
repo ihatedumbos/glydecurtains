@@ -1,9 +1,10 @@
-import { CONTACT } from '@/config/contact';
+import { CONTACT, useContact } from '@/config/contact';
 
-const directionsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(CONTACT.address)}`;
 
 /** Dark band closing the home page: where the Pune store is, with directions and a call button. */
 export default function StoreBand() {
+  useContact();
+  const directionsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(CONTACT.address)}`;
   return (
     <section className="bg-[#14232b] text-[#eef2f4]">
       <div className="mx-auto grid max-w-[1280px] items-center gap-8 px-4 py-12 md:grid-cols-2 md:px-8 md:py-14">

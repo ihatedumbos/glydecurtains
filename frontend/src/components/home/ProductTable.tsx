@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import axiosInstance from '@/api/axiosInstance';
 import { resolveMediaUrl } from '@/utils/mediaUrl';
-import { productEnquiryLink } from '@/config/contact';
+import { productEnquiryLink, useContact } from '@/config/contact';
 import { formatPrice, sizeNumber } from '@/utils/price';
 
 interface ProductRow {
@@ -39,6 +39,7 @@ const chipBase = 'rounded-full px-4 py-2.5 text-sm font-semibold transition-colo
  * compact table with code, category and price, each row with its own WhatsApp enquiry.
  */
 export default function ProductTable() {
+  useContact();
   const [subCategories, setSubCategories] = useState<SubCategory[]>([]);
   const [activeId, setActiveId] = useState<number | null>(null);
   const [products, setProducts] = useState<ProductRow[]>([]);

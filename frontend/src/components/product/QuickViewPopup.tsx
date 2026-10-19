@@ -12,7 +12,7 @@ import {
 import { motion, AnimatePresence } from 'framer-motion';
 import WhatsAppIcon from '@mui/icons-material/WhatsApp';
 import type { Product } from '@/store/slices/productSlice';
-import { productEnquiryLink } from '@/config/contact';
+import { productEnquiryLink, useContact } from '@/config/contact';
 
 /** Represents a product variant combination */
 export interface ProductVariant {
@@ -42,6 +42,7 @@ const popupMotion = {
  * Shows variant selectors (material, size, color), dynamic pricing, and a WhatsApp enquiry button.
  */
 export default function QuickViewPopup({ product, open, variants = [] }: QuickViewPopupProps) {
+  useContact();
   // Derive unique option lists
   const materials = useMemo(() => [...new Set(variants.map((v) => v.material))], [variants]);
   const sizes = useMemo(() => [...new Set(variants.map((v) => v.size))], [variants]);

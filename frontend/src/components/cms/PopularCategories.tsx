@@ -2,8 +2,25 @@ import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import CategoryOutlinedIcon from '@mui/icons-material/CategoryOutlined';
+import CurtainsOutlinedIcon from '@mui/icons-material/CurtainsOutlined';
+import BlindsOutlinedIcon from '@mui/icons-material/BlindsOutlined';
+import HorizontalRuleIcon from '@mui/icons-material/HorizontalRule';
+import LinearScaleIcon from '@mui/icons-material/LinearScale';
+import ExtensionOutlinedIcon from '@mui/icons-material/ExtensionOutlined';
+import type { SvgIconComponent } from '@mui/icons-material';
 import axiosInstance from '@/api/axiosInstance';
 import { resolveMediaUrl } from '@/utils/mediaUrl';
+
+/** A distinct icon per kind of category, used when the category has no picture of its own. */
+function categoryIcon(name: string): SvgIconComponent {
+  const n = name.toLowerCase();
+  if (n.includes('blind')) return BlindsOutlinedIcon;
+  if (n.includes('curtain') && !n.includes('rod')) return CurtainsOutlinedIcon;
+  if (n.includes('rod')) return HorizontalRuleIcon;
+  if (n.includes('track')) return LinearScaleIcon;
+  if (n.includes('accessor')) return ExtensionOutlinedIcon;
+  return CategoryOutlinedIcon;
+}
 
 interface Category {
   id: number;
@@ -97,7 +114,7 @@ export default function PopularCategories({ title }: PopularCategoriesProps) {
                       />
                     ) : (
                       <div className="flex h-full w-full items-center justify-center bg-[#f7f4f0] text-[#a8400f]">
-                        <CategoryOutlinedIcon sx={{ fontSize: 40 }} />
+                        {(() => { const Icon = categoryIcon(cat.name); return <Icon sx={{ fontSize: 40 }} />; })()}
                       </div>
                     )}
                   </div>

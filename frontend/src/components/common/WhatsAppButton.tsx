@@ -1,9 +1,10 @@
 import WhatsAppIcon from '@mui/icons-material/WhatsApp';
 import { Fab, Tooltip } from '@mui/material';
-import { whatsappLink } from '@/config/contact';
+import { whatsappLink, useContact } from '@/config/contact';
 
 /** Floating "chat on WhatsApp" button shown on every storefront page. */
 export default function WhatsAppButton() {
+  useContact();
   return (
     <Tooltip title="Chat with us on WhatsApp" placement="left">
       <Fab

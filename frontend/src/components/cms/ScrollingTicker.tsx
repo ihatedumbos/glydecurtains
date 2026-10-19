@@ -7,11 +7,11 @@ interface ScrollingTickerProps {
   images?: string[];
 }
 
-const DEFAULT_CONTENT =
+export const DEFAULT_TICKER_CONTENT =
   'Manufacturer-direct curtain hardware | Made in Pune | Bulk pricing for dealers & installers | PAN India delivery | WhatsApp 81490 66661';
 
 export default function ScrollingTicker({ content, speed = 50 }: ScrollingTickerProps) {
-  const text = content || DEFAULT_CONTENT;
+  const text = content || DEFAULT_TICKER_CONTENT;
   const messages = text.split('|').map((part) => part.trim()).filter(Boolean);
   const duration = (text.length * 10) / speed;
 
