@@ -15,6 +15,7 @@ public class ActivityLogResponse {
 
     private Long id;
     private Long userId;
+    private String userName;
     private String actionType;
     private String entityType;
     private Long entityId;

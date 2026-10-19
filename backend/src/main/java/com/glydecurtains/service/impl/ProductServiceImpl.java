@@ -46,6 +46,7 @@ public class ProductServiceImpl implements ProductService {
     private final CollectionRepository collectionRepository;
     private final TranslationService translationService;
     private final ObjectMapper objectMapper;
+    private final com.glydecurtains.service.ActivityLogService activityLogService;
 
     private static final String ENTITY_TYPE_PRODUCT = "PRODUCT";
 
@@ -118,6 +119,7 @@ public class ProductServiceImpl implements ProductService {
         product.setMetaKeywords(request.getMetaKeywords());
 
         Product saved = productRepository.save(product);
+        logProductChange("PRODUCT_CREATED", saved);
         return mapToProductResponse(saved);
     }
 
@@ -200,6 +202,7 @@ public class ProductServiceImpl implements ProductService {
         product.setOfferPrice(calculateOfferPrice(product.getBasePrice(), product.getDiscountPercentage()));
 
         Product saved = productRepository.save(product);
+        logProductChange("PRODUCT_UPDATED", saved);
         return mapToProductResponse(saved);
     }
 
@@ -215,6 +218,7 @@ public class ProductServiceImpl implements ProductService {
         translationService.deleteTranslations(ENTITY_TYPE_PRODUCT, id);
 
         productRepository.delete(product);
+        logProductChange("PRODUCT_DELETED", product);
     }
 
     @Override
@@ -227,6 +231,7 @@ public class ProductServiceImpl implements ProductService {
 
         product.setStatus(ProductStatus.ARCHIVED);
         Product saved = productRepository.save(product);
+        logProductChange("PRODUCT_HIDDEN", saved);
         return mapToProductResponse(saved);
     }
 
@@ -240,6 +245,7 @@ public class ProductServiceImpl implements ProductService {
 
         product.setStatus(ProductStatus.ACTIVE);
         Product saved = productRepository.save(product);
+        logProductChange("PRODUCT_SHOWN", saved);
         return mapToProductResponse(saved);
     }
 
@@ -253,6 +259,7 @@ public class ProductServiceImpl implements ProductService {
 
         product.setStatus(ProductStatus.DEACTIVATED);
         Product saved = productRepository.save(product);
+        logProductChange("PRODUCT_HIDDEN", saved);
         return mapToProductResponse(saved);
     }
 
@@ -358,6 +365,7 @@ public class ProductServiceImpl implements ProductService {
             }
             productRepository.save(product);
         }
+        logProductChange("PRODUCT_SPECS_UPDATED", product);
     }
 
     @Override
@@ -392,6 +400,7 @@ public class ProductServiceImpl implements ProductService {
                     product.getVariants().stream().map(ProductVariant::getSize).toList())));
             productRepository.save(product);
         }
+        logProductChange("PRODUCT_PRICES_UPDATED", product);
     }
 
     private static List<String> mergeOptions(List<String> existing, List<String> fromVariants) {
@@ -610,9 +619,37 @@ public class ProductServiceImpl implements ProductService {
                 .tags(fromJson(product.getTags()))
                 .thumbnailBase64(thumbnailBase64)
                 .thumbnailUrl(toDisplayUrl(thumbnailBase64, "image/jpeg"))
+                .imageCount(countMedia(product, com.glydecurtains.entity.enums.MediaType.IMAGE))
+                .videoCount(countMedia(product, com.glydecurtains.entity.enums.MediaType.VIDEO))
+                .variantCount(product.getVariants() == null ? 0 : product.getVariants().size())
                 .createdAt(product.getCreatedAt())
                 .updatedAt(product.getUpdatedAt())
                 .build();
+    }
+
+    /** Records who changed which product, for the admin activity log. Never blocks the change. */
+    private void logProductChange(String action, Product product) {
+        try {
+            org.springframework.security.core.Authentication auth =
+                    org.springframework.security.core.context.SecurityContextHolder.getContext().getAuthentication();
+            Long userId = auth != null && auth.getPrincipal() instanceof Long id ? id : null;
+            String details = objectMapper.writeValueAsString(Map.of(
+                    "name", product.getName() == null ? "" : product.getName(),
+                    "sku", product.getSku() == null ? "" : product.getSku()));
+            activityLogService.log(userId, action, ENTITY_TYPE_PRODUCT, product.getId(), details);
+        } catch (Exception e) {
+            // Logging is best-effort.
+        }
+    }
+
+    private static int countMedia(Product product, com.glydecurtains.entity.enums.MediaType type) {
+        if (product.getImages() == null) {
+            return 0;
+        }
+        return (int) product.getImages().stream()
+                .filter(media -> media.getMediaType() == type)
+                .filter(media -> !ProductSpecifications.PLACEHOLDER_IMAGE_FILENAME.equals(media.getOriginalFilename()))
+                .count();
     }
 
     private String toDisplayUrl(String mediaData, String mimeType) {
@@ -669,7 +706,11 @@ public class ProductServiceImpl implements ProductService {
         }
 
         List<ProductImageResponse> imageResponses = product.getImages() != null
-                ? product.getImages().stream().map(this::mapToImageResponse).collect(Collectors.toList())
+                ? product.getImages().stream()
+                        .sorted(java.util.Comparator.comparing(ProductImage::getSortOrder,
+                                        java.util.Comparator.nullsLast(java.util.Comparator.naturalOrder()))
+                                .thenComparing(ProductImage::getId, java.util.Comparator.nullsLast(java.util.Comparator.naturalOrder())))
+                        .map(this::mapToImageResponse).collect(Collectors.toList())
                 : new ArrayList<>();
 
         List<ProductSpecificationResponse> specResponses = product.getSpecifications() != null

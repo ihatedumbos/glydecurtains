@@ -82,6 +82,14 @@ public class CmsController {
         return ResponseEntity.ok(ApiResponse.success("Banner deleted successfully", null));
     }
 
+    /**
+     * Contact details and logos for the storefront, so changes in the admin panel show on the site.
+     */
+    @GetMapping("/public/settings")
+    public ResponseEntity<ApiResponse<SiteSettingsResponse>> getPublicSiteSettings() {
+        return ResponseEntity.ok(ApiResponse.success(cmsService.getSiteSettings()));
+    }
+
     @GetMapping("/settings")
     @RequiresPermission(entity = "cms", operation = "READ")
     public ResponseEntity<ApiResponse<SiteSettingsResponse>> getSiteSettings() {

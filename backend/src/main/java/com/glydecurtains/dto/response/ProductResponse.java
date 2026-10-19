@@ -45,6 +45,10 @@ public class ProductResponse {
     private List<String> tags;
     private String thumbnailBase64;
     private String thumbnailUrl;
+    /** Real photos, not counting the "photo coming soon" stand-in. */
+    private Integer imageCount;
+    private Integer videoCount;
+    private Integer variantCount;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 }

@@ -23,7 +23,7 @@ public class VariantPriceRequest {
     private String color;
 
     @NotNull(message = "Variant price is required")
-    @DecimalMin(value = "0.01", message = "Variant price must be greater than zero")
+    @DecimalMin(value = "0.00", message = "Variant price cannot be negative (0 means price on request)")
     private BigDecimal price;
 
     @Min(value = 0, message = "Stock quantity must be zero or greater")

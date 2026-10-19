@@ -2,10 +2,13 @@ package com.glydecurtains.service.impl;
 
 import com.glydecurtains.dto.response.ImageDataResponse;
 import com.glydecurtains.dto.response.ImageResponse;
+import com.glydecurtains.entity.Product;
 import com.glydecurtains.entity.ProductImage;
 import com.glydecurtains.entity.enums.MediaType;
 import com.glydecurtains.exception.BusinessException;
 import com.glydecurtains.repository.ProductImageRepository;
+import com.glydecurtains.repository.ProductRepository;
+import com.glydecurtains.repository.spec.ProductSpecifications;
 import com.glydecurtains.service.ImageService;
 import com.glydecurtains.util.ImageCompressor;
 import lombok.RequiredArgsConstructor;
@@ -16,7 +19,11 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Base64;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 
 @Service
@@ -25,8 +32,9 @@ import java.util.Set;
 public class ImageServiceImpl implements ImageService {
 
     private static final long MAX_IMAGE_SIZE_BYTES = 5L * 1024 * 1024; // 5MB
-    private static final long MAX_VIDEO_SIZE_BYTES = 10L * 1024 * 1024; // 10MB
-    private static final int MAX_VIDEO_DURATION_SECONDS = 10;
+    private static final long MAX_VIDEO_SIZE_BYTES = 20L * 1024 * 1024; // 20MB
+    private static final int MAX_VIDEO_DURATION_SECONDS = 30;
+    private static final String PLACEHOLDER_IMAGE_PATH = "/products/accessories/placeholder/photo-coming-soon.jpg";
 
     private static final Set<String> ACCEPTED_IMAGE_FORMATS = Set.of(
             "image/jpeg", "image/png", "image/webp", "image/svg+xml"
@@ -40,6 +48,7 @@ public class ImageServiceImpl implements ImageService {
 
     private final ProductImageRepository productImageRepository;
     private final ImageCompressor imageCompressor;
+    private final ProductRepository productRepository;
 
     @Override
     @Transactional
@@ -92,6 +101,7 @@ public class ImageServiceImpl implements ImageService {
         image.setHeight(height);
         image.setEntityType(entityType);
         image.setEntityId(entityId);
+        attachToProduct(image, entityType, entityId);
 
         ProductImage saved = productImageRepository.save(image);
         log.info("Image uploaded successfully: id={}, filename={}, entityType={}, entityId={}",
@@ -116,7 +126,7 @@ public class ImageServiceImpl implements ImageService {
         // Validate size (max 10MB)
         if (file.getSize() > MAX_VIDEO_SIZE_BYTES) {
             throw new BusinessException(
-                    "Video file size exceeds maximum allowed size of 10MB",
+                    "Video file size exceeds maximum allowed size of 20MB",
                     "VIDEO_TOO_LARGE", HttpStatus.BAD_REQUEST);
         }
 
@@ -144,6 +154,7 @@ public class ImageServiceImpl implements ImageService {
         video.setOriginalFilename(file.getOriginalFilename());
         video.setEntityType(entityType);
         video.setEntityId(entityId);
+        attachToProduct(video, entityType, entityId);
 
         ProductImage saved = productImageRepository.save(video);
         log.info("Video uploaded successfully: id={}, filename={}, duration={}s, entityType={}, entityId={}",
@@ -180,11 +191,115 @@ public class ImageServiceImpl implements ImageService {
                         "Image not found with id: " + imageId,
                         "IMAGE_NOT_FOUND", HttpStatus.NOT_FOUND));
 
+        Product product = image.getProduct();
+        if (product != null) {
+            product.getImages().remove(image);
+        }
         productImageRepository.delete(image);
         log.info("Image/video deleted: id={}, filename={}", imageId, image.getOriginalFilename());
+        if (product != null) {
+            keepProductPresentable(product);
+        }
+    }
+
+    /** After a delete, promote another photo to main, or fall back to the "coming soon" picture. */
+    private void keepProductPresentable(Product product) {
+        List<ProductImage> remaining = productImageRepository.findByProductIdOrderBySortOrderAsc(product.getId()).stream()
+                .filter(image -> image.getProduct() != null)
+                .toList();
+        if (remaining.isEmpty()) {
+            ProductImage placeholder = new ProductImage();
+            placeholder.setProduct(product);
+            placeholder.setEntityType("PRODUCT");
+            placeholder.setEntityId(product.getId());
+            placeholder.setBase64Data(PLACEHOLDER_IMAGE_PATH);
+            placeholder.setMimeType("image/jpeg");
+            placeholder.setMediaType(MediaType.IMAGE);
+            placeholder.setOriginalFilename(ProductSpecifications.PLACEHOLDER_IMAGE_FILENAME);
+            placeholder.setIsThumbnail(true);
+            placeholder.setSortOrder(0);
+            product.getImages().add(placeholder);
+            productImageRepository.save(placeholder);
+            return;
+        }
+        boolean hasMain = remaining.stream().anyMatch(image -> Boolean.TRUE.equals(image.getIsThumbnail()));
+        if (!hasMain) {
+            remaining.stream()
+                    .filter(image -> image.getMediaType() == MediaType.IMAGE)
+                    .findFirst()
+                    .ifPresent(image -> {
+                        image.setIsThumbnail(true);
+                        productImageRepository.save(image);
+                    });
+        }
+    }
+
+    @Override
+    @Transactional
+    public void setProductThumbnail(Long imageId) {
+        ProductImage chosen = productImageRepository.findById(imageId)
+                .orElseThrow(() -> new BusinessException(
+                        "Image not found with id: " + imageId,
+                        "IMAGE_NOT_FOUND", HttpStatus.NOT_FOUND));
+        if (chosen.getProduct() == null) {
+            throw new BusinessException("Image is not attached to a product", "IMAGE_NOT_ON_PRODUCT", HttpStatus.BAD_REQUEST);
+        }
+        List<ProductImage> siblings = productImageRepository.findByProductId(chosen.getProduct().getId());
+        siblings.forEach(image -> image.setIsThumbnail(image.getId().equals(imageId)));
+        productImageRepository.saveAll(siblings);
+    }
+
+    @Override
+    @Transactional
+    public void reorderProductMedia(Long productId, List<Long> orderedIds) {
+        List<ProductImage> media = productImageRepository.findByProductId(productId);
+        List<Long> ids = orderedIds == null ? List.of() : orderedIds;
+        for (ProductImage image : media) {
+            int index = ids.indexOf(image.getId());
+            image.setSortOrder(index >= 0 ? index : ids.size() + image.getSortOrder());
+        }
+        productImageRepository.saveAll(media);
     }
 
     // --- Private helper methods ---
+
+    /**
+     * Uploads made for a product are linked to it, placed after its existing media, and replace
+     * the "photo coming soon" stand-in. The first real photo becomes the main photo.
+     */
+    private void attachToProduct(ProductImage media, String entityType, Long entityId) {
+        if (entityId == null || entityType == null || !"product".equalsIgnoreCase(entityType)) {
+            return;
+        }
+        Product product = productRepository.findById(entityId)
+                .orElseThrow(() -> new BusinessException(
+                        "Product not found with id: " + entityId,
+                        "PRODUCT_NOT_FOUND", HttpStatus.NOT_FOUND));
+
+        List<ProductImage> existing = new ArrayList<>(productImageRepository.findByProductId(entityId));
+        List<ProductImage> placeholders = existing.stream()
+                .filter(image -> ProductSpecifications.PLACEHOLDER_IMAGE_FILENAME.equals(image.getOriginalFilename()))
+                .toList();
+        if (!placeholders.isEmpty()) {
+            product.getImages().removeAll(placeholders);
+            productImageRepository.deleteAll(placeholders);
+            existing.removeAll(placeholders);
+        }
+
+        int nextSort = existing.stream()
+                .map(ProductImage::getSortOrder)
+                .filter(Objects::nonNull)
+                .max(Comparator.naturalOrder())
+                .map(max -> max + 1)
+                .orElse(0);
+        boolean hasMainPhoto = existing.stream().anyMatch(image -> Boolean.TRUE.equals(image.getIsThumbnail()));
+
+        media.setProduct(product);
+        media.setEntityType("PRODUCT");
+        media.setSortOrder(nextSort);
+        media.setIsThumbnail(!hasMainPhoto && media.getMediaType() == MediaType.IMAGE);
+        product.getImages().add(media);
+    }
 
     private void validateNotEmpty(MultipartFile file) {
         if (file == null || file.isEmpty()) {

@@ -54,7 +54,7 @@ public class ProductUpdateRequest {
     @Min(value = 0, message = "Stock quantity must be zero or greater")
     private Integer stockQuantity;
 
-    @DecimalMin(value = "0.01", message = "Base price must be greater than zero")
+    @DecimalMin(value = "0.00", message = "Base price cannot be negative (0 means price on request)")
     private BigDecimal basePrice;
 
     @DecimalMin(value = "0.00", message = "Discount percentage must be zero or greater")

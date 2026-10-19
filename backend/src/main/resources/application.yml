@@ -5,6 +5,12 @@ spring:
   application:
     name: glydecurtains
 
+  servlet:
+    multipart:
+      # Photos up to 5 MB (resized in the browser first) and videos up to 20 MB.
+      max-file-size: 21MB
+      max-request-size: 22MB
+
   datasource:
     url: ${SPRING_DATASOURCE_URL:jdbc:h2:file:./data/glydecurtains;MODE=MySQL;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE}
     driver-class-name: ${SPRING_DATASOURCE_DRIVER_CLASS_NAME:org.h2.Driver}
@@ -32,14 +38,23 @@ spring:
 
 app:
   jwt:
-    # Retained only for inactive legacy token classes; JWT authorization is disabled.
-    secret: temporary-no-auth-signing-key-change-when-jwt-is-restored-2026
+    # Set JWT_SECRET (32+ random characters) in every deployed environment. When it's missing
+    # the backend signs with a random key, so sign-ins reset on restart.
+    secret: ${JWT_SECRET:${APP_JWT_SECRET:}}
     access-token-expiration-ms: 900000       # 15 minutes
     refresh-token-expiration-ms: 86400000    # 24 hours
     remember-me-expiration-ms: 2592000000    # 30 days
 
   cors:
     allowed-origins: ${CORS_ORIGINS:http://localhost:5173}
+
+  # First admin login. Set ADMIN_PASSWORD wherever the site is deployed.
+  admin:
+    email: ${ADMIN_EMAIL:admin@glydecurtains.com}
+    password: ${ADMIN_PASSWORD:}
+
+  # Demo logins, sample orders, enquiries and reviews for local development.
+  seed-demo-data: ${SEED_DEMO_DATA:true}
 
   security:
     # Enforce JWT auth by default; opt out only in explicitly local-only dev setups.
