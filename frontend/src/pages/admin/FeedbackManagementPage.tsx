@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
+import { PageHeader } from '@/components/admin/AdminUi';
 import {
   Box,
   Typography,
@@ -198,10 +199,8 @@ export default function FeedbackManagementPage() {
   // ─── Render ───────────────────────────────────────────────────────────────
 
   return (
-    <Box p={3}>
-      <Typography variant="h4" fontWeight={700} mb={3}>
-        Feedback Management
-      </Typography>
+    <Box>
+      <PageHeader title="Reviews" subtitle="Reviews customers leave on products. Approve them to show them on the website." />
 
       {/* ─── Filters ─────────────────────────────────────────────────────── */}
       <Paper sx={{ p: 2, mb: 3 }}>

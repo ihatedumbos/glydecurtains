@@ -1,4 +1,5 @@
 import { useEffect, useState, useCallback } from 'react';
+import { PageHeader } from '@/components/admin/AdminUi';
 import axiosInstance from '@/api/axiosInstance';
 
 // ─── Types ──────────────────────────────────────────────────────────────────
@@ -310,19 +311,11 @@ export default function CategoryManagementPage() {
   // ─── Render ─────────────────────────────────────────────────────────────────
 
   return (
-    <div className="min-h-screen bg-[#ffffff] p-6">
-      <div className="mx-auto max-w-7xl space-y-6">
-        <div className="rounded-2xl border border-[#14232b]/12 bg-[#ffffff]/90 p-5 shadow-[0_10px_25px_rgba(160,107,58,0.08)] backdrop-blur-sm">
+    <div>
+      <div className="space-y-6">
+        <div>
           <div className="flex items-center justify-between gap-4">
-            <div>
-              <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[#a8400f]">Catalog</p>
-              <h1 className="mt-1 text-3xl font-bold text-[#14232b]">
-                Category Management
-              </h1>
-              <p className="mt-1 text-sm text-[#4b5b63]">
-                Manage categories, sub-categories, and collections
-              </p>
-            </div>
+            <PageHeader title="Categories" subtitle="How products are grouped in the website menu and filters. Each category can have types under it." />
           </div>
         </div>
 

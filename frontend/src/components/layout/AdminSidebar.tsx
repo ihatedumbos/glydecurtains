@@ -1,187 +1,101 @@
-import {
-  Drawer,
-  Box,
-  List,
-  ListItemButton,
-  ListItemIcon,
-  ListItemText,
-  Divider,
-  Tooltip,
-  useMediaQuery,
-  useTheme,
-} from '@mui/material';
-import DashboardIcon from '@mui/icons-material/Dashboard';
-import ShoppingBagIcon from '@mui/icons-material/ShoppingBag';
-import CategoryIcon from '@mui/icons-material/Category';
-import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
-import PeopleIcon from '@mui/icons-material/People';
-import BadgeIcon from '@mui/icons-material/Badge';
-import StoreIcon from '@mui/icons-material/Store';
-import FeedbackIcon from '@mui/icons-material/Feedback';
-import EmojiEventsIcon from '@mui/icons-material/EmojiEvents';
-import MailIcon from '@mui/icons-material/Mail';
-import SettingsIcon from '@mui/icons-material/Settings';
-import WebIcon from '@mui/icons-material/Web';
-import SecurityIcon from '@mui/icons-material/Security';
-import ReceiptIcon from '@mui/icons-material/Receipt';
-import HistoryIcon from '@mui/icons-material/History';
-import AssessmentIcon from '@mui/icons-material/Assessment';
-import InventoryIcon from '@mui/icons-material/Inventory';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { Drawer, useMediaQuery, useTheme } from '@mui/material';
+import OpenInNewIcon from '@mui/icons-material/OpenInNew';
+import { NavLink } from 'react-router-dom';
 import { useAppSelector } from '@/store/hooks';
 import usePermissions from '@/hooks/usePermissions';
 import Logo from './Logo';
+import { adminNav, type AdminNavItem, type AdminRole } from './adminNav';
 
-const DRAWER_WIDTH = 240;
-const DRAWER_COLLAPSED_WIDTH = 64;
-
-interface NavItem {
-  label: string;
-  path: string;
-  icon: React.ReactNode;
-  /** Role-based restriction (in addition to permissions) */
-  roles?: Array<'SUPER_ADMIN' | 'ADMIN' | 'EMPLOYEE'>;
-  /** Entity name for permission check (requires "read" permission) */
-  permissionEntity?: string;
-}
-
-const navItems: NavItem[] = [
- { label: 'Dashboard', path: '/admin/dashboard', icon: <DashboardIcon />, permissionEntity: 'dashboard' }, { label: 'Products', path: '/admin/products', icon: <ShoppingBagIcon />, permissionEntity: 'products' },
-  { label: 'Categories', path: '/admin/categories', icon: <CategoryIcon />, permissionEntity: 'categories' },
-  { label: 'Orders', path: '/admin/orders', icon: <ShoppingCartIcon />, permissionEntity: 'orders' },
-  { label: 'Customers', path: '/admin/users', icon: <PeopleIcon />, roles: ['SUPER_ADMIN', 'ADMIN'], permissionEntity: 'users' },
-  { label: 'Employees', path: '/admin/employees', icon: <BadgeIcon />, roles: ['SUPER_ADMIN', 'ADMIN'], permissionEntity: 'employees' },
-  { label: 'Store Locations', path: '/admin/stores', icon: <StoreIcon />, permissionEntity: 'stores' },
-  { label: 'Feedback', path: '/admin/feedback', icon: <FeedbackIcon />, permissionEntity: 'feedback' },
-  { label: 'Achievements', path: '/admin/achievements', icon: <EmojiEventsIcon />, permissionEntity: 'achievements' },
-  { label: 'Enquiries', path: '/admin/enquiries', icon: <MailIcon />, permissionEntity: 'enquiries' },
-  { label: 'Invoices', path: '/admin/invoices', icon: <ReceiptIcon />, permissionEntity: 'invoices' },
-  { label: 'Reports', path: '/admin/reports', icon: <AssessmentIcon />, permissionEntity: 'reports' },
-  { label: 'Inventory', path: '/admin/inventory', icon: <InventoryIcon />, permissionEntity: 'inventory' },
-  { label: 'CMS', path: '/admin/cms', icon: <WebIcon />, permissionEntity: 'cms' },
-  { label: 'Permissions', path: '/admin/permissions', icon: <SecurityIcon />, roles: ['SUPER_ADMIN', 'ADMIN'], permissionEntity: 'permissions' },
-  { label: 'Activity Logs', path: '/admin/activity-logs', icon: <HistoryIcon />, roles: ['SUPER_ADMIN', 'ADMIN'], permissionEntity: 'activity-logs' },
-  { label: 'Settings', path: '/admin/settings', icon: <SettingsIcon />, roles: ['SUPER_ADMIN'] },
-];
+const DRAWER_WIDTH = 248;
 
 interface AdminSidebarProps {
   open: boolean;
-  collapsed?: boolean;
   onClose?: () => void;
 }
 
-export default function AdminSidebar({ open, collapsed = false, onClose }: AdminSidebarProps) {
-  const navigate = useNavigate();
-  const location = useLocation();
+export default function AdminSidebar({ open, onClose }: AdminSidebarProps) {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
   const user = useAppSelector((state) => state.auth.user);
   const { hasPermission } = usePermissions();
 
-  const userRole = user?.role;
-
-  const filteredItems = navItems.filter((item) => {
-    // Role-based filter
-    if (item.roles) {
-      if (!userRole) return false;
-      if (!item.roles.includes(userRole as 'SUPER_ADMIN' | 'ADMIN' | 'EMPLOYEE')) return false;
-    }
-
-    // Permission-based filter: check "read" permission on the entity
-    if (item.permissionEntity) {
-      if (!hasPermission(item.permissionEntity, 'read')) return false;
-    }
-
+  const canSee = (item: AdminNavItem) => {
+    if (item.roles && (!user?.role || !item.roles.includes(user.role as AdminRole))) return false;
+    if (item.permissionEntity && !hasPermission(item.permissionEntity, 'read')) return false;
     return true;
-  });
-
-  const isActive = (path: string) => {
-    if (path === '/admin') return location.pathname === '/admin';
-    return location.pathname.startsWith(path);
   };
 
-  const drawerWidth = collapsed ? DRAWER_COLLAPSED_WIDTH : DRAWER_WIDTH;
+  const groups = adminNav
+    .map((group) => ({ ...group, items: group.items.filter(canSee) }))
+    .filter((group) => group.items.length > 0);
 
   const content = (
-    <Box sx={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
-      {/* Logo */}
-      <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: collapsed ? 'center' : 'flex-start', p: 2 }}>
-        <Logo variant="admin" size="sm" onClick={() => navigate('/admin')} />
-      </Box>
+    <nav aria-label="Admin" className="flex h-full flex-col bg-[#14232b] text-white">
+      <div className="flex items-center gap-3 px-5 pb-5 pt-5">
+        <NavLink to="/admin/dashboard" onClick={() => isMobile && onClose?.()} className="shrink-0">
+          <Logo variant="admin" size="sm" />
+        </NavLink>
+        <div className="min-w-0 leading-tight">
+          <p className="truncate text-sm font-semibold">Glyde Curtains</p>
+          <p className="truncate text-xs text-white/55">Admin panel</p>
+        </div>
+      </div>
 
-      <Divider />
+      <div className="flex-1 overflow-y-auto px-3 pb-4">
+        {groups.map((group, index) => (
+          <div key={group.label ?? index} className="mt-3 first:mt-0">
+            {group.label && (
+              <p className="px-3 pb-1.5 pt-3 text-[11px] font-semibold uppercase tracking-[0.14em] text-white/40">{group.label}</p>
+            )}
+            <ul className="space-y-0.5">
+              {group.items.map((item) => (
+                <li key={item.path}>
+                  <NavLink
+                    to={item.path}
+                    onClick={() => isMobile && onClose?.()}
+                    className={({ isActive }) =>
+                      `flex items-center gap-3 rounded-lg px-3 py-2 text-sm transition-colors ${
+                        isActive
+                          ? 'bg-white/10 font-semibold text-white shadow-[inset_3px_0_0_#d9733f]'
+                          : 'text-white/75 hover:bg-white/5 hover:text-white'
+                      }`
+                    }
+                  >
+                    <span className="flex text-white/80 [&_svg]:text-[20px]">{item.icon}</span>
+                    {item.label}
+                  </NavLink>
+                </li>
+              ))}
+            </ul>
+          </div>
+        ))}
+      </div>
 
-      {/* Navigation */}
-      <List sx={{ flex: 1, px: 1, py: 1 }}>
-        {filteredItems.map((item) => {
-          const button = (
-            <ListItemButton
-              key={item.path}
-              onClick={() => {
-                navigate(item.path);
-                if (isMobile) onClose?.();
-              }}
-              selected={isActive(item.path)}
-              sx={{
-                borderRadius: 1,
-                mb: 0.5,
-                justifyContent: collapsed ? 'center' : 'flex-start',
-                px: collapsed ? 1.5 : 2,
-              }}
-            >
-              <ListItemIcon sx={{ minWidth: collapsed ? 0 : 40 }}>
-                {item.icon}
-              </ListItemIcon>
-              {!collapsed && <ListItemText primary={item.label} primaryTypographyProps={{ fontSize: '0.875rem' }} />}
-            </ListItemButton>
-          );
-
-          return collapsed ? (
-            <Tooltip key={item.path} title={item.label} placement="right">
-              {button}
-            </Tooltip>
-          ) : (
-            button
-          );
-        })}
-      </List>
-    </Box>
+      <div className="border-t border-white/10 p-3">
+        <a
+          href="/"
+          target="_blank"
+          rel="noreferrer"
+          className="flex items-center justify-between rounded-lg px-3 py-2 text-sm text-white/75 hover:bg-white/5 hover:text-white"
+        >
+          View website
+          <OpenInNewIcon sx={{ fontSize: 16 }} />
+        </a>
+      </div>
+    </nav>
   );
 
-  // Mobile: temporary drawer
   if (isMobile) {
     return (
-      <Drawer
-        variant="temporary"
-        open={open}
-        onClose={onClose}
-        PaperProps={{ sx: { width: DRAWER_WIDTH } }}
-      >
+      <Drawer variant="temporary" open={open} onClose={onClose} PaperProps={{ sx: { width: DRAWER_WIDTH, bgcolor: '#14232b' } }}>
         {content}
       </Drawer>
     );
   }
 
-  // Desktop: permanent drawer
   return (
-    <Drawer
-      variant="permanent"
-      open
-      PaperProps={{
-        sx: {
-          width: drawerWidth,
-          transition: 'width 0.2s ease',
-          overflowX: 'hidden',
-          position: 'relative',
-        },
-      }}
-      sx={{
-        width: drawerWidth,
-        flexShrink: 0,
-        '& .MuiDrawer-paper': { position: 'relative' },
-      }}
-    >
+    <aside className="sticky top-0 h-screen shrink-0" style={{ width: DRAWER_WIDTH }}>
       {content}
-    </Drawer>
+    </aside>
   );
 }

@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
+import { PageHeader } from '@/components/admin/AdminUi';
 import {
   Box,
   Typography,
@@ -433,19 +434,12 @@ export default function EmployeeManagementPage() {
   // ─── Render ─────────────────────────────────────────────────────────────
 
   return (
-    <Box className="p-6 max-w-full">
-      <Box className="flex items-center justify-between mb-6">
-        <Typography variant="h4" className="font-bold">
-          Employee Management
-        </Typography>
-        <Button
-          variant="contained"
-          startIcon={<AddIcon />}
-          onClick={() => setCreateDialogOpen(true)}
-        >
-          Add Employee
-        </Button>
-      </Box>
+    <Box className="max-w-full">
+      <PageHeader
+        title="Staff logins"
+        subtitle="People who can sign in to this admin panel. What they can change is set under Permissions."
+        actions={<Button variant="contained" startIcon={<AddIcon />} onClick={() => setCreateDialogOpen(true)}>Add a staff login</Button>}
+      />
 
       {/* Search & Filters */}
       <Paper className="p-4 mb-4">

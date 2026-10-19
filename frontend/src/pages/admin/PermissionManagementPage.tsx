@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
+import { PageHeader } from '@/components/admin/AdminUi';
 import {
   Box,
   Typography,
@@ -355,11 +356,9 @@ export default function PermissionManagementPage() {
   }
 
   return (
-    <Box className="p-4 space-y-4">
-      <Box className="flex items-center justify-between">
-        <Typography variant="h4" component="h1" fontWeight="bold">
-          Permission Management
-        </Typography>
+    <Box className="space-y-4">
+      <Box className="flex items-start justify-between gap-4">
+        <PageHeader title="Permissions" subtitle="Choose what each role (Manager, Staff) is allowed to see and change." />
         {hasPendingChanges && (
           <Button
             variant="contained"

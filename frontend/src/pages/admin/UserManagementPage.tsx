@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
+import { PageHeader } from '@/components/admin/AdminUi';
 import {
   Box,
   Typography,
@@ -273,10 +274,8 @@ export default function UserManagementPage() {
   // ─── Render ─────────────────────────────────────────────────────────────
 
   return (
-    <Box className="p-6 max-w-full">
-      <Typography variant="h4" className="font-bold mb-6">
-        User Management
-      </Typography>
+    <Box className="max-w-full">
+      <PageHeader title="Customer accounts" subtitle="Visitors who registered on the website." />
 
       {/* Search & Filters */}
       <Paper className="p-4 mb-4">

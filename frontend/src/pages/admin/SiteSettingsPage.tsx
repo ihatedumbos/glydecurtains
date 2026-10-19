@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
+import { PageHeader } from '@/components/admin/AdminUi';
 import {
   Box,
   Typography,
@@ -13,11 +14,9 @@ import {
   Grid,
 } from '@mui/material';
 import {
-  Settings as SettingsIcon,
   Save as SaveIcon,
   CloudUpload as UploadIcon,
   Delete as DeleteIcon,
-  Campaign as AnnouncementIcon,
 } from '@mui/icons-material';
 import axiosInstance from '@/api/axiosInstance';
 
@@ -226,15 +225,9 @@ export default function SiteSettingsPage() {
   }
 
   return (
-    <Box p={3} maxWidth={1000} mx="auto">
-      {/* Header */}
-      <Box display="flex" alignItems="center" justifyContent="space-between" mb={3}>
-        <Box display="flex" alignItems="center" gap={1}>
-          <SettingsIcon fontSize="large" color="primary" />
-          <Typography variant="h4" fontWeight={700}>
-            Site Settings
-          </Typography>
-        </Box>
+    <Box maxWidth={1000}>
+      <Box display="flex" alignItems="flex-start" justifyContent="space-between" gap={2} flexWrap="wrap">
+        <PageHeader title="Business details" subtitle="Your logo, phone, email and address, as shown on the website." />
         <Button
           variant="contained"
           startIcon={saving ? <CircularProgress size={18} color="inherit" /> : <SaveIcon />}
@@ -380,117 +373,10 @@ export default function SiteSettingsPage() {
         </Grid>
       </Paper>
 
-      {/* ─── Social Links Section ─────────────────────────────────────────── */}
-      <Paper sx={{ p: 3, mb: 3 }}>
-        <Typography variant="h6" fontWeight={600} gutterBottom>
-          Social Media Links
-        </Typography>
-        <Typography variant="body2" color="text.secondary" mb={2}>
-          Add links to your social media profiles. Leave blank to hide a platform.
-        </Typography>
-        <Divider sx={{ mb: 3 }} />
-
-        <Grid container spacing={2}>
-          <Grid item xs={12} sm={6}>
-            <TextField
-              label="Facebook"
-              fullWidth
-              value={socialLinks.facebook}
-              onChange={(e) => setSocialLinks((s) => ({ ...s, facebook: e.target.value }))}
-              placeholder="https://facebook.com/yourpage"
-            />
-          </Grid>
-          <Grid item xs={12} sm={6}>
-            <TextField
-              label="Instagram"
-              fullWidth
-              value={socialLinks.instagram}
-              onChange={(e) => setSocialLinks((s) => ({ ...s, instagram: e.target.value }))}
-              placeholder="https://instagram.com/yourpage"
-            />
-          </Grid>
-          <Grid item xs={12} sm={6}>
-            <TextField
-              label="Twitter / X"
-              fullWidth
-              value={socialLinks.twitter}
-              onChange={(e) => setSocialLinks((s) => ({ ...s, twitter: e.target.value }))}
-              placeholder="https://twitter.com/yourhandle"
-            />
-          </Grid>
-          <Grid item xs={12} sm={6}>
-            <TextField
-              label="Pinterest"
-              fullWidth
-              value={socialLinks.pinterest}
-              onChange={(e) => setSocialLinks((s) => ({ ...s, pinterest: e.target.value }))}
-              placeholder="https://pinterest.com/yourpage"
-            />
-          </Grid>
-          <Grid item xs={12} sm={6}>
-            <TextField
-              label="YouTube"
-              fullWidth
-              value={socialLinks.youtube}
-              onChange={(e) => setSocialLinks((s) => ({ ...s, youtube: e.target.value }))}
-              placeholder="https://youtube.com/@yourchannel"
-            />
-          </Grid>
-          <Grid item xs={12} sm={6}>
-            <TextField
-              label="LinkedIn"
-              fullWidth
-              value={socialLinks.linkedin}
-              onChange={(e) => setSocialLinks((s) => ({ ...s, linkedin: e.target.value }))}
-              placeholder="https://linkedin.com/company/yourcompany"
-            />
-          </Grid>
-        </Grid>
-      </Paper>
-
-      {/* ─── Announcement Bar Section ─────────────────────────────────────── */}
-      <Paper sx={{ p: 3, mb: 3 }}>
-        <Box display="flex" alignItems="center" gap={1} mb={1}>
-          <AnnouncementIcon color="primary" />
-          <Typography variant="h6" fontWeight={600}>
-            Announcement Bar
-          </Typography>
-        </Box>
-        <Typography variant="body2" color="text.secondary" mb={2}>
-          Set a promotional message displayed at the top of your site. Leave empty to hide the bar.
-        </Typography>
-        <Divider sx={{ mb: 3 }} />
-
-        <TextField
-          label="Announcement Text"
-          fullWidth
-          multiline
-          rows={2}
-          value={announcementBar}
-          onChange={(e) => setAnnouncementBar(e.target.value)}
-          placeholder="Free shipping on orders above ₹2000 | Use code WELCOME10 for 10% off"
-          inputProps={{ maxLength: 500 }}
-          helperText={`${announcementBar.length}/500 characters`}
-        />
-
-        {announcementBar && (
-          <Box
-            mt={2}
-            p={1.5}
-            sx={{
-              backgroundColor: 'primary.main',
-              color: 'primary.contrastText',
-              borderRadius: 1,
-              textAlign: 'center',
-              fontSize: '0.875rem',
-            }}
-          >
-            <Typography variant="body2" color="inherit">
-              Preview: {announcementBar}
-            </Typography>
-          </Box>
-        )}
-      </Paper>
+      <Alert severity="info" sx={{ mb: 3 }}>
+        The phone number above is also the WhatsApp number customers message. The scrolling
+        announcement at the top of the home page is edited under Home page.
+      </Alert>
 
       {/* ─── Snackbar ──────────────────────────────────────────────────────── */}
       <Snackbar

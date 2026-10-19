@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
+import { PageHeader } from '@/components/admin/AdminUi';
 import {
   Box,
   Typography,
@@ -234,13 +235,8 @@ export default function EnquiryManagementPage() {
   // ─── Render ───────────────────────────────────────────────────────────────
 
   return (
-    <Box p={3}>
-      <Box display="flex" alignItems="center" gap={1} mb={3}>
-        <EmailIcon fontSize="large" color="primary" />
-        <Typography variant="h4" fontWeight={700}>
-          Enquiry Management
-        </Typography>
-      </Box>
+    <Box>
+      <PageHeader title="Enquiries" subtitle="Messages sent from the contact and quote forms on the website." />
 
       {/* ─── Filters ─────────────────────────────────────────────────────── */}
       <Paper sx={{ p: 2, mb: 3 }}>

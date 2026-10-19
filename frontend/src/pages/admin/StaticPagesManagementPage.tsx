@@ -1,4 +1,5 @@
 import { useEffect, useState, useCallback } from 'react';
+import { PageHeader } from '@/components/admin/AdminUi';
 import axiosInstance from '@/api/axiosInstance';
 
 // ─── Types ──────────────────────────────────────────────────────────────────
@@ -61,6 +62,59 @@ const defaultFormData = (): PageFormData => ({
     gu: emptyLocalizedContent(),
   },
 });
+
+// ─── API mapping ────────────────────────────────────────────────────────────
+// The API stores the English title and HTML on the page itself and other languages under
+// translations[lang]; this screen edits one LocalizedContent per language.
+
+interface ApiPage {
+  id: number;
+  title?: string;
+  slug: string;
+  content?: string;
+  pageType: PageType;
+  isVisible: boolean;
+  translations?: Record<string, Record<string, string>> | null;
+  createdAt: string;
+  updatedAt: string;
+}
+
+function fromApi(page: ApiPage): CmsPage {
+  const local = (lang: string): LocalizedContent => ({
+    ...emptyLocalizedContent(),
+    ...(page.translations?.[lang] ?? {}),
+  });
+  return {
+    id: page.id,
+    slug: page.slug,
+    pageType: page.pageType,
+    isVisible: page.isVisible,
+    sortOrder: 0,
+    content: {
+      en: { ...local('en'), title: page.title ?? '', content: page.content ?? '' },
+      hi: local('hi'),
+      gu: local('gu'),
+    },
+    createdAt: page.createdAt,
+    updatedAt: page.updatedAt,
+  };
+}
+
+function toApi(form: PageFormData) {
+  const translations: Record<string, Record<string, string>> = {};
+  ['hi', 'gu'].forEach((lang) => {
+    const c = form.content[lang];
+    if (c && (c.title || c.content)) translations[lang] = { ...c };
+  });
+  return {
+    title: form.content.en.title,
+    content: form.content.en.content,
+    slug: form.slug,
+    pageType: form.pageType,
+    isVisible: form.isVisible,
+    translations,
+  };
+}
 
 // ─── Slug Generator ─────────────────────────────────────────────────────────
 
@@ -235,7 +289,7 @@ export default function StaticPagesManagementPage() {
     setLoading(true);
     try {
       const res = await axiosInstance.get('/cms/pages');
-      setPages(res.data.data ?? []);
+      setPages((res.data.data ?? []).map(fromApi));
     } catch {
       /* handled by interceptor */
     } finally {
@@ -278,9 +332,9 @@ export default function StaticPagesManagementPage() {
     e.preventDefault();
     try {
       if (editingPage) {
-        await axiosInstance.put(`/cms/pages/${editingPage.id}`, formData);
+        await axiosInstance.put(`/cms/pages/${editingPage.id}`, toApi(formData));
       } else {
-        await axiosInstance.post('/cms/pages', formData);
+        await axiosInstance.post('/cms/pages', toApi(formData));
       }
       setShowForm(false);
       fetchPages();
@@ -301,10 +355,7 @@ export default function StaticPagesManagementPage() {
 
   const toggleVisibility = async (page: CmsPage) => {
     try {
-      await axiosInstance.put(`/cms/pages/${page.id}`, {
-        ...page,
-        isVisible: !page.isVisible,
-      });
+      await axiosInstance.put(`/cms/pages/${page.id}`, toApi({ ...page, isVisible: !page.isVisible }));
       fetchPages();
     } catch {
       /* handled by interceptor */
@@ -344,17 +395,10 @@ export default function StaticPagesManagementPage() {
   // ─── Render ─────────────────────────────────────────────────────────────────
 
   return (
-    <div className="p-6 space-y-6">
+    <div className="space-y-6">
       {/* Header */}
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-2xl font-bold text-[#14232b]">
-            Static Pages
-          </h1>
-          <p className="text-sm text-[#4b5b63] mt-1">
-            Manage static content pages (About, Terms, Privacy, etc.)
-          </p>
-        </div>
+      <div className="flex items-start justify-between gap-4">
+        <PageHeader title="Pages" subtitle="The About, Privacy and Terms pages linked in the website footer." />
         <button
           onClick={openCreate}
           className="px-4 py-2 bg-[#a8400f] text-white text-sm font-medium rounded-lg hover:bg-[#7c2f0b] transition-colors"

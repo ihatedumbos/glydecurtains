@@ -1,4 +1,4 @@
-import { BrowserRouter } from 'react-router-dom';
+import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import { Provider } from 'react-redux';
 import { store } from '@/store/store';
 import { ThemeProvider } from '@/theme';
@@ -11,18 +11,25 @@ function SessionTimeoutProvider({ children }: { children: React.ReactNode }) {
   return <>{children}</>;
 }
 
+function Root() {
+  return (
+    <SessionTimeoutProvider>
+      <div className="min-h-screen">
+        <AppRoutes />
+      </div>
+      <ToastContainer />
+    </SessionTimeoutProvider>
+  );
+}
+
+// A data router, so pages can warn before leaving with unsaved changes (useBlocker).
+const router = createBrowserRouter([{ path: '*', element: <Root /> }]);
+
 function App() {
   return (
     <Provider store={store}>
       <ThemeProvider>
-        <BrowserRouter>
-          <SessionTimeoutProvider>
-            <div className="min-h-screen">
-              <AppRoutes />
-            </div>
-            <ToastContainer />
-          </SessionTimeoutProvider>
-        </BrowserRouter>
+        <RouterProvider router={router} />
       </ThemeProvider>
     </Provider>
   );
