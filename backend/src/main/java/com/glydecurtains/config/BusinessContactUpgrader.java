@@ -86,6 +86,11 @@ public class BusinessContactUpgrader implements ApplicationRunner {
                 settings.setAnnouncementBar(BusinessContact.ANNOUNCEMENT);
                 changed = true;
             }
+            // The seed data invented social pages (facebook.com/glydecurtains etc.) that aren't Glyde's.
+            if (settings.getSocialLinks() != null && settings.getSocialLinks().contains("pinterest.com/glydecurtains")) {
+                settings.setSocialLinks("{}");
+                changed = true;
+            }
             if (changed) {
                 siteSettingsRepository.save(settings);
                 log.info("Replaced demo site contact details with the real ones.");
