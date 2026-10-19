@@ -49,3 +49,6 @@ Thumbs.db
 *.mov
 *.wmv
 
+
+# Local secrets (copy .env.example)
+.env

@@ -27,11 +27,34 @@ public class JwtTokenProvider {
             @Value("${app.jwt.access-token-expiration-ms}") long accessTokenExpirationMs,
             @Value("${app.jwt.refresh-token-expiration-ms}") long refreshTokenExpirationMs,
             @Value("${app.jwt.remember-me-expiration-ms}") long rememberMeExpirationMs) {
-        this.signingKey = Keys.hmacShaKeyFor(jwtSecret.getBytes(StandardCharsets.UTF_8));
+        this.signingKey = signingKey(jwtSecret);
         this.accessTokenExpirationMs = accessTokenExpirationMs;
         this.refreshTokenExpirationMs = refreshTokenExpirationMs;
         this.rememberMeExpirationMs = rememberMeExpirationMs;
     }
+
+    /**
+     * Uses JWT_SECRET when it is set. Without it (or with the old placeholder that was committed to
+     * the repository) a random key is generated, so tokens can't be forged; sign-ins then last only
+     * until the next restart.
+     */
+    static SecretKey signingKey(String configuredSecret) {
+        boolean usable = configuredSecret != null
+                && configuredSecret.getBytes(StandardCharsets.UTF_8).length >= 32
+                && !KNOWN_PUBLIC_SECRETS.contains(configuredSecret);
+        if (usable) {
+            return Keys.hmacShaKeyFor(configuredSecret.getBytes(StandardCharsets.UTF_8));
+        }
+        logger.warn("JWT_SECRET is not set (or is a published default); using a random signing key. "
+                + "Set JWT_SECRET to a long random value so sign-ins survive restarts.");
+        byte[] random = new byte[64];
+        new java.security.SecureRandom().nextBytes(random);
+        return Keys.hmacShaKeyFor(random);
+    }
+
+    private static final java.util.Set<String> KNOWN_PUBLIC_SECRETS = java.util.Set.of(
+            "temporary-no-auth-signing-key-change-when-jwt-is-restored-2026",
+            "glydecurtains-dev-secret-key-change-in-production-min-256-bits");
 
     public String generateAccessToken(Long userId, String email, String role) {
         Date now = new Date();

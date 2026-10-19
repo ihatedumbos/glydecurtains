@@ -15,6 +15,14 @@ services:
         value: prod
       - key: CORS_ORIGINS
         value: https://glydecurtains.com,https://www.glydecurtains.com,https://glydecurtains-frontend.onrender.com
+      # Signs admin login tokens; Render generates a random value once.
+      - key: JWT_SECRET
+        generateValue: true
+      # The admin password. Set it in the Render dashboard (never commit it).
+      - key: ADMIN_PASSWORD
+        sync: false
+      - key: ADMIN_EMAIL
+        value: admin@glydecurtains.com
 
 static_sites:
   - name: glydecurtains-frontend

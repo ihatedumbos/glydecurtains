@@ -90,7 +90,10 @@ public class RateLimitFilter extends OncePerRequestFilter {
     private String getClientIp(HttpServletRequest request) {
         String xForwardedFor = request.getHeader("X-Forwarded-For");
         if (xForwardedFor != null && !xForwardedFor.isEmpty()) {
-            return xForwardedFor.split(",")[0].trim();
+            // The hosting proxy appends the address it saw, so the last entry is the real client.
+            // Earlier entries come from the request itself and could be faked to dodge the limit.
+            String[] hops = xForwardedFor.split(",");
+            return hops[hops.length - 1].trim();
         }
         String xRealIp = request.getHeader("X-Real-IP");
         if (xRealIp != null && !xRealIp.isEmpty()) {

@@ -26,7 +26,7 @@ spring:
 app:
   cors:
     allowed-origins: ${CORS_ORIGINS:https://glydecurtains.com,https://www.glydecurtains.com}
-  seed-data: false
+  seed-demo-data: false
 
 logging:
   level:
