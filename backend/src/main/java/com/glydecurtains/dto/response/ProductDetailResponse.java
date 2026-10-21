@@ -18,6 +18,7 @@ public class ProductDetailResponse {
 
     private Long id;
     private String name;
+    private String internalName;
     private String sku;
     private String barcode;
     private String shortDescription;

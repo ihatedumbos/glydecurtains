@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { Link as RouterLink, useLocation, useNavigate } from 'react-router-dom';
 import {
   AppBar,
+  Badge,
   Toolbar,
   Box,
   Button,
@@ -22,6 +23,7 @@ import LogoutIcon from '@mui/icons-material/Logout';
 import DashboardIcon from '@mui/icons-material/Dashboard';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import WhatsAppIcon from '@mui/icons-material/WhatsApp';
+import ShoppingCartOutlinedIcon from '@mui/icons-material/ShoppingCartOutlined';
 import { whatsappLink, useContact } from '@/config/contact';
 import { useAppSelector } from '@/store/hooks';
 import { useLogout } from '@/hooks/useLogout';
@@ -43,6 +45,7 @@ export default function Header({ categories = [] }: HeaderProps) {
 
   const isAuthRoute = ['/login', '/register', '/forgot-password', '/reset-password'].includes(location.pathname);
   const { user, isAuthenticated } = useAppSelector((state) => state.auth);
+  const cartCount = useAppSelector((state) => state.orderCart.items.reduce((n, i) => n + i.quantity, 0));
   const { logout } = useLogout();
 
   const [searchQuery, setSearchQuery] = useState('');
@@ -213,6 +216,27 @@ export default function Header({ categories = [] }: HeaderProps) {
                 WhatsApp
               </Button>
             )}
+
+            {/* Cart: the order is sent to the shop on WhatsApp */}
+            <Tooltip title="Cart">
+              <IconButton
+                component={RouterLink}
+                to="/cart"
+                aria-label={cartCount ? `Cart, ${cartCount} piece${cartCount === 1 ? '' : 's'}` : 'Cart'}
+                sx={{
+                  border: '1.5px solid #c7d0d5',
+                  borderRadius: 2,
+                  width: 46,
+                  height: 46,
+                  color: 'text.primary',
+                  '&:hover': { borderColor: 'primary.main', color: 'primary.main' },
+                }}
+              >
+                <Badge badgeContent={cartCount} color="primary" max={99}>
+                  <ShoppingCartOutlinedIcon />
+                </Badge>
+              </IconButton>
+            </Tooltip>
 
             {/* Profile / Login */}
             {isAuthenticated ? (

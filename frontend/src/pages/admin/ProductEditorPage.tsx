@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState, type KeyboardEvent, type ReactNode } from 'react';
-import { Link, useBlocker, useNavigate, useParams } from 'react-router-dom';
+import { Link, useBlocker, useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import {
   Alert, Button, Chip, CircularProgress, Collapse, Dialog, DialogActions, DialogContent, DialogTitle,
   FormControlLabel, IconButton, InputAdornment, LinearProgress, MenuItem, Switch, TextField, Tooltip,
@@ -15,6 +15,7 @@ import CloseIcon from '@mui/icons-material/Close';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import OpenInNewIcon from '@mui/icons-material/OpenInNew';
 import PlayCircleOutlineIcon from '@mui/icons-material/PlayCircleOutline';
+import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import axiosInstance from '@/api/axiosInstance';
 import { mediaSource } from '@/components/common/MediaPicker';
 import { PageHeader, Panel, Pill } from '@/components/admin/AdminUi';
@@ -26,6 +27,7 @@ type Status = 'ACTIVE' | 'ARCHIVED' | 'DEACTIVATED';
 
 interface Category { id: number; name: string; }
 interface SubCategory { id: number; name: string; }
+interface ProductOption { id: number; name: string; internalName?: string | null; sku: string; }
 interface Media {
   id: number;
   base64Data: string;
@@ -40,6 +42,7 @@ interface Variant { size?: string | null; color?: string | null; price: number; 
 
 interface Form {
   name: string;
+  internalName: string;
   sku: string;
   categoryId: number | '';
   subCategoryId: number | '';
@@ -64,7 +67,7 @@ interface Form {
 interface Translation { name: string; shortDescription: string; longDescription: string; }
 
 const EMPTY_FORM: Form = {
-  name: '', sku: '', categoryId: '', subCategoryId: '', shortDescription: '', longDescription: '',
+  name: '', internalName: '', sku: '', categoryId: '', subCategoryId: '', shortDescription: '', longDescription: '',
   brand: 'GLYDE', material: '', pattern: '', tags: '', metaTitle: '', metaDescription: '',
   stockQuantity: 100, discountPercentage: 0, status: 'ACTIVE',
   isFeatured: false, isNewArrival: true, isBestSeller: false, isTrending: false, isPremium: false,
@@ -192,6 +195,8 @@ export default function ProductEditorPage() {
   const isNew = !id || id === 'new';
   const productId = isNew ? null : Number(id);
   const navigate = useNavigate();
+  const [searchParams, setSearchParams] = useSearchParams();
+  const justCopied = searchParams.get('copied') === '1';
   const fileInput = useRef<HTMLInputElement>(null);
 
   const [loading, setLoading] = useState(!isNew);
@@ -216,6 +221,9 @@ export default function ProductEditorPage() {
   const [saved, setSaved] = useState(false);
   const [dirty, setDirty] = useState(false);
   const [deleteOpen, setDeleteOpen] = useState(false);
+  const [copying, setCopying] = useState(false);
+  const [copyError, setCopyError] = useState<string | null>(null);
+  const [existing, setExisting] = useState<ProductOption[]>([]);
 
   const blocker = useBlocker(({ currentLocation, nextLocation }) => dirty && !saving && currentLocation.pathname !== nextLocation.pathname);
 
@@ -245,7 +253,7 @@ export default function ProductEditorPage() {
       ]);
       const p = res.data.data;
       setForm({
-        name: p.name ?? '', sku: p.sku ?? '', categoryId: p.categoryId ?? '', subCategoryId: p.subCategoryId ?? '',
+        name: p.name ?? '', internalName: p.internalName ?? '', sku: p.sku ?? '', categoryId: p.categoryId ?? '', subCategoryId: p.subCategoryId ?? '',
         shortDescription: p.shortDescription ?? '', longDescription: p.longDescription ?? '',
         brand: p.brand ?? '', material: p.material ?? '', pattern: p.pattern ?? '',
         tags: (p.tags ?? []).join(', '), metaTitle: p.metaTitle ?? '', metaDescription: p.metaDescription ?? '',
@@ -295,6 +303,29 @@ export default function ProductEditorPage() {
   }, [productId]);
 
   useEffect(() => { loadProduct(); }, [loadProduct]);
+
+  // On "Add a product", offer the existing products as a starting point.
+  useEffect(() => {
+    if (!isNew) return;
+    axiosInstance.get('/products', { params: { page: 0, size: 500 } })
+      .then((res) => setExisting((res.data.data.content ?? []).sort((a: ProductOption, b: ProductOption) => a.name.localeCompare(b.name, undefined, { numeric: true }))))
+      .catch(() => setExisting([]));
+  }, [isNew]);
+
+  /** Copies a product (details, sizes, colours, prices, photos) and opens the copy, hidden, to edit. */
+  const copyFrom = async (sourceId: number) => {
+    setCopying(true);
+    setCopyError(null);
+    try {
+      const res = await axiosInstance.post(`/products/${sourceId}/duplicate`);
+      setDirty(false);
+      navigate(`/admin/products/${res.data.data.id}?copied=1`);
+    } catch (err) {
+      setCopyError(errorMessage(err, 'Could not copy the product.'));
+    } finally {
+      setCopying(false);
+    }
+  };
 
   // ─── Prices ─────────────────────────────────────────────────────────────
 
@@ -451,6 +482,7 @@ export default function ProductEditorPage() {
         ...form,
         sku: form.sku.trim() || slugCode(form.name),
         name: form.name.trim(),
+        internalName: form.internalName.trim(),
         categoryId: form.categoryId || null,
         subCategoryId: form.subCategoryId || null,
         colors: colours,
@@ -538,24 +570,69 @@ export default function ProductEditorPage() {
           </span>
         )}
         actions={!isNew && (
-          <Button href={`/products/${productId}`} target="_blank" rel="noreferrer" endIcon={<OpenInNewIcon sx={{ fontSize: 16 }} />}>
-            See it on the website
-          </Button>
+          <div className="flex flex-wrap gap-2">
+            <Tooltip title={dirty ? 'Save your changes first, then make a copy.' : 'Copies everything into a new product you can change.'}>
+              <span>
+                <Button variant="outlined" startIcon={<ContentCopyIcon sx={{ fontSize: 16 }} />} disabled={dirty || copying} onClick={() => productId && copyFrom(productId)}>
+                  {copying ? 'Copying…' : 'Make a copy'}
+                </Button>
+              </span>
+            </Tooltip>
+            {shown && (
+              <Button href={`/products/${productId}`} target="_blank" rel="noreferrer" endIcon={<OpenInNewIcon sx={{ fontSize: 16 }} />}>
+                See it on the website
+              </Button>
+            )}
+          </div>
         )}
       />
 
       {saveError && <Alert severity="error" className="mb-4" onClose={() => setSaveError(null)}>{saveError}</Alert>}
+      {copyError && <Alert severity="error" className="mb-4" onClose={() => setCopyError(null)}>{copyError}</Alert>}
+      {justCopied && !isNew && (
+        <Alert
+          severity="info"
+          className="mb-4"
+          onClose={() => { const next = new URLSearchParams(searchParams); next.delete('copied'); setSearchParams(next, { replace: true }); }}
+        >
+          This is a copy, with the same details, sizes, colours, prices and photos. It is hidden from the website for now.
+          Change the name and anything else that is different, switch on “Show on the website”, then save.
+        </Alert>
+      )}
+      {isNew && existing.length > 0 && (
+        <div className="mb-6 rounded-xl border border-dashed border-[#14232b]/20 bg-white p-4">
+          <p className="text-sm font-semibold">Save time: start from an existing product</p>
+          <p className="mb-3 text-sm text-[#4b5b63]">Pick a similar product to copy its details, sizes, colours, prices and photos. You then change only what is different.</p>
+          <TextField
+            select
+            size="small"
+            value=""
+            label="Copy from"
+            onChange={(e) => e.target.value && copyFrom(Number(e.target.value))}
+            disabled={copying}
+            sx={{ minWidth: 280, maxWidth: '100%' }}
+          >
+            {existing.map((p) => (
+              <MenuItem key={p.id} value={String(p.id)}>
+                {p.name}{p.internalName ? ` · ${p.internalName}` : ''}
+              </MenuItem>
+            ))}
+          </TextField>
+          {copying && <LinearProgress className="mt-3" />}
+        </div>
+      )}
 
       <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_300px]">
         <div className="min-w-0 space-y-6">
           {/* Basics */}
           <Panel title="What it is">
             <div className="grid gap-4 sm:grid-cols-2">
-              <div className="sm:col-span-2">
-                <Field label="Product name">
-                  <TextField value={form.name} onChange={(e) => update('name', e.target.value)} placeholder="e.g. Silent Runner" fullWidth size="small" required error={!!saveError && !form.name.trim()} />
-                </Field>
-              </div>
+              <Field label="Name on the website" hint="What customers see.">
+                <TextField value={form.name} onChange={(e) => update('name', e.target.value)} placeholder="e.g. Silent Runner" fullWidth size="small" required error={!!saveError && !form.name.trim()} />
+              </Field>
+              <Field label="Internal name (optional)" hint="Only shown in the admin panel, e.g. supplier code or shop shorthand.">
+                <TextField value={form.internalName} onChange={(e) => update('internalName', e.target.value)} placeholder="e.g. SR-12 runner, Mumbai supplier" fullWidth size="small" />
+              </Field>
               <Field label="Category">
                 <TextField select value={form.categoryId === '' ? '' : String(form.categoryId)} onChange={(e) => { update('categoryId', e.target.value ? Number(e.target.value) : ''); update('subCategoryId', ''); }} fullWidth size="small" error={!!saveError && !form.categoryId}>
                   <MenuItem value="">Choose a category</MenuItem>
@@ -753,7 +830,7 @@ export default function ProductEditorPage() {
             <button type="button" onClick={() => setShowMore((v) => !v)} className="flex w-full items-center justify-between px-5 py-4 text-left">
               <span>
                 <span className="block text-base font-semibold">More settings</span>
-                <span className="block text-sm text-[#4b5b63]">Product code, brand, Hindi and Gujarati text, search engine text</span>
+                <span className="block text-sm text-[#4b5b63]">Product code, brand, material, Hindi and Gujarati text, search engine text</span>
               </span>
               <ExpandMoreIcon className={`transition-transform ${showMore ? 'rotate-180' : ''}`} />
             </button>
@@ -765,9 +842,6 @@ export default function ProductEditorPage() {
                 <Field label="Brand"><TextField size="small" fullWidth value={form.brand} onChange={(e) => update('brand', e.target.value)} /></Field>
                 <Field label="Material"><TextField size="small" fullWidth value={form.material} onChange={(e) => update('material', e.target.value)} /></Field>
                 <Field label="Finish or pattern"><TextField size="small" fullWidth value={form.pattern} onChange={(e) => update('pattern', e.target.value)} /></Field>
-                <Field label="Stock" hint="Only used for the “in stock” label.">
-                  <TextField size="small" fullWidth type="number" value={form.stockQuantity} onChange={(e) => update('stockQuantity', Number(e.target.value))} />
-                </Field>
                 <Field label="Search words" hint="Comma separated, e.g. runner, ripple, silent">
                   <TextField size="small" fullWidth value={form.tags} onChange={(e) => update('tags', e.target.value)} />
                 </Field>

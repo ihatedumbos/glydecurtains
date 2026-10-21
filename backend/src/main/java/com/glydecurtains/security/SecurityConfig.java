@@ -68,7 +68,9 @@ public class SecurityConfig {
                             // collection filter options and related products on the detail page.
                             .requestMatchers(HttpMethod.GET, "/api/search/products", "/api/search/autocomplete",
                                     "/api/search/facets", "/api/search/recent", "/api/collections/public/**",
-                                    "/api/products/*/related", "/api/products/*/similar").permitAll()
+                                    "/api/products/*/related", "/api/products/*/similar",
+                                    // Approved reviews and the rating shown on each product page.
+                                    "/api/feedback/products/*", "/api/feedback/products/*/rating").permitAll()
                             // Public catalogue media served from resources/static (product photos, logo).
                             .requestMatchers(HttpMethod.GET, "/products/**", "/assets/**").permitAll()
                             .anyRequest().authenticated()

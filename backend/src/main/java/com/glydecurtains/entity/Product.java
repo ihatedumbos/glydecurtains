@@ -27,6 +27,11 @@ public class Product extends BaseEntity {
     @Column(nullable = false, length = 200)
     private String name;
 
+    /** Name the shop uses internally (supplier code, shorthand). Only shown in the admin panel. */
+    @Size(max = 200)
+    @Column(name = "internal_name", length = 200)
+    private String internalName;
+
     @NotBlank
     @Column(nullable = false, unique = true)
     private String sku;

@@ -15,6 +15,7 @@ import achievementReducer from '@/store/slices/achievementSlice';
 import enquiryReducer from '@/store/slices/enquirySlice';
 import permissionReducer from '@/store/slices/permissionSlice';
 import inventoryReducer from '@/store/slices/inventorySlice';
+import orderCartReducer, { loadOrderCart, saveOrderCart, type OrderCartState } from '@/store/slices/orderCartSlice';
 import { LOGOUT_ACTION_TYPE } from '@/store/logoutAction';
 
 const AUTH_STORAGE_KEY = 'glyde_auth';
@@ -67,6 +68,7 @@ const appReducer = combineReducers({
   enquiries: enquiryReducer,
   permissions: permissionReducer,
   inventory: inventoryReducer,
+  orderCart: orderCartReducer,
 });
 
 /**
@@ -94,6 +96,8 @@ const rootReducer: typeof appReducer = (state, action) => {
         enquiries: undefined as unknown as ReturnType<typeof enquiryReducer>,
         permissions: undefined as unknown as ReturnType<typeof permissionReducer>,
         inventory: undefined as unknown as ReturnType<typeof inventoryReducer>,
+        // The cart belongs to the visitor's browser, not the account, so it survives logout.
+        orderCart: state?.orderCart,
       },
       action,
     );
@@ -102,16 +106,19 @@ const rootReducer: typeof appReducer = (state, action) => {
 };
 
 const preloadedAuth = loadAuthState();
+const preloadedOrderCart = loadOrderCart();
 
 export const store = configureStore({
   reducer: rootReducer,
   preloadedState: {
     ...(preloadedAuth ? { auth: { ...{ user: null, accessToken: null, refreshToken: null, isAuthenticated: false, loading: false, error: null }, ...preloadedAuth } } : {}),
+    ...(preloadedOrderCart ? { orderCart: preloadedOrderCart } : {}),
   },
 });
 
 // Subscribe to store changes to persist auth
 let currentAuth: AuthState | undefined;
+let currentOrderCart: OrderCartState | undefined = preloadedOrderCart;
 
 store.subscribe(() => {
   const state = store.getState();
@@ -120,6 +127,11 @@ store.subscribe(() => {
   if (state.auth !== currentAuth) {
     currentAuth = state.auth;
     saveAuthState(state.auth);
+  }
+
+  if (state.orderCart !== currentOrderCart) {
+    currentOrderCart = state.orderCart;
+    saveOrderCart(state.orderCart);
   }
 });
 

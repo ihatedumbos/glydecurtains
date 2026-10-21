@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback, useRef, useMemo } from 'react';
 import Grid from '@mui/material/Grid2';
-import { useParams, Link } from 'react-router-dom';
+import { useParams, Link, useNavigate } from 'react-router-dom';
 import {
   Box,
   Container,
@@ -26,6 +26,11 @@ import {
 } from '@mui/material';
 import WhatsAppIcon from '@mui/icons-material/WhatsApp';
 import PhoneIcon from '@mui/icons-material/Phone';
+import AddShoppingCartIcon from '@mui/icons-material/AddShoppingCart';
+import AddIcon from '@mui/icons-material/Add';
+import RemoveIcon from '@mui/icons-material/Remove';
+import { useAppDispatch } from '@/store/hooks';
+import { addToOrderCart, MAX_QUANTITY } from '@/store/slices/orderCartSlice';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import PlayCircleOutlineIcon from '@mui/icons-material/PlayCircleOutline';
@@ -203,6 +208,10 @@ export default function ProductDetailPage() {
 
   const [selectedColor, setSelectedColor] = useState<string | null>(null);
   const [selectedSize, setSelectedSize] = useState<string | null>(null);
+  const [quantity, setQuantity] = useState(1);
+  const [addedToCart, setAddedToCart] = useState(false);
+  const dispatch = useAppDispatch();
+  const navigate = useNavigate();
 
   const [relatedProducts, setRelatedProducts] = useState<RelatedProduct[]>([]);
   const [similarProducts, setSimilarProducts] = useState<RelatedProduct[]>([]);
@@ -297,10 +306,10 @@ export default function ProductDetailPage() {
 
   // ─── Availability based on variant selection ───────────────────────────
 
+  // Price of the chosen size and colour. Stock is not shown: availability is confirmed on WhatsApp.
   const availability = useMemo(() => {
-    if (!product) return { available: false, stock: 0, price: 0 };
+    if (!product) return { price: 0 };
 
-    // If user selected a color/size, find matching variant
     if (selectedColor || selectedSize) {
       const matchingVariants = (product.variants || []).filter((v) => {
         const colorMatch = !selectedColor || !v.color || v.color.trim() === selectedColor;
@@ -309,28 +318,20 @@ export default function ProductDetailPage() {
       });
 
       if (matchingVariants.length > 0) {
-        const totalStock = matchingVariants.reduce((sum, v) => sum + v.stockQuantity, 0);
-        const minPrice = Math.min(...matchingVariants.map((v) => v.price));
-        // Variants entered without stock fall back to the product's own stock figure.
-        const stock = totalStock || product.stockQuantity;
-        return { available: stock > 0, stock, price: minPrice };
+        return { price: Math.min(...matchingVariants.map((v) => v.price)) };
       }
 
       // A size/colour combination without its own price is quoted on WhatsApp instead.
       const hasVariants = (product.variants || []).length > 0;
-      return {
-        available: product.stockQuantity > 0,
-        stock: product.stockQuantity,
-        price: hasVariants ? 0 : product.offerPrice || product.basePrice,
-      };
+      return { price: hasVariants ? 0 : product.offerPrice || product.basePrice };
     }
 
-    return {
-      available: product.stockQuantity > 0,
-      stock: product.stockQuantity,
-      price: product.offerPrice || product.basePrice,
-    };
+    return { price: product.offerPrice || product.basePrice };
   }, [product, selectedColor, selectedSize]);
+
+  // A new option or product starts again from one piece.
+  useEffect(() => { setAddedToCart(false); }, [product, selectedColor, selectedSize]);
+
 
   // ─── Image zoom handler ────────────────────────────────────────────────
 
@@ -721,27 +722,52 @@ export default function ProductDetailPage() {
             </Box>
           )}
 
-          {/* Availability */}
-          <Box sx={{ mt: 3, mb: 2 }}>
-            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+          {/* Add to cart: the cart is sent to the shop as one WhatsApp order */}
+          <Box sx={{ mt: 3, mb: 1.5, display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: 1.5 }}>
+            <Box sx={{ display: 'flex', alignItems: 'center', border: 1, borderColor: 'divider', borderRadius: 2 }}>
+              <IconButton aria-label="One less" disabled={quantity <= 1} onClick={() => setQuantity((q) => Math.max(1, q - 1))}>
+                <RemoveIcon fontSize="small" />
+              </IconButton>
               <Box
-                sx={{
-                  width: 10,
-                  height: 10,
-                  borderRadius: '50%',
-                  bgcolor: availability.available ? 'success.main' : 'error.main',
+                component="input"
+                value={quantity}
+                inputMode="numeric"
+                aria-label="Quantity"
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                  const n = Number(e.target.value.replace(/\D/g, ''));
+                  if (n > 0) setQuantity(Math.min(MAX_QUANTITY, n));
                 }}
+                sx={{ width: 44, border: 0, textAlign: 'center', fontFamily: 'monospace', fontSize: 16, bgcolor: 'transparent', outline: 'none' }}
               />
-              <Typography
-                variant="body2"
-                fontWeight={600}
-                color={availability.available ? 'success.main' : 'error.main'}
-              >
-                {availability.available
-                  ? `In Stock (${availability.stock} available)`
-                  : 'Out of Stock'}
-              </Typography>
+              <IconButton aria-label="One more" disabled={quantity >= MAX_QUANTITY} onClick={() => setQuantity((q) => Math.min(MAX_QUANTITY, q + 1))}>
+                <AddIcon fontSize="small" />
+              </IconButton>
             </Box>
+            <Button
+              variant="contained"
+              size="large"
+              startIcon={<AddShoppingCartIcon />}
+              onClick={() => {
+                if (addedToCart) { navigate('/cart'); return; }
+                const mainImage = images.find((img) => img.isThumbnail) ?? images[0];
+                const src = mainImage ? getImageSrc(mainImage) : '';
+                dispatch(addToOrderCart({
+                  productId: product.id,
+                  name: product.name,
+                  size: selectedSize,
+                  color: selectedColor,
+                  unitPrice: availability.price || 0,
+                  quantity,
+                  // Uploaded photos are inline data; keep only small ones so the cart fits in the browser.
+                  imageUrl: src && src.length < 150_000 ? src : null,
+                }));
+                setAddedToCart(true);
+                setQuantity(1);
+              }}
+              sx={{ textTransform: 'none', fontWeight: 600, flexGrow: 1 }}
+            >
+              {addedToCart ? 'Added. View cart' : 'Add to cart'}
+            </Button>
           </Box>
 
           {/* Enquire on WhatsApp: the site is a catalogue, orders are taken over WhatsApp */}
@@ -953,11 +979,6 @@ function ProductCard({ product }: { product: RelatedProduct }) {
               </Typography>
             )}
           </Box>
-          {product.stockQuantity <= 0 && (
-            <Typography variant="caption" color="error.main">
-              Out of Stock
-            </Typography>
-          )}
         </CardContent>
       </CardActionArea>
     </Card>

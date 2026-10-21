@@ -25,7 +25,7 @@ const ForgotPasswordPage = lazy(() => import('@/pages/auth/ForgotPasswordPage'))
 const ResetPasswordPage = lazy(() => import('@/pages/auth/ResetPasswordPage'));
 
 // ---------- Customer pages (lazy) ----------
-const CartPage = lazy(() => import('@/pages/customer/CartPage'));
+const OrderCartPage = lazy(() => import('@/pages/public/OrderCartPage'));
 const CheckoutPage = lazy(() => import('@/pages/customer/CheckoutPage'));
 const WishlistPage = lazy(() => import('@/pages/customer/WishlistPage'));
 const OrdersPage = lazy(() => import('@/pages/customer/OrdersPage'));
@@ -76,6 +76,7 @@ export default function AppRoutes() {
         <Route path="/about" element={<AboutPage />} />
         <Route path="/achievements" element={<AchievementsPage />} />
         <Route path="/contact" element={<ContactPage />} />
+        <Route path="/cart" element={<OrderCartPage />} />
         <Route path="/pages/:slug" element={<StaticPage />} />
 
         {/* ===== Auth routes ===== */}
@@ -86,7 +87,6 @@ export default function AppRoutes() {
 
         {/* ===== Protected customer routes ===== */}
         <Route element={<ProtectedRoute />}>
-          <Route path="/cart" element={<CartPage />} />
           <Route path="/checkout" element={<CheckoutPage />} />
           <Route path="/wishlist" element={<WishlistPage />} />
           <Route path="/orders" element={<OrdersPage />} />
