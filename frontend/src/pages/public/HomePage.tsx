@@ -4,12 +4,13 @@ import axiosInstance from '@/api/axiosInstance';
 import type { HomepageSection } from '@/store/slices/cmsSlice';
 import { ScrollingTicker } from '@/components/cms';
 import QuoteHero from '@/components/home/QuoteHero';
-import ProductTable from '@/components/home/ProductTable';
+import HomeProductGrid from '@/components/home/HomeProductGrid';
+import { CONTACT, whatsappLink, useContact } from '@/config/contact';
 import StoreBand from '@/components/home/StoreBand';
 
 /**
- * Home page in the "dealer first" layout: a quote form up top, a filterable product table
- * with codes and prices, then the Pune store. Only the announcement ticker still comes from
+ * Home page: a one-line intro, then every product as a large shop-style card, then the
+ * WhatsApp quote form and the Pune store. Only the announcement ticker still comes from
  * the CMS, so it can be edited from the admin panel.
  */
 /** The API sends a section's config as a JSON string; older data may already be an object. */
@@ -48,6 +49,7 @@ export default function HomePage() {
   }, []);
 
   const ticker = tickerConfig(tickerSection);
+  useContact();
 
   return (
     <motion.div
@@ -63,8 +65,24 @@ export default function HomePage() {
           speed={typeof ticker.speed === 'number' ? ticker.speed : undefined}
         />
       )}
+      <div className="border-b border-[#dbe1e4] bg-white">
+        <div className="mx-auto flex max-w-[1440px] flex-wrap items-center justify-between gap-3 px-3 py-4 md:px-8">
+          <div>
+            <h1 className="text-lg font-bold text-[#14232b] md:text-2xl">Curtain track hardware, factory direct from Pune</h1>
+            <p className="text-sm text-[#4b5b63] md:text-base">Pick what you need, add it to the cart, and send the order on WhatsApp.</p>
+          </div>
+          <a
+            href={whatsappLink('Hi Glyde, I would like a quote.')}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="rounded-lg bg-[#1a7f45] px-4 py-2.5 text-sm font-bold text-white hover:bg-[#14663a]"
+          >
+            Quote on WhatsApp · {CONTACT.phoneDisplay}
+          </a>
+        </div>
+      </div>
+      <HomeProductGrid />
       <QuoteHero />
-      <ProductTable />
       <StoreBand />
     </motion.div>
   );
