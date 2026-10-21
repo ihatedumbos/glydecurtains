@@ -87,6 +87,7 @@ public class ProductServiceImpl implements ProductService {
 
         Product product = new Product();
         product.setName(request.getName());
+        product.setInternalName(blankToNull(request.getInternalName()));
         product.setSku(request.getSku());
         product.setBarcode(request.getBarcode());
         product.setShortDescription(request.getShortDescription());
@@ -107,7 +108,7 @@ public class ProductServiceImpl implements ProductService {
         product.setBasePrice(request.getBasePrice());
         product.setDiscountPercentage(request.getDiscountPercentage() != null ? request.getDiscountPercentage() : BigDecimal.ZERO);
         product.setOfferPrice(calculateOfferPrice(request.getBasePrice(), request.getDiscountPercentage()));
-        product.setStatus(ProductStatus.ACTIVE);
+        product.setStatus(request.getStatus() != null ? request.getStatus() : ProductStatus.ACTIVE);
         product.setIsFeatured(request.getIsFeatured() != null ? request.getIsFeatured() : false);
         product.setIsTrending(request.getIsTrending() != null ? request.getIsTrending() : false);
         product.setIsNewArrival(request.getIsNewArrival() != null ? request.getIsNewArrival() : false);
@@ -173,6 +174,8 @@ public class ProductServiceImpl implements ProductService {
         }
 
         if (request.getName() != null) product.setName(request.getName());
+        if (request.getInternalName() != null) product.setInternalName(blankToNull(request.getInternalName()));
+        if (request.getStatus() != null) product.setStatus(request.getStatus());
         if (request.getBarcode() != null) product.setBarcode(request.getBarcode());
         if (request.getShortDescription() != null) product.setShortDescription(request.getShortDescription());
         if (request.getLongDescription() != null) product.setLongDescription(request.getLongDescription());
@@ -490,6 +493,121 @@ public class ProductServiceImpl implements ProductService {
         translationService.deleteTranslations(ENTITY_TYPE_PRODUCT, productId);
     }
 
+    @Override
+    public ProductResponse duplicateProduct(Long id) {
+        Product source = productRepository.findById(id)
+                .orElseThrow(() -> new BusinessException(
+                        "Product not found with id: " + id,
+                        "PRODUCT_NOT_FOUND",
+                        HttpStatus.NOT_FOUND));
+
+        Product copy = new Product();
+        copy.setName(copyName(source.getName()));
+        copy.setInternalName(source.getInternalName() != null ? copyName(source.getInternalName()) : null);
+        copy.setSku(uniqueCopySku(source.getSku()));
+        copy.setShortDescription(source.getShortDescription());
+        copy.setLongDescription(source.getLongDescription());
+        copy.setCategoryId(source.getCategoryId());
+        copy.setSubCategoryId(source.getSubCategoryId());
+        copy.setCollectionId(source.getCollectionId());
+        copy.setBrand(source.getBrand());
+        copy.setMaterial(source.getMaterial());
+        copy.setPattern(source.getPattern());
+        copy.setColors(source.getColors());
+        copy.setSizes(source.getSizes());
+        copy.setLength(source.getLength());
+        copy.setWidth(source.getWidth());
+        copy.setHeight(source.getHeight());
+        copy.setWeight(source.getWeight());
+        copy.setStockQuantity(source.getStockQuantity() != null ? source.getStockQuantity() : 0);
+        copy.setLowStockThreshold(source.getLowStockThreshold());
+        copy.setBasePrice(source.getBasePrice() != null ? source.getBasePrice() : BigDecimal.ZERO);
+        copy.setDiscountPercentage(source.getDiscountPercentage());
+        copy.setOfferPrice(source.getOfferPrice());
+        // A copy stays off the website until the admin has edited it and switched it on.
+        copy.setStatus(ProductStatus.DEACTIVATED);
+        copy.setIsFeatured(false);
+        copy.setIsTrending(false);
+        copy.setIsNewArrival(source.getIsNewArrival());
+        copy.setIsBestSeller(false);
+        copy.setIsPremium(source.getIsPremium());
+        copy.setTags(source.getTags());
+        copy.setMetaTitle(source.getMetaTitle());
+        copy.setMetaDescription(source.getMetaDescription());
+        copy.setMetaKeywords(source.getMetaKeywords());
+
+        for (ProductSpecification spec : source.getSpecifications()) {
+            ProductSpecification s = new ProductSpecification();
+            s.setProduct(copy);
+            s.setSpecKey(spec.getSpecKey());
+            s.setSpecValue(spec.getSpecValue());
+            s.setSortOrder(spec.getSortOrder());
+            copy.getSpecifications().add(s);
+        }
+        for (ProductVariant variant : source.getVariants()) {
+            ProductVariant v = new ProductVariant();
+            v.setProduct(copy);
+            v.setMaterial(variant.getMaterial());
+            v.setSize(variant.getSize());
+            v.setColor(variant.getColor());
+            v.setPrice(variant.getPrice());
+            v.setStockQuantity(variant.getStockQuantity() != null ? variant.getStockQuantity() : 0);
+            copy.getVariants().add(v);
+        }
+        Product saved = productRepository.save(copy);
+
+        // Photos and videos are copied too, so the new item looks complete straight away.
+        for (ProductImage image : source.getImages()) {
+            ProductImage m = new ProductImage();
+            m.setProduct(saved);
+            m.setEntityType(image.getEntityType());
+            m.setEntityId(saved.getId());
+            m.setBase64Data(image.getBase64Data());
+            m.setMimeType(image.getMimeType());
+            m.setMediaType(image.getMediaType());
+            m.setDuration(image.getDuration());
+            m.setOriginalFilename(image.getOriginalFilename());
+            m.setWidth(image.getWidth());
+            m.setHeight(image.getHeight());
+            m.setIsThumbnail(image.getIsThumbnail());
+            m.setSortOrder(image.getSortOrder());
+            saved.getImages().add(m);
+        }
+        saved = productRepository.save(saved);
+
+        Map<String, Map<String, String>> translations = translationService.getAllTranslations(ENTITY_TYPE_PRODUCT, id);
+        if (translations != null) {
+            for (Map.Entry<String, Map<String, String>> entry : translations.entrySet()) {
+                if (entry.getValue() != null && !entry.getValue().isEmpty()) {
+                    translationService.saveTranslations(ENTITY_TYPE_PRODUCT, saved.getId(), entry.getKey(), entry.getValue());
+                }
+            }
+        }
+
+        logProductChange("PRODUCT_DUPLICATED", saved);
+        return mapToProductResponse(saved);
+    }
+
+    private static String copyName(String name) {
+        String base = name == null ? "" : name.trim();
+        String copy = base + " (copy)";
+        return copy.length() > 200 ? copy.substring(0, 200) : copy;
+    }
+
+    private String uniqueCopySku(String sku) {
+        String base = (sku == null || sku.isBlank() ? "GLYDE-ITEM" : sku.trim()) + "-COPY";
+        String candidate = base;
+        int n = 2;
+        while (productRepository.existsBySku(candidate)) {
+            candidate = base + "-" + n++;
+        }
+        return candidate;
+    }
+
+    private static String blankToNull(String value) {
+        return value == null || value.isBlank() ? null : value.trim();
+    }
+
     // --- Helper methods ---
 
     private BigDecimal calculateOfferPrice(BigDecimal basePrice, BigDecimal discountPercentage) {
@@ -592,6 +710,7 @@ public class ProductServiceImpl implements ProductService {
         return ProductResponse.builder()
                 .id(product.getId())
                 .name(product.getName())
+                .internalName(product.getInternalName())
                 .sku(product.getSku())
                 .barcode(product.getBarcode())
                 .shortDescription(product.getShortDescription())
@@ -724,6 +843,7 @@ public class ProductServiceImpl implements ProductService {
         return ProductDetailResponse.builder()
                 .id(product.getId())
                 .name(product.getName())
+                .internalName(product.getInternalName())
                 .sku(product.getSku())
                 .barcode(product.getBarcode())
                 .shortDescription(product.getShortDescription())

@@ -76,7 +76,10 @@ public class SearchServiceImpl implements SearchService {
                 .build();
 
         // Ordering comes from sortBy only; drop any Pageable sort so the two can't conflict.
-        return productService.getProducts(filter, PageRequest.of(pageable.getPageNumber(), pageable.getPageSize()));
+        PageResponse<ProductResponse> page = productService.getProducts(filter, PageRequest.of(pageable.getPageNumber(), pageable.getPageSize()));
+        // Search is public; the internal name stays in the admin panel.
+        page.getContent().forEach(p -> p.setInternalName(null));
+        return page;
     }
 
     @Override

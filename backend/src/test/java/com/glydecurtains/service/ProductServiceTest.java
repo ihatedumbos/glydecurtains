@@ -346,4 +346,91 @@ class ProductServiceTest {
             verify(productRepository).findAll(org.mockito.ArgumentMatchers.<org.springframework.data.jpa.domain.Specification<Product>>any(), eq(pageable));
         }
     }
+
+    @Nested
+    @DisplayName("Internal name, visibility and copying")
+    class InternalNameAndDuplicateTests {
+
+        @Test
+        @DisplayName("should save the internal name and hide the product when asked")
+        void updateProduct_withInternalNameAndStatus_shouldApplyBoth() {
+            ProductUpdateRequest request = ProductUpdateRequest.builder()
+                    .internalName("  SR-12 supplier  ")
+                    .status(ProductStatus.DEACTIVATED)
+                    .build();
+
+            when(productRepository.findById(1L)).thenReturn(Optional.of(sampleProduct));
+            when(productRepository.save(any(Product.class))).thenAnswer(invocation -> invocation.getArgument(0));
+
+            ProductResponse result = productService.updateProduct(1L, request);
+
+            assertThat(result.getInternalName()).isEqualTo("SR-12 supplier");
+            assertThat(result.getStatus()).isEqualTo(ProductStatus.DEACTIVATED);
+            assertThat(result.getName()).isEqualTo("Premium Silk Curtain");
+        }
+
+        @Test
+        @DisplayName("should copy a product with its prices and details, hidden, with a new code")
+        void duplicateProduct_shouldCopyEverythingAndStartHidden() {
+            sampleProduct.setInternalName("PSC internal");
+            sampleProduct.setSizes("[\"4 ft\",\"5 ft\"]");
+            sampleProduct.setColors("[\"White\"]");
+            com.glydecurtains.entity.ProductVariant variant = new com.glydecurtains.entity.ProductVariant();
+            variant.setProduct(sampleProduct);
+            variant.setSize("4 ft");
+            variant.setColor("White");
+            variant.setPrice(new BigDecimal("450"));
+            sampleProduct.getVariants().add(variant);
+            com.glydecurtains.entity.ProductSpecification spec = new com.glydecurtains.entity.ProductSpecification();
+            spec.setProduct(sampleProduct);
+            spec.setSpecKey("Material");
+            spec.setSpecValue("Aluminium");
+            sampleProduct.getSpecifications().add(spec);
+            com.glydecurtains.entity.ProductImage image = new com.glydecurtains.entity.ProductImage();
+            image.setProduct(sampleProduct);
+            image.setEntityType("product");
+            image.setEntityId(1L);
+            image.setBase64Data("/9j/abc");
+            image.setMimeType("image/jpeg");
+            image.setOriginalFilename("front.jpg");
+            image.setIsThumbnail(true);
+            sampleProduct.getImages().add(image);
+
+            when(productRepository.findById(1L)).thenReturn(Optional.of(sampleProduct));
+            when(productRepository.existsBySku("PSC-001-COPY")).thenReturn(true);
+            when(productRepository.existsBySku("PSC-001-COPY-2")).thenReturn(false);
+            when(productRepository.save(any(Product.class))).thenAnswer(invocation -> {
+                Product saved = invocation.getArgument(0);
+                if (saved.getId() == null) saved.setId(7L);
+                return saved;
+            });
+
+            ProductResponse result = productService.duplicateProduct(1L);
+
+            assertThat(result.getId()).isEqualTo(7L);
+            assertThat(result.getName()).isEqualTo("Premium Silk Curtain (copy)");
+            assertThat(result.getInternalName()).isEqualTo("PSC internal (copy)");
+            assertThat(result.getSku()).isEqualTo("PSC-001-COPY-2");
+            assertThat(result.getStatus()).isEqualTo(ProductStatus.DEACTIVATED);
+            assertThat(result.getVariantCount()).isEqualTo(1);
+            assertThat(result.getImageCount()).isEqualTo(1);
+
+            org.mockito.ArgumentCaptor<Product> captor = org.mockito.ArgumentCaptor.forClass(Product.class);
+            verify(productRepository, atLeastOnce()).save(captor.capture());
+            Product copy = captor.getValue();
+            assertThat(copy).isNotSameAs(sampleProduct);
+            assertThat(copy.getSpecifications()).singleElement().satisfies(s -> {
+                assertThat(s.getSpecKey()).isEqualTo("Material");
+                assertThat(s.getProduct()).isSameAs(copy);
+            });
+            assertThat(copy.getVariants()).singleElement().satisfies(v -> assertThat(v.getPrice()).isEqualByComparingTo("450"));
+            assertThat(copy.getImages()).singleElement().satisfies(m -> {
+                assertThat(m.getEntityId()).isEqualTo(7L);
+                assertThat(m.getProduct()).isSameAs(copy);
+            });
+            // The original is untouched.
+            assertThat(sampleProduct.getStatus()).isEqualTo(ProductStatus.ACTIVE);
+            assertThat(sampleProduct.getImages()).hasSize(1);
+        }
+    }
 }

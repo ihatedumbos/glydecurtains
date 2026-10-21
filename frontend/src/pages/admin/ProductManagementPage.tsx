@@ -1,9 +1,10 @@
 import { useEffect, useMemo, useState } from 'react';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
-import { Button, InputAdornment, MenuItem, Skeleton, Switch, TextField, Tooltip } from '@mui/material';
+import { Button, IconButton, InputAdornment, MenuItem, Skeleton, Switch, TextField, Tooltip } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import SearchIcon from '@mui/icons-material/Search';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
+import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import axiosInstance from '@/api/axiosInstance';
 import { EmptyState, PageHeader, Pill } from '@/components/admin/AdminUi';
 import { formatPrice } from '@/utils/price';
@@ -11,6 +12,7 @@ import { formatPrice } from '@/utils/price';
 interface ProductRow {
   id: number;
   name: string;
+  internalName?: string | null;
   sku: string;
   categoryId?: number | null;
   categoryName?: string | null;
@@ -69,6 +71,7 @@ export default function ProductManagementPage() {
   const [products, setProducts] = useState<ProductRow[] | null>(null);
   const [categories, setCategories] = useState<Category[]>([]);
   const [toggling, setToggling] = useState<number | null>(null);
+  const [copying, setCopying] = useState<number | null>(null);
 
   useEffect(() => {
     axiosInstance.get('/products', { params: { page: 0, size: 500 } })
@@ -103,7 +106,7 @@ export default function ProductManagementPage() {
         if (show === 'no-price' && hasPrice(p)) return false;
         if (show === 'hidden' && p.status === 'ACTIVE') return false;
         if (categoryFilter && String(p.categoryId) !== categoryFilter) return false;
-        if (term && !`${p.name} ${p.sku} ${p.categoryName ?? ''} ${p.subCategoryName ?? ''}`.toLowerCase().includes(term)) return false;
+        if (term && !`${p.name} ${p.internalName ?? ''} ${p.sku} ${p.categoryName ?? ''} ${p.subCategoryName ?? ''}`.toLowerCase().includes(term)) return false;
         return true;
       })
       .sort((a, b) => (a.categoryName ?? '').localeCompare(b.categoryName ?? '') || a.name.localeCompare(b.name, undefined, { numeric: true }));
@@ -120,6 +123,18 @@ export default function ProductManagementPage() {
       // The request interceptor shows the error.
     } finally {
       setToggling(null);
+    }
+  };
+
+  /** Copies the product with its details, prices and photos, then opens the copy to edit. */
+  const copyProduct = async (product: ProductRow) => {
+    setCopying(product.id);
+    try {
+      const res = await axiosInstance.post(`/products/${product.id}/duplicate`);
+      navigate(`/admin/products/${res.data.data.id}?copied=1`);
+    } catch {
+      // The request interceptor shows the error.
+      setCopying(null);
     }
   };
 
@@ -155,7 +170,7 @@ export default function ProductManagementPage() {
       <div className="mb-4 flex flex-col gap-3 sm:flex-row">
         <TextField
           size="small"
-          placeholder="Search by name or code"
+          placeholder="Search by name, internal name or code"
           value={search}
           onChange={(e) => setSearch(e.target.value)}
           InputProps={{ startAdornment: <InputAdornment position="start"><SearchIcon fontSize="small" /></InputAdornment> }}
@@ -168,11 +183,11 @@ export default function ProductManagementPage() {
       </div>
 
       <div className="overflow-hidden rounded-xl border border-[#14232b]/10 bg-white">
-        <div className="hidden grid-cols-[56px_minmax(0,1fr)_150px_170px_96px_24px] gap-x-4 border-b border-[#14232b]/10 bg-[#f7f8f9] px-4 py-2.5 text-xs font-semibold uppercase tracking-[0.08em] text-[#4b5b63] md:grid">
+        <div className="hidden grid-cols-[56px_minmax(0,1fr)_150px_170px_136px_24px] gap-x-4 border-b border-[#14232b]/10 bg-[#f7f8f9] px-4 py-2.5 text-xs font-semibold uppercase tracking-[0.08em] text-[#4b5b63] md:grid">
           <span className="col-span-2">Product</span>
           <span>Price</span>
           <span>Photos and options</span>
-          <span>On website</span>
+          <span>Copy · On website</span>
           <span />
         </div>
 
@@ -193,7 +208,7 @@ export default function ProductManagementPage() {
               return (
                 <li
                   key={product.id}
-                  className={`grid cursor-pointer grid-cols-[56px_minmax(0,1fr)_auto] items-center gap-x-4 gap-y-1 px-4 py-3 transition-colors hover:bg-[#f7f8f9] md:grid-cols-[56px_minmax(0,1fr)_150px_170px_96px_24px] ${shown ? '' : 'bg-[#f7f8f9]/60'}`}
+                  className={`grid cursor-pointer grid-cols-[56px_minmax(0,1fr)_auto] items-center gap-x-4 gap-y-1 px-4 py-3 transition-colors hover:bg-[#f7f8f9] md:grid-cols-[56px_minmax(0,1fr)_150px_170px_136px_24px] ${shown ? '' : 'bg-[#f7f8f9]/60'}`}
                   onClick={() => navigate(`/admin/products/${product.id}`)}
                 >
                   <div className="row-span-3 h-14 w-14 self-start overflow-hidden rounded-lg border border-[#14232b]/10 bg-[#f3f5f6] md:row-span-1 md:self-center">
@@ -201,6 +216,7 @@ export default function ProductManagementPage() {
                   </div>
                   <div className="col-start-2 row-start-1 min-w-0">
                     <p className={`truncate font-medium ${shown ? '' : 'text-[#4b5b63]'}`}>{product.name}</p>
+                    {product.internalName && <p className="truncate text-xs text-[#14232b]">Internal: {product.internalName}</p>}
                     <p className="truncate text-xs text-[#4b5b63]">
                       {[product.categoryName, product.subCategoryName].filter(Boolean).join(' › ')}
                       <span className="ml-2 font-mono">{product.sku}</span>
@@ -213,7 +229,19 @@ export default function ProductManagementPage() {
                     {media ? <span>{media}</span> : <Pill tone="attention">No photo yet</Pill>}
                     {options && <span>{options}</span>}
                   </div>
-                  <div className="col-start-3 row-start-1 md:col-start-5" onClick={(e) => e.stopPropagation()}>
+                  <div className="col-start-3 row-start-1 flex items-center md:col-start-5" onClick={(e) => e.stopPropagation()}>
+                    <Tooltip title="Make a copy to edit">
+                      <span>
+                        <IconButton
+                          size="small"
+                          disabled={copying !== null}
+                          onClick={() => copyProduct(product)}
+                          aria-label={`Make a copy of ${product.name}`}
+                        >
+                          <ContentCopyIcon fontSize="small" />
+                        </IconButton>
+                      </span>
+                    </Tooltip>
                     <Tooltip title={shown ? 'Shown on the website. Switch off to hide it.' : 'Hidden from the website. Switch on to show it.'}>
                       <Switch
                         checked={shown}

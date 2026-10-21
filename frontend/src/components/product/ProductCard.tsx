@@ -136,11 +136,6 @@ export default function ProductCard({ product, variants = [], onClick }: Product
             )}
           </Box>
 
-          {product.stockQuantity === 0 && (
-            <Typography variant="caption" color="error">
-              Out of Stock
-            </Typography>
-          )}
         </CardContent>
 
         {/* Quick-View Popup (animated entrance/exit) */}

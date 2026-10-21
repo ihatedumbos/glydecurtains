@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Box } from '@mui/material';
+import { useLocation } from 'react-router-dom';
 import PageTransition from '@/components/common/PageTransition';
 import axiosInstance from '@/api/axiosInstance';
 import Header from './Header';
@@ -61,6 +62,7 @@ interface MainLayoutProps {
 export default function MainLayout({ categories: providedCategories }: MainLayoutProps) {
   const [categories, setCategories] = useState<Category[]>(providedCategories || fallbackCategories);
   const dispatch = useAppDispatch();
+  const { pathname } = useLocation();
 
   // Contact details and logo from Business details in the admin panel.
   useEffect(() => {
@@ -134,7 +136,8 @@ export default function MainLayout({ categories: providedCategories }: MainLayou
         <PageTransition />
       </Box>
       <Footer />
-      <WhatsAppButton />
+      {/* The cart has its own WhatsApp button; the floating one would cover it on phones. */}
+      {pathname !== '/cart' && <WhatsAppButton />}
     </Box>
   );
 }

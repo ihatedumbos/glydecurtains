@@ -317,31 +317,6 @@ export default function ProductFilterSidebar({
         </AccordionDetails>
       </Accordion>
 
-      {/* Availability */}
-      <Accordion disableGutters elevation={0}>
-        <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-          <Typography fontWeight={500}>Availability</Typography>
-        </AccordionSummary>
-        <AccordionDetails sx={{ pt: 0 }}>
-          <FormGroup>
-            <FormControlLabel
-              control={
-                <Checkbox
-                  checked={Boolean(filters.inStock)}
-                  onChange={() =>
-                    onFilterChange({
-                      ...filters,
-                      inStock: filters.inStock ? undefined : true,
-                    })
-                  }
-                  size="small"
-                />
-              }
-              label={<Typography variant="body2">In Stock</Typography>}
-            />
-          </FormGroup>
-        </AccordionDetails>
-      </Accordion>
     </Box>
   );
 }

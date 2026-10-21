@@ -22,6 +22,13 @@ public class ProductCreateRequest {
     @NotBlank(message = "SKU is required")
     private String sku;
 
+    /** Admin-only name; customers always see {@code name}. */
+    @Size(max = 200, message = "Internal name must not exceed 200 characters")
+    private String internalName;
+
+    /** ACTIVE shows the product on the website; DEACTIVATED or ARCHIVED hides it. */
+    private com.glydecurtains.entity.enums.ProductStatus status;
+
     private String barcode;
 
     @Size(max = 500, message = "Short description must not exceed 500 characters")

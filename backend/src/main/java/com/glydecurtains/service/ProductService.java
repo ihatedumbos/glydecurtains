@@ -21,6 +21,9 @@ public interface ProductService {
 
     void deleteProduct(Long id);
 
+    /** Copies a product with its prices, details, photos and translations. The copy starts hidden. */
+    ProductResponse duplicateProduct(Long id);
+
     ProductResponse archiveProduct(Long id);
 
     ProductResponse activateProduct(Long id);

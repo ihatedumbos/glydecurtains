@@ -48,6 +48,13 @@ public class ProductController {
         return ResponseEntity.ok(ApiResponse.noContent());
     }
 
+    @PostMapping("/products/{id}/duplicate")
+    @RequiresPermission(entity = "products", operation = "CREATE")
+    public ResponseEntity<ApiResponse<ProductResponse>> duplicateProduct(@PathVariable Long id) {
+        ProductResponse response = productService.duplicateProduct(id);
+        return ResponseEntity.status(201).body(ApiResponse.created("Product copied", response));
+    }
+
     @PutMapping("/products/{id}/archive")
     @RequiresPermission(entity = "products", operation = "UPDATE")
     public ResponseEntity<ApiResponse<ProductResponse>> archiveProduct(@PathVariable Long id) {
@@ -132,6 +139,7 @@ public class ProductController {
         }
         filter.setStatus(com.glydecurtains.entity.enums.ProductStatus.ACTIVE);
         PageResponse<ProductResponse> response = productService.getProducts(filter, pageable);
+        hideInternalNames(response.getContent());
         return ResponseEntity.ok(ApiResponse.success(response));
     }
 
@@ -140,6 +148,7 @@ public class ProductController {
             @PathVariable Long id,
             @RequestHeader(value = "Accept-Language", required = false) String language) {
         ProductDetailResponse response = productService.getProduct(id, language);
+        response.setInternalName(null);
         return ResponseEntity.ok(ApiResponse.success(response));
     }
 
@@ -148,12 +157,14 @@ public class ProductController {
     @GetMapping("/products/{id}/related")
     public ResponseEntity<ApiResponse<List<ProductResponse>>> getRelatedProducts(@PathVariable Long id) {
         List<ProductResponse> response = productService.getRelatedProducts(id);
+        hideInternalNames(response);
         return ResponseEntity.ok(ApiResponse.success(response));
     }
 
     @GetMapping("/products/{id}/similar")
     public ResponseEntity<ApiResponse<List<ProductResponse>>> getSimilarProducts(@PathVariable Long id) {
         List<ProductResponse> response = productService.getSimilarProducts(id);
+        hideInternalNames(response);
         return ResponseEntity.ok(ApiResponse.success(response));
     }
 
@@ -182,5 +193,12 @@ public class ProductController {
     public ResponseEntity<ApiResponse<Void>> deleteProductTranslations(@PathVariable Long id) {
         productService.deleteProductTranslations(id);
         return ResponseEntity.ok(ApiResponse.success("Translations deleted successfully", null));
+    }
+
+    /** The internal name is for the shop only; public endpoints never send it. */
+    private static void hideInternalNames(List<ProductResponse> products) {
+        if (products != null) {
+            products.forEach(p -> p.setInternalName(null));
+        }
     }
 }
