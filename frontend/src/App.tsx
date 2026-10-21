@@ -1,4 +1,5 @@
-import { createBrowserRouter, RouterProvider } from 'react-router-dom';
+import { useEffect } from 'react';
+import { createBrowserRouter, RouterProvider, useLocation, useNavigationType } from 'react-router-dom';
 import { Provider } from 'react-redux';
 import { store } from '@/store/store';
 import { ThemeProvider } from '@/theme';
@@ -11,7 +12,17 @@ function SessionTimeoutProvider({ children }: { children: React.ReactNode }) {
   return <>{children}</>;
 }
 
+/** Opens every new page at the top. Back and forward keep the browser's own scroll position. */
+function useScrollToTopOnNewPage() {
+  const { pathname } = useLocation();
+  const navigationType = useNavigationType();
+  useEffect(() => {
+    if (navigationType !== 'POP') window.scrollTo(0, 0);
+  }, [pathname, navigationType]);
+}
+
 function Root() {
+  useScrollToTopOnNewPage();
   return (
     <SessionTimeoutProvider>
       <div className="min-h-screen">
