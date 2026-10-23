@@ -6,7 +6,7 @@ services:
     plan: free
     buildCommand: ./mvnw clean package -DskipTests
     startCommand: java -Dserver.port=$PORT -jar target/*.jar
-    customDomains:
+    domains:
       - api.glydecurtains.com
     envVars:
       - key: JAVA_VERSION
@@ -30,9 +30,15 @@ static_sites:
     buildCommand: npm install && npm run build
     staticPublishPath: dist
     pullRequestPreviewsEnabled: true
-    customDomains:
+    domains:
       - glydecurtains.com
       - www.glydecurtains.com
+    # Single-page app: send every path to index.html so deep links and page
+    # refreshes (e.g. /products/12, /admin/dashboard) don't return 404.
+    routes:
+      - type: rewrite
+        source: /*
+        destination: /index.html
     envVars:
       - key: VITE_API_BASE_URL
         value: https://api.glydecurtains.com
