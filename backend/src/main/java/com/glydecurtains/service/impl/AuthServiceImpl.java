@@ -38,7 +38,7 @@ public class AuthServiceImpl implements AuthService {
             "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&^#()_+\\-=\\[\\]{};':\"\\\\|,.<>\\/~`])[A-Za-z\\d@$!%*?&^#()_+\\-=\\[\\]{};':\"\\\\|,.<>\\/~`]{8,}$"
     );
 
-    private static final int MAX_FAILED_ATTEMPTS = 5;
+    private static final int MAX_FAILED_ATTEMPTS = 10;
     private static final long LOCKOUT_DURATION_MS = 15 * 60 * 1000L; // 15 minutes
 
     private final UserRepository userRepository;

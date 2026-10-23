@@ -22,7 +22,8 @@ public class RateLimitFilter extends OncePerRequestFilter {
 
     private static final Logger logger = LoggerFactory.getLogger(RateLimitFilter.class);
     private static final String LOGIN_PATH = "/api/auth/login";
-    private static final int MAX_ATTEMPTS = 5;
+    // Only failed logins count, so the owner signing in on several devices never hits this.
+    private static final int MAX_FAILED_ATTEMPTS = 20;
     private static final long WINDOW_MS = 15 * 60 * 1000L; // 15 minutes
 
     private final ConcurrentHashMap<String, List<Long>> attemptsByIp = new ConcurrentHashMap<>();
@@ -49,8 +50,11 @@ public class RateLimitFilter extends OncePerRequestFilter {
             return;
         }
 
-        recordAttempt(clientIp);
         filterChain.doFilter(request, response);
+
+        if (response.getStatus() >= 400) {
+            recordAttempt(clientIp);
+        }
     }
 
     private boolean isRateLimited(String clientIp) {
@@ -64,7 +68,7 @@ public class RateLimitFilter extends OncePerRequestFilter {
                 .filter(timestamp -> timestamp > cutoff)
                 .count();
 
-        return recentAttempts >= MAX_ATTEMPTS;
+        return recentAttempts >= MAX_FAILED_ATTEMPTS;
     }
 
     private void recordAttempt(String clientIp) {
