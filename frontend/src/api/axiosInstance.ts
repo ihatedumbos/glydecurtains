@@ -38,6 +38,47 @@ axiosInstance.interceptors.request.use(
   (error) => Promise.reject(error),
 );
 
+// ─── Server Wake-up Retry ────────────────────────────────────────────────────
+// The backend runs on Render's free plan, which sleeps after 15 idle minutes.
+// While it starts again (up to a few minutes) Render answers 429/502/503/504 or
+// drops the connection. Page loads (GET requests) keep retrying quietly until
+// it is up, instead of showing an error straight away.
+
+const WAKE_UP_STATUSES = [429, 502, 503, 504];
+const WAKE_UP_MAX_WAIT_MS = 4 * 60 * 1000;
+const WAKE_UP_TOAST_ID = 'server-waking-up';
+
+type RetryableConfig = InternalAxiosRequestConfig & { _wakeStartedAt?: number; _wakeAttempt?: number };
+
+function isServerWaking(error: AxiosError): boolean {
+  const config = error.config as RetryableConfig | undefined;
+  if (!config || (config.method ?? 'get').toLowerCase() !== 'get') return false;
+  if (error.response) return WAKE_UP_STATUSES.includes(error.response.status);
+  return error.code !== AxiosError.ERR_CANCELED;
+}
+
+async function retryWhileWaking(error: AxiosError) {
+  const config = error.config as RetryableConfig;
+  config._wakeStartedAt ??= Date.now();
+  config._wakeAttempt = (config._wakeAttempt ?? 0) + 1;
+  if (Date.now() - config._wakeStartedAt > WAKE_UP_MAX_WAIT_MS) return null;
+
+  const alreadyShown = store.getState().ui.toasts.some((t) => t.id === WAKE_UP_TOAST_ID);
+  if (!alreadyShown) {
+    store.dispatch(
+      addToast({
+        id: WAKE_UP_TOAST_ID,
+        type: 'info',
+        message: i18n.t('common:errors.serverWakingUp', 'Loading, one moment please…'),
+      }),
+    );
+  }
+
+  const delayMs = Math.min(3000 * config._wakeAttempt, 15000);
+  await new Promise((resolve) => setTimeout(resolve, delayMs));
+  return axiosInstance(config);
+}
+
 // ─── Response Interceptor ───────────────────────────────────────────────────
 
 let isRefreshing = false;
@@ -61,6 +102,11 @@ axiosInstance.interceptors.response.use(
   (response) => response,
   async (error: AxiosError) => {
     const originalRequest = error.config as InternalAxiosRequestConfig & { _retry?: boolean };
+
+    if (isServerWaking(error)) {
+      const retried = await retryWhileWaking(error);
+      if (retried) return retried;
+    }
 
     // Handle 401 - attempt token refresh
     if (error.response?.status === 401 && !originalRequest._retry) {
