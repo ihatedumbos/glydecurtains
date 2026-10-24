@@ -1,5 +1,8 @@
 # Home page photos
 
+The three images here are original illustrations, not photographs. They are stand-ins: replace
+them with real photos by saving over the same file names.
+
 Drop JPGs here with these exact names. Any that are missing show a neutral curtain-fold
 pattern instead, so the page never looks broken. Aim for under 300 KB each (resize to the
 width below and save at ~80% quality) so the page stays fast on mobile data.
