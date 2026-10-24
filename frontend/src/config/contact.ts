@@ -18,7 +18,7 @@ export const CONTACT = {
    * Google Business Profile (business.google.com). Paste the profile's "Share" link and its
    * "Ask for reviews" link here, or under Business details in the admin panel. Empty hides them.
    */
-  googleProfileUrl: '',
+  googleProfileUrl: 'https://share.google/35HQKTZzWUd3wUgzo',
   googleReviewUrl: '',
 };
 
