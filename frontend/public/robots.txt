@@ -1,0 +1,14 @@
+User-agent: *
+Disallow: /admin
+Disallow: /login
+Disallow: /register
+Disallow: /forgot-password
+Disallow: /reset-password
+Disallow: /cart
+Disallow: /checkout
+Disallow: /wishlist
+Disallow: /orders
+Disallow: /profile
+
+# Built by the backend from the live product list, so new products appear without a redeploy.
+Sitemap: https://glydecurtains-backend.onrender.com/api/sitemap.xml

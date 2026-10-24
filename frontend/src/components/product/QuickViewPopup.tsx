@@ -196,7 +196,7 @@ export default function QuickViewPopup({ product, open, variants = [] }: QuickVi
               size="small"
               fullWidth
               component="a"
-              href={productEnquiryLink(product, displayPrice)}
+              href={productEnquiryLink(product, { price: displayPrice, size: selectedSize || null, color: selectedColor || null })}
               target="_blank"
               rel="noopener noreferrer"
               onClick={(e: React.MouseEvent) => e.stopPropagation()}

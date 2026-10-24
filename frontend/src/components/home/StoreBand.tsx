@@ -1,10 +1,10 @@
-import { CONTACT, useContact } from '@/config/contact';
+import { CONTACT, googleMapsLink, useContact } from '@/config/contact';
 
 
 /** Dark band closing the home page: where the Pune store is, with directions and a call button. */
 export default function StoreBand() {
   useContact();
-  const directionsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(CONTACT.address)}`;
+  const directionsUrl = googleMapsLink();
   return (
     <section className="bg-[#14232b] text-[#eef2f4]">
       <div className="mx-auto grid max-w-[1280px] items-center gap-8 px-4 py-12 md:grid-cols-2 md:px-8 md:py-14">
@@ -27,6 +27,16 @@ export default function StoreBand() {
           >
             Call {CONTACT.phoneDisplay}
           </a>
+          {CONTACT.googleReviewUrl && (
+            <a
+              href={CONTACT.googleReviewUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="rounded-lg border border-white/40 px-5 py-3.5 font-bold text-white hover:bg-white/10"
+            >
+              Rate us on Google
+            </a>
+          )}
         </div>
       </div>
     </section>

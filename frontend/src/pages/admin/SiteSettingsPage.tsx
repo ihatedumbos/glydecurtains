@@ -45,6 +45,8 @@ interface SocialLinks {
   pinterest: string;
   youtube: string;
   linkedin: string;
+  googleProfile: string;
+  googleReview: string;
 }
 
 interface LogoField {
@@ -73,6 +75,8 @@ const EMPTY_SOCIAL_LINKS: SocialLinks = {
   pinterest: '',
   youtube: '',
   linkedin: '',
+  googleProfile: '',
+  googleReview: '',
 };
 
 // ─── Component ──────────────────────────────────────────────────────────────
@@ -368,6 +372,26 @@ export default function SiteSettingsPage() {
               value={address}
               onChange={(e) => setAddress(e.target.value)}
               placeholder="123 Main Street, City, State, ZIP"
+            />
+          </Grid>
+          <Grid item xs={12} sm={6}>
+            <TextField
+              label="Google Business Profile link"
+              fullWidth
+              value={socialLinks.googleProfile}
+              onChange={(e) => setSocialLinks((links) => ({ ...links, googleProfile: e.target.value.trim() }))}
+              placeholder="https://maps.app.goo.gl/..."
+              helperText="From your profile on Google: Share, then Copy link"
+            />
+          </Grid>
+          <Grid item xs={12} sm={6}>
+            <TextField
+              label="Google review link"
+              fullWidth
+              value={socialLinks.googleReview}
+              onChange={(e) => setSocialLinks((links) => ({ ...links, googleReview: e.target.value.trim() }))}
+              placeholder="https://g.page/r/.../review"
+              helperText="From your profile on Google: Ask for reviews"
             />
           </Grid>
         </Grid>

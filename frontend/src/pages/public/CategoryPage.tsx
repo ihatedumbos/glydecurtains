@@ -5,6 +5,7 @@ import { Link as RouterLink, useParams, useNavigate, useSearchParams } from 'rea
 import axiosInstance from '@/api/axiosInstance';
 import ProductCard from '@/components/product/ProductCard';
 import type { Product } from '@/store/slices/productSlice';
+import { usePageMeta } from '@/hooks/usePageMeta';
 
 interface CategoryNode {
   id: number;
@@ -26,6 +27,7 @@ export default function CategoryPage() {
   const [listingQuery, setListingQuery] = useState('');
   const [categoryName, setCategoryName] = useState('Category');
   const [loading, setLoading] = useState(true);
+  usePageMeta(loading ? undefined : categoryName);
 
   useEffect(() => {
     let active = true;

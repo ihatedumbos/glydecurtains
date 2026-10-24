@@ -1,4 +1,7 @@
+import { usePageMeta } from '@/hooks/usePageMeta';
+
 export default function NotFoundPage() {
+  usePageMeta('Page not found');
   return (
     <div className="flex flex-col items-center justify-center min-h-[60vh] p-4">
       <h1 className="text-4xl font-bold mb-2">404</h1>

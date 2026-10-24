@@ -3,12 +3,14 @@ import { useParams } from 'react-router-dom';
 import { Box, Typography, CircularProgress, Container } from '@mui/material';
 import axiosInstance from '@/api/axiosInstance';
 import type { StaticPage as StaticPageType } from '@/store/slices/cmsSlice';
+import { usePageMeta } from '@/hooks/usePageMeta';
 
 export default function StaticPage() {
   const { slug } = useParams<{ slug: string }>();
   const [page, setPage] = useState<StaticPageType | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  usePageMeta(page?.title ?? (error ? 'Page not found' : undefined));
 
   useEffect(() => {
     if (!slug) return;

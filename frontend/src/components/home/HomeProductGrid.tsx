@@ -189,7 +189,7 @@ function Card({ product }: { product: ProductTile }) {
             </button>
           )}
           <a
-            href={productEnquiryLink(product, price)}
+            href={productEnquiryLink(product, { price })}
             target="_blank"
             rel="noopener noreferrer"
             aria-label={`Ask about ${product.name} on WhatsApp`}
