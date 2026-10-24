@@ -9,11 +9,12 @@ import {
   CircularProgress,
 } from '@mui/material';
 import WhatsAppIcon from '@mui/icons-material/WhatsApp';
+import PictureAsPdfIcon from '@mui/icons-material/PictureAsPdf';
 import PhoneIcon from '@mui/icons-material/Phone';
 import EmailIcon from '@mui/icons-material/Email';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
 import axiosInstance from '@/api/axiosInstance';
-import { CONTACT, whatsappLink, useContact } from '@/config/contact';
+import { CONTACT, whatsappLink, useContact, catalogueUrl } from '@/config/contact';
 
 interface ContactFormData {
   name: string;
@@ -145,6 +146,17 @@ export default function ContactPage() {
           sx={{ textTransform: 'none', fontWeight: 600, bgcolor: '#25D366', '&:hover': { bgcolor: '#1ebe5a' } }}
         >
           Chat on WhatsApp
+        </Button>
+        <Button
+          variant="outlined"
+          size="large"
+          href={catalogueUrl()}
+          target="_blank"
+          rel="noopener noreferrer"
+          startIcon={<PictureAsPdfIcon />}
+          sx={{ textTransform: 'none', fontWeight: 600 }}
+        >
+          Download our catalogue (PDF)
         </Button>
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
           <PhoneIcon fontSize="small" color="action" />
