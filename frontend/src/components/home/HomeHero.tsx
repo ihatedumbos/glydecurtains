@@ -56,7 +56,7 @@ export default function HomeHero() {
             src="/home-photos/hero.jpg"
             alt="A curtain track being fitted in a bright living room"
             priority
-            className="aspect-[16/11] w-full rounded-2xl shadow-[0_18px_44px_rgba(20,35,43,0.18)] md:aspect-[4/4.2]"
+            className="aspect-[16/11] w-full rounded-2xl shadow-[0_18px_44px_rgba(20,35,43,0.18)] md:aspect-[4/3.4]"
           />
           <div className="absolute bottom-3 left-3 right-3 rounded-xl bg-white/95 px-4 py-3 shadow-[0_6px_20px_rgba(20,35,43,0.15)] backdrop-blur sm:right-auto sm:max-w-[320px] md:bottom-5 md:left-5">
             <p className="text-sm font-bold text-[#14232b]">Tell us what you need</p>

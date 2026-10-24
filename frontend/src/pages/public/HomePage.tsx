@@ -10,6 +10,7 @@ import DesignToggle from '@/components/home/DesignToggle';
 import { useHomeDesign } from '@/components/home/useHomeDesign';
 import StoreBand from '@/components/home/StoreBand';
 import HomeHero from '@/components/home/HomeHero';
+import LayeredPages from '@/components/home/LayeredPages';
 import AudienceSplit from '@/components/home/AudienceSplit';
 import HowItWorks from '@/components/home/HowItWorks';
 
@@ -73,22 +74,21 @@ export default function HomePage() {
       )}
       <DesignToggle value={design} onChange={setDesign} />
       {design === 'new' ? (
-        <>
-          {/* Layered scroll: the hero stays put on desktop while the rest of the page slides up over it. */}
-          <div className="md:sticky md:top-[76px]">
-            <HomeHero />
-          </div>
-          <div className="relative z-10 -mt-5 rounded-t-3xl bg-[#f3f5f6] shadow-[0_-14px_36px_rgba(20,35,43,0.16)] md:-mt-0">
-            <AudienceSplit />
-            {/* scroll-mt clears the sticky site header when "Shop all products" jumps here. */}
-            <div id="products" className="scroll-mt-16 md:scroll-mt-[76px]">
-              <HomeProductGrid />
-            </div>
-            <HowItWorks />
-            <QuoteHero />
-            <StoreBand />
-          </div>
-        </>
+        <LayeredPages
+          under={<HomeHero />}
+          over={
+            <>
+              <AudienceSplit />
+              {/* scroll-mt clears the sticky site header when "Shop all products" jumps here. */}
+              <div id="products" className="scroll-mt-16 md:scroll-mt-[76px]">
+                <HomeProductGrid />
+              </div>
+              <HowItWorks />
+              <QuoteHero />
+              <StoreBand />
+            </>
+          }
+        />
       ) : (
         <>
           <div className="border-b border-[#dbe1e4] bg-white">
