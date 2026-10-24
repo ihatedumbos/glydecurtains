@@ -6,12 +6,17 @@ import { ScrollingTicker } from '@/components/cms';
 import QuoteHero from '@/components/home/QuoteHero';
 import HomeProductGrid from '@/components/home/HomeProductGrid';
 import { CONTACT, whatsappLink, useContact } from '@/config/contact';
+import DesignToggle from '@/components/home/DesignToggle';
+import { useHomeDesign } from '@/components/home/useHomeDesign';
 import StoreBand from '@/components/home/StoreBand';
+import HomeHero from '@/components/home/HomeHero';
+import AudienceSplit from '@/components/home/AudienceSplit';
+import HowItWorks from '@/components/home/HowItWorks';
 
 /**
- * Home page: a one-line intro, then every product as a large shop-style card, then the
- * WhatsApp quote form and the Pune store. Only the announcement ticker still comes from
- * the CMS, so it can be edited from the admin panel.
+ * Home page: a photo hero, the two audiences (homes and trade), every product as a large
+ * shop-style card, how ordering works, then the WhatsApp quote form and the Pune store.
+ * Only the announcement ticker still comes from the CMS, so it can be edited from the admin panel.
  */
 /** The API sends a section's config as a JSON string; older data may already be an object. */
 function tickerConfig(section?: HomepageSection): Record<string, unknown> {
@@ -29,6 +34,7 @@ function tickerConfig(section?: HomepageSection): Record<string, unknown> {
 export default function HomePage() {
   const [tickerSection, setTickerSection] = useState<HomepageSection | undefined>();
   const [tickerHidden, setTickerHidden] = useState(false);
+  const [design, setDesign] = useHomeDesign();
 
   useEffect(() => {
     let cancelled = false;
@@ -65,25 +71,47 @@ export default function HomePage() {
           speed={typeof ticker.speed === 'number' ? ticker.speed : undefined}
         />
       )}
-      <div className="border-b border-[#dbe1e4] bg-white">
-        <div className="mx-auto flex max-w-[1440px] flex-wrap items-center justify-between gap-3 px-3 py-4 md:px-8">
-          <div>
-            <h1 className="text-lg font-bold text-[#14232b] md:text-2xl">Curtain track hardware, factory direct from Pune</h1>
-            <p className="text-sm text-[#4b5b63] md:text-base">Pick what you need, add it to the cart, and send the order on WhatsApp.</p>
+      <DesignToggle value={design} onChange={setDesign} />
+      {design === 'new' ? (
+        <>
+          {/* Layered scroll: the hero stays put on desktop while the rest of the page slides up over it. */}
+          <div className="md:sticky md:top-[76px]">
+            <HomeHero />
           </div>
-          <a
-            href={whatsappLink('Hi Glyde, I would like a quote.')}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="rounded-lg bg-[#1a7f45] px-4 py-2.5 text-sm font-bold text-white hover:bg-[#14663a]"
-          >
-            Quote on WhatsApp · {CONTACT.phoneDisplay}
-          </a>
-        </div>
-      </div>
-      <HomeProductGrid />
-      <QuoteHero />
-      <StoreBand />
+          <div className="relative z-10 -mt-5 rounded-t-3xl bg-[#f3f5f6] shadow-[0_-14px_36px_rgba(20,35,43,0.16)] md:-mt-0">
+            <AudienceSplit />
+            {/* scroll-mt clears the sticky site header when "Shop all products" jumps here. */}
+            <div id="products" className="scroll-mt-16 md:scroll-mt-[76px]">
+              <HomeProductGrid />
+            </div>
+            <HowItWorks />
+            <QuoteHero />
+            <StoreBand />
+          </div>
+        </>
+      ) : (
+        <>
+          <div className="border-b border-[#dbe1e4] bg-white">
+            <div className="mx-auto flex max-w-[1440px] flex-wrap items-center justify-between gap-3 px-3 py-4 md:px-8">
+              <div>
+                <h1 className="text-lg font-bold text-[#14232b] md:text-2xl">Curtain track hardware, factory direct from Pune</h1>
+                <p className="text-sm text-[#4b5b63] md:text-base">Pick what you need, add it to the cart, and send the order on WhatsApp.</p>
+              </div>
+              <a
+                href={whatsappLink('Hi Glyde, I would like a quote.')}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="rounded-lg bg-[#1a7f45] px-4 py-2.5 text-sm font-bold text-white hover:bg-[#14663a]"
+              >
+                Quote on WhatsApp · {CONTACT.phoneDisplay}
+              </a>
+            </div>
+          </div>
+          <HomeProductGrid />
+          <QuoteHero />
+          <StoreBand />
+        </>
+      )}
     </motion.div>
   );
 }
