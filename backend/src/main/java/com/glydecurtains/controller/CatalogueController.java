@@ -1,5 +1,6 @@
 package com.glydecurtains.controller;
 
+import com.glydecurtains.security.RequiresPermission;
 import com.glydecurtains.service.CatalogueService;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
@@ -11,6 +12,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -48,10 +50,31 @@ public class CatalogueController {
                 .body(currentPdf());
     }
 
+    /**
+     * Admin "Create catalogue PDF" button: builds the PDF now from the current products (skipping
+     * the cache), returns it for download, and makes it the one customers get from the website.
+     */
+    @PostMapping(value = "/refresh", produces = MediaType.APPLICATION_PDF_VALUE)
+    @RequiresPermission(entity = "products", operation = "UPDATE")
+    public ResponseEntity<byte[]> refresh() {
+        byte[] pdf = rebuildPdf();
+        return ResponseEntity.ok()
+                .contentType(MediaType.APPLICATION_PDF)
+                .header(HttpHeaders.CONTENT_DISPOSITION,
+                        ContentDisposition.attachment().filename("Glyde-catalogue.pdf").build().toString())
+                .cacheControl(CacheControl.noStore())
+                .body(pdf);
+    }
+
+    private synchronized byte[] rebuildPdf() {
+        cachedPdf = catalogueService.cataloguePdf(storefront());
+        cachedPdfAt = Instant.now();
+        return cachedPdf;
+    }
+
     private synchronized byte[] currentPdf() {
         if (cachedPdf == null || Instant.now().isAfter(cachedPdfAt.plus(PDF_CACHE_TIME))) {
-            cachedPdf = catalogueService.cataloguePdf(storefront());
-            cachedPdfAt = Instant.now();
+            return rebuildPdf();
         }
         return cachedPdf;
     }

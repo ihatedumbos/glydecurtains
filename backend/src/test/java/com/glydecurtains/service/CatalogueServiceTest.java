@@ -83,6 +83,19 @@ class CatalogueServiceTest {
     }
 
     @Test
+    void uploadedBase64JpegCountsAsPhoto() {
+        // An uploaded JPEG is stored as raw base64, which starts with "/9j/" like a path would.
+        String upload = "/9j/" + "A".repeat(2000);
+        when(productImageRepository.findByProductIdOrderBySortOrderAsc(3L)).thenReturn(List.of(image(14L, upload)));
+
+        CatalogueService.CatalogueItem tape = service.items().stream()
+                .filter(i -> i.product().getId() == 3L).findFirst().orElseThrow();
+
+        assertNotNull(tape.photo());
+        assertEquals(14L, tape.photo().getId());
+    }
+
+    @Test
     void metaFeedListsPricedProductsWithPhotos() {
         String csv = service.metaFeedCsv("https://glydecurtains.com", "https://api.example.com");
         String[] lines = csv.split("\n");

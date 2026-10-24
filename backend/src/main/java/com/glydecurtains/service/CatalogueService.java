@@ -172,9 +172,14 @@ public class CatalogueService {
                 .min(Comparator.comparing((ProductImage img) -> !Boolean.TRUE.equals(img.getIsThumbnail())));
     }
 
+    /** Bundled photos are stored as a path such as /products/...; uploads as base64, which for a JPEG starts with "/9j/". */
+    private static boolean isBundledPath(String data) {
+        return data.startsWith("/") && !data.startsWith("/9j/") && data.length() < 500;
+    }
+
     private static boolean isRealPhoto(String data) {
         if (data == null) return false;
-        if (data.startsWith("/")) return !data.contains("/placeholder/");
+        if (isBundledPath(data)) return !data.contains("/placeholder/");
         return data.length() >= MIN_REAL_IMAGE_LENGTH;
     }
 
@@ -189,7 +194,7 @@ public class CatalogueService {
     private Optional<byte[]> readImage(String data) {
         if (data == null || data.isBlank()) return Optional.empty();
         try {
-            if (data.startsWith("/")) {
+            if (isBundledPath(data)) {
                 // Bundled photos are stored as URL paths, e.g. /products/accessories/20%23Ceiling/a.jpg
                 ClassPathResource resource = new ClassPathResource("static" + UriUtils.decode(data, StandardCharsets.UTF_8));
                 if (!resource.exists()) return Optional.empty();

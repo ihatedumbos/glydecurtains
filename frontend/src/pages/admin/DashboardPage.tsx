@@ -9,6 +9,7 @@ import axiosInstance from '@/api/axiosInstance';
 import { useAppSelector } from '@/store/hooks';
 import { EmptyState, PageHeader, Panel, Pill, StatTile } from '@/components/admin/AdminUi';
 import { describeActivity, timeAgo } from '@/pages/admin/activityText';
+import CataloguePanel from '@/components/admin/CataloguePanel';
 
 interface ProductRow { id: number; name: string; status: string; basePrice: number; imageCount?: number; }
 interface Enquiry { id: number; name: string; phone?: string; email?: string; subject?: string; message?: string; status: string; createdAt: string; }
@@ -158,6 +159,8 @@ export default function DashboardPage() {
           </ul>
         </Panel>
       </div>
+
+      <CataloguePanel />
 
       <Panel
         title="Recent product changes"
