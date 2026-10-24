@@ -13,6 +13,7 @@ import HomeHero from '@/components/home/HomeHero';
 import LayeredPages from '@/components/home/LayeredPages';
 import AudienceSplit from '@/components/home/AudienceSplit';
 import HowItWorks from '@/components/home/HowItWorks';
+import { usePageMeta } from '@/hooks/usePageMeta';
 
 /**
  * Home page: a photo hero, the two audiences (homes and trade), every product as a large
@@ -33,6 +34,7 @@ function tickerConfig(section?: HomepageSection): Record<string, unknown> {
 }
 
 export default function HomePage() {
+  usePageMeta(null);
   const [tickerSection, setTickerSection] = useState<HomepageSection | undefined>();
   const [tickerHidden, setTickerHidden] = useState(false);
   const [design, setDesign] = useHomeDesign();

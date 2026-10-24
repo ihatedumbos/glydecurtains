@@ -2,8 +2,10 @@ import { useEffect, useState } from 'react';
 import { Box, Typography, CircularProgress, Container } from '@mui/material';
 import axiosInstance from '@/api/axiosInstance';
 import type { StaticPage } from '@/store/slices/cmsSlice';
+import { usePageMeta } from '@/hooks/usePageMeta';
 
 export default function AboutPage() {
+  usePageMeta('About us', 'Glyde makes curtain tracks and accessories in Pune and supplies dealers, installers and homes across India.');
   const [page, setPage] = useState<StaticPage | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);

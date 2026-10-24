@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { CONTACT, whatsappLink, useContact } from '@/config/contact';
+import { trackWhatsApp } from '@/utils/analytics';
 
 const highlights = [
   { title: 'Factory direct', detail: 'No middlemen' },
@@ -24,7 +25,9 @@ export default function QuoteHero() {
     e.preventDefault();
     const intro = [name.trim() && `I'm ${name.trim()}`, city.trim() && `from ${city.trim()}`].filter(Boolean).join(' ');
     const message = `Hi Glyde${intro ? `, ${intro}` : ''}. I need: ${need.trim()}`;
-    window.open(whatsappLink(message), '_blank', 'noopener,noreferrer');
+    const link = whatsappLink(message);
+    trackWhatsApp(link, 'Quote form');
+    window.open(link, '_blank', 'noopener,noreferrer');
   };
 
   return (

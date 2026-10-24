@@ -1,6 +1,7 @@
 import { useEffect, useState, useRef, useCallback } from 'react';
 import { motion, useInView } from 'framer-motion';
 import axiosInstance from '@/api/axiosInstance';
+import { usePageMeta } from '@/hooks/usePageMeta';
 
 interface Achievement {
   id: number;
@@ -144,6 +145,7 @@ function AchievementCard({ achievement, index }: { achievement: Achievement; ind
 }
 
 export default function AchievementsPage() {
+  usePageMeta('Achievements');
   const [achievements, setAchievements] = useState<Achievement[]>([]);
   const [loading, setLoading] = useState(true);
 

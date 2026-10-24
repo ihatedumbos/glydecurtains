@@ -32,8 +32,10 @@ import {
   type StoreLocation,
 } from '@/store/slices/storeLocatorSlice';
 import axiosInstance from '@/api/axiosInstance';
+import { usePageMeta } from '@/hooks/usePageMeta';
 
 export default function StoreLocatorPage() {
+  usePageMeta('Our store', 'Visit the Glyde store in Sukrawar Peth, Pune, or order on WhatsApp +91 81490 66661.');
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
   const dispatch = useAppDispatch();

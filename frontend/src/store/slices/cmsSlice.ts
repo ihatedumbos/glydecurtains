@@ -30,7 +30,8 @@ export interface SiteSettings {
   contactEmail?: string;
   contactPhone?: string;
   address?: string;
-  socialLinks?: Record<string, string>;
+  /** JSON text of { platform: url }, e.g. googleProfile and googleReview. */
+  socialLinks?: Record<string, string> | string;
   announcementBar?: string;
   activeThemeId?: number;
 }

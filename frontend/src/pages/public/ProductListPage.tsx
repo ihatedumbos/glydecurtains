@@ -27,6 +27,7 @@ import ProductCardSkeleton from '@/components/product/ProductCardSkeleton';
 import ProductFilterSidebar from '@/components/product/ProductFilterSidebar';
 import ProductSearchBar from '@/components/product/ProductSearchBar';
 import ProductSortDropdown from '@/components/product/ProductSortDropdown';
+import { usePageMeta } from '@/hooks/usePageMeta';
 
 // Filter option types
 interface FilterOption {
@@ -104,6 +105,7 @@ export default function ProductListPage() {
   // With a search term and no explicit choice, rank by how well products match it.
   const sortBy = searchParams.get('sort') || (query ? 'relevance' : DEFAULT_SORT);
   const page = Math.max(1, toNumber(searchParams.get('page')) || 1);
+  usePageMeta(query ? `Search: ${query}` : 'All products');
 
   // Local state
   const [mobileFilterOpen, setMobileFilterOpen] = useState(false);

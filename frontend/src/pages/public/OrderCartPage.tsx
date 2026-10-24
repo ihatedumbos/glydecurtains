@@ -14,8 +14,10 @@ import {
 } from '@/store/slices/orderCartSlice';
 import { buildOrderSummary, orderTotals, type OrderCustomer } from '@/utils/orderSummary';
 import { CONTACT, useContact, whatsappLink } from '@/config/contact';
+import { trackWhatsApp } from '@/utils/analytics';
 import { resolveMediaUrl } from '@/utils/mediaUrl';
 import { formatPrice } from '@/utils/price';
+import { usePageMeta } from '@/hooks/usePageMeta';
 
 const CUSTOMER_STORAGE_KEY = 'glyde_order_customer';
 
@@ -33,6 +35,7 @@ function loadCustomer(): OrderCustomer {
  * shop with the order summary already typed, and the customer presses send.
  */
 export default function OrderCartPage() {
+  usePageMeta('Your cart');
   useContact();
   const dispatch = useAppDispatch();
   const items = useAppSelector((state) => state.orderCart.items);
@@ -59,6 +62,7 @@ export default function OrderCartPage() {
       // Not remembering the details is fine.
     }
     const link = whatsappLink(buildOrderSummary(items, customer, window.location.origin));
+    trackWhatsApp(link, 'Cart order');
     const opened = window.open(link, '_blank', 'noopener,noreferrer');
     if (!opened) window.location.href = link;
     setSentOpen(true);

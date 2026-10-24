@@ -39,6 +39,7 @@ import axiosInstance from '@/api/axiosInstance';
 import { resolveMediaUrl } from '@/utils/mediaUrl';
 import { CONTACT, productEnquiryLink, useContact } from '@/config/contact';
 import { formatPrice, sizeNumber } from '@/utils/price';
+import { usePageMeta } from '@/hooks/usePageMeta';
 
 // ─── Types ──────────────────────────────────────────────────────────────────
 
@@ -199,6 +200,10 @@ export default function ProductDetailPage() {
   useContact();
   const { id } = useParams<{ id: string }>();
   const [product, setProduct] = useState<ProductDetail | null>(null);
+  usePageMeta(
+    product ? product.name : undefined,
+    product?.shortDescription || product?.longDescription,
+  );
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -301,8 +306,6 @@ export default function ProductDetailPage() {
     setSelectedSize(smallest);
     setSelectedColor(variantForSize?.color?.trim() ?? colorOptions[0] ?? null);
   }, [product, sizeOptions, colorOptions]);
-
-  const selectedOptionLabel = [selectedSize, selectedColor].filter(Boolean).join(', ');
 
   // ─── Availability based on variant selection ───────────────────────────
 
@@ -776,7 +779,7 @@ export default function ProductDetailPage() {
               variant="contained"
               size="large"
               component="a"
-              href={productEnquiryLink(product, availability.price, selectedOptionLabel)}
+              href={productEnquiryLink(product, { price: availability.price, size: selectedSize, color: selectedColor, quantity })}
               target="_blank"
               rel="noopener noreferrer"
               startIcon={<WhatsAppIcon />}

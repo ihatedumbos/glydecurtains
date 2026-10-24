@@ -13,7 +13,8 @@ import PhoneIcon from '@mui/icons-material/Phone';
 import EmailIcon from '@mui/icons-material/Email';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
 import axiosInstance from '@/api/axiosInstance';
-import { CONTACT, whatsappLink, useContact } from '@/config/contact';
+import { CONTACT, whatsappLink, useContact, googleMapsLink } from '@/config/contact';
+import { usePageMeta } from '@/hooks/usePageMeta';
 
 interface ContactFormData {
   name: string;
@@ -66,6 +67,7 @@ function validateForm(data: ContactFormData): FormErrors {
 }
 
 export default function ContactPage() {
+  usePageMeta('Contact us', 'Call or WhatsApp Glyde on +91 81490 66661, or visit our store in Sukrawar Peth, Pune.');
   useContact();
   const [formData, setFormData] = useState<ContactFormData>({
     name: '',
@@ -156,7 +158,19 @@ export default function ContactPage() {
         </Box>
         <Box sx={{ display: 'flex', alignItems: 'flex-start', gap: 1 }}>
           <LocationOnIcon fontSize="small" color="action" sx={{ mt: 0.25 }} />
-          <Typography variant="body2">{CONTACT.address}</Typography>
+          <Box>
+            <Typography variant="body2">{CONTACT.address}</Typography>
+            <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 2, mt: 0.5 }}>
+              <a href={googleMapsLink()} target="_blank" rel="noopener noreferrer" className="font-semibold underline">
+                {CONTACT.googleProfileUrl ? 'See us on Google Maps' : 'Get directions'}
+              </a>
+              {CONTACT.googleReviewUrl && (
+                <a href={CONTACT.googleReviewUrl} target="_blank" rel="noopener noreferrer" className="font-semibold underline">
+                  Rate us on Google
+                </a>
+              )}
+            </Box>
+          </Box>
         </Box>
       </Box>
 

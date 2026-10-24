@@ -4,7 +4,7 @@ import PhoneIcon from '@mui/icons-material/Phone';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
 import WhatsAppIcon from '@mui/icons-material/WhatsApp';
 import { Link, useNavigate } from 'react-router-dom';
-import { CONTACT, whatsappLink, useContact } from '@/config/contact';
+import { CONTACT, googleMapsLink, whatsappLink, useContact } from '@/config/contact';
 import Logo from './Logo';
 
 const quickLinks = [
@@ -113,9 +113,22 @@ export default function Footer() {
             <Stack spacing={1.5}>
               <Box sx={{ display: 'flex', alignItems: 'flex-start', gap: 1 }}>
                 <LocationOnIcon fontSize="small" sx={{ color: 'text.secondary', mt: 0.25 }} />
-                <Typography variant="body2" color="text.secondary">
-                  {CONTACT.address}
-                </Typography>
+                <Box>
+                  <Typography variant="body2" color="text.secondary">
+                    {CONTACT.address}
+                  </Typography>
+                  <MuiLink href={googleMapsLink()} target="_blank" rel="noopener noreferrer" variant="body2" underline="hover">
+                    {CONTACT.googleProfileUrl ? 'See us on Google' : 'Get directions'}
+                  </MuiLink>
+                  {CONTACT.googleReviewUrl && (
+                    <>
+                      {' · '}
+                      <MuiLink href={CONTACT.googleReviewUrl} target="_blank" rel="noopener noreferrer" variant="body2" underline="hover">
+                        Rate us on Google
+                      </MuiLink>
+                    </>
+                  )}
+                </Box>
               </Box>
               <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
                 <PhoneIcon fontSize="small" sx={{ color: 'text.secondary' }} />
