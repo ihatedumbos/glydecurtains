@@ -4,7 +4,7 @@ import PhoneIcon from '@mui/icons-material/Phone';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
 import WhatsAppIcon from '@mui/icons-material/WhatsApp';
 import { Link, useNavigate } from 'react-router-dom';
-import { CONTACT, whatsappLink, useContact } from '@/config/contact';
+import { CONTACT, catalogueUrl, whatsappLink, useContact } from '@/config/contact';
 import Logo from './Logo';
 
 const quickLinks = [
@@ -61,6 +61,16 @@ export default function Footer() {
             >
               Chat on WhatsApp
             </Button>
+            <MuiLink
+              href={catalogueUrl()}
+              target="_blank"
+              rel="noopener noreferrer"
+              variant="body2"
+              underline="hover"
+              sx={{ display: 'block', mt: 1.5, fontWeight: 600 }}
+            >
+              Download catalogue (PDF)
+            </MuiLink>
           </Grid>
 
           {/* Quick Links */}

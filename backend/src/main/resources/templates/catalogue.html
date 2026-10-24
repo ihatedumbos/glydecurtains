@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Glyde catalogue</title>
+    <style>
+        @page {
+            size: A4;
+            margin: 12mm 12mm 16mm 12mm;
+            @bottom-center {
+                content: "Glyde Curtain Track and Accessories  |  Page " counter(page) " of " counter(pages);
+                font-family: Helvetica, Arial, sans-serif;
+                font-size: 8pt;
+                color: #6b7a82;
+            }
+        }
+        body { font-family: Helvetica, Arial, sans-serif; color: #14232b; font-size: 10pt; margin: 0; }
+        a { color: inherit; text-decoration: none; }
+        .cover { background: #000000; color: #ffffff; text-align: center; padding: 6mm 6mm 7mm 6mm; }
+        .cover img { width: 150mm; }
+        .cover .lead { font-size: 13pt; margin: 4mm 0 2mm 0; }
+        .cover .small { font-size: 9.5pt; color: #c9d3d8; }
+        .order-button { background: #25d366; color: #0b2a17; font-weight: bold; padding: 2mm 5mm; border-radius: 3mm; }
+        .cover .order-button { display: inline-block; font-size: 12pt; margin-top: 3mm; }
+        h2 { font-size: 15pt; margin: 7mm 0 3mm 0; padding-bottom: 1.5mm; border-bottom: 0.6mm solid #a8400f; page-break-after: avoid; }
+        table.grid { width: 100%; border-collapse: separate; border-spacing: 3mm; margin: 0 -3mm; table-layout: fixed; }
+        tr { page-break-inside: avoid; }
+        td.card { width: 50%; vertical-align: top; border: 0.3mm solid #d6dde1; border-radius: 2mm; padding: 3mm; }
+        td.empty { border: none; }
+        .photo { height: 52mm; text-align: center; background: #f4f6f7; border-radius: 1.5mm; }
+        
+        .name { font-size: 12pt; font-weight: bold; margin-top: 2.5mm; }
+        .meta { font-size: 8.5pt; color: #4a5a62; margin-top: 0.8mm; }
+        .price { font-size: 11.5pt; font-weight: bold; color: #a8400f; margin-top: 1.8mm; }
+        .actions { margin-top: 2.5mm; font-size: 9pt; }
+        .actions .order-button { padding: 1.4mm 3mm; }
+        .actions .view { color: #14232b; text-decoration: underline; margin-left: 3mm; }
+    </style>
+</head>
+<body>
+
+<div class="cover">
+    <img th:if="${logo != null}" th:src="${logo}" alt="Glyde Curtain Track &amp; Accessories"/>
+    <div class="lead">Product catalogue, <span th:text="${date}">October 2026</span></div>
+    <div class="small">Made in Pune. Tap <b>Order on WhatsApp</b> under any product to send us its details.</div>
+    <a class="order-button" th:href="${whatsappUrl}">WhatsApp <span th:text="${phone}">+91 81490 66661</span></a>
+    <div class="small" style="margin-top: 3mm;">
+        Latest prices and photos: <a th:href="${siteUrl}" th:text="${siteHost}" style="text-decoration: underline;">glydecurtains.com</a>
+    </div>
+</div>
+
+<th:block th:each="section : ${sections}">
+    <h2 th:text="${section.key}">Accessories</h2>
+    <table class="grid">
+        <tr th:each="rowStart : ${#numbers.sequence(0, section.value.size() - 1, 2)}">
+            <th:block th:each="offset : ${#numbers.sequence(0, 1)}">
+                <td th:with="i=${rowStart + offset}, item=${i lt section.value.size() ? section.value[i] : null}"
+                    th:class="${item != null ? 'card' : 'empty'}">
+                    <th:block th:if="${item != null}">
+                        <div class="photo"><img th:if="${item.image != null}" th:src="${item.image}" th:style="${item.imageStyle}" alt=""/></div>
+                        <div class="name" th:text="${item.name}">Jumbo Runner</div>
+                        <div class="meta">
+                            Code <span th:text="${item.code}">GLYDE-ACC</span><span th:if="${item.group != null}"> · <span th:text="${item.group}">Track Runners</span></span>
+                        </div>
+                        <div class="meta" th:if="${!#strings.isEmpty(item.sizes)}">Sizes: <span th:text="${item.sizes}">8 ft</span></div>
+                        <div class="meta" th:if="${!#strings.isEmpty(item.colors)}">Colours: <span th:text="${item.colors}">White</span></div>
+                        <div class="price" th:text="${item.price}">Rs. 549</div>
+                        <div class="actions">
+                            <a class="order-button" th:href="${item.whatsappUrl}">Order on WhatsApp</a>
+                            <a class="view" th:href="${item.pageUrl}">View online</a>
+                        </div>
+                    </th:block>
+                </td>
+            </th:block>
+        </tr>
+    </table>
+</th:block>
+
+</body>
+</html>

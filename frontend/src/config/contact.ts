@@ -51,3 +51,9 @@ export function productEnquiryLink(
   const priceText = price ? ` (₹${price.toLocaleString('en-IN')})` : '';
   return whatsappLink(`Hi Glyde, I'm interested in ${product.name}${optionText}${priceText}. ${origin}/products/${product.id}`);
 }
+
+/** The PDF catalogue, built by the backend from the live product list (photos, prices, WhatsApp order links). */
+export function catalogueUrl(): string {
+  const api = (import.meta.env.VITE_API_BASE_URL || '/api').replace(/\/$/, '');
+  return `${api}/catalogue/glyde-catalogue.pdf`;
+}
