@@ -1,11 +1,11 @@
 import type { HomeDesign } from '@/components/home/useHomeDesign';
 
 const options: { value: HomeDesign; label: string }[] = [
-  { value: 'new', label: 'New design' },
   { value: 'classic', label: 'Classic design' },
+  { value: 'new', label: 'New design' },
 ];
 
-/** Slim bar at the top of the home page for switching between the new and the classic layout. */
+/** Slim bar at the top of the home page for switching between the classic (default) and the new layout. */
 export default function DesignToggle({ value, onChange }: { value: HomeDesign; onChange: (next: HomeDesign) => void }) {
   return (
     <div className="border-b border-[#dbe1e4] bg-[#eef2f4]">

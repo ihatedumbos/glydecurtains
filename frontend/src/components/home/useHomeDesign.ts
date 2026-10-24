@@ -6,9 +6,9 @@ const KEY = 'glyde-home-design';
 
 function read(): HomeDesign {
   try {
-    return window.localStorage.getItem(KEY) === 'classic' ? 'classic' : 'new';
+    return window.localStorage.getItem(KEY) === 'new' ? 'new' : 'classic';
   } catch {
-    return 'new';
+    return 'classic';
   }
 }
 
