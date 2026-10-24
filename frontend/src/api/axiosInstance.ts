@@ -40,15 +40,44 @@ axiosInstance.interceptors.request.use(
 
 // ─── Server Wake-up Retry ────────────────────────────────────────────────────
 // The backend runs on Render's free plan, which sleeps after 15 idle minutes.
-// While it starts again (up to a few minutes) Render answers 429/502/503/504 or
+// While it starts again (up to a few minutes) Render answers 502/503/504 or
 // drops the connection. Page loads (GET requests) keep retrying quietly until
 // it is up, instead of showing an error straight away.
+//
+// A 429 is different: it means "slow down", not "still starting". Retrying it every
+// few seconds for minutes keeps the limit tripped, so a 429 is retried only twice,
+// after the wait the server asks for (or a longer pause), and then reported.
 
-const WAKE_UP_STATUSES = [429, 502, 503, 504];
+const WAKE_UP_STATUSES = [502, 503, 504];
+const THROTTLE_MAX_RETRIES = 2;
+const THROTTLE_MAX_WAIT_MS = 60_000;
 const WAKE_UP_MAX_WAIT_MS = 4 * 60 * 1000;
 const WAKE_UP_TOAST_ID = 'server-waking-up';
 
-type RetryableConfig = InternalAxiosRequestConfig & { _wakeStartedAt?: number; _wakeAttempt?: number };
+type RetryableConfig = InternalAxiosRequestConfig & {
+  _wakeStartedAt?: number;
+  _wakeAttempt?: number;
+  _throttleAttempt?: number;
+};
+
+function isThrottled(error: AxiosError): boolean {
+  const config = error.config as RetryableConfig | undefined;
+  return !!config && (config.method ?? 'get').toLowerCase() === 'get' && error.response?.status === 429;
+}
+
+/** Waits as long as the server's Retry-After says (else 10s, then 20s, plus a little jitter), then retries. */
+async function retryAfterThrottle(error: AxiosError) {
+  const config = error.config as RetryableConfig;
+  config._throttleAttempt = (config._throttleAttempt ?? 0) + 1;
+  if (config._throttleAttempt > THROTTLE_MAX_RETRIES) return null;
+
+  const header = (error.response?.headers as Record<string, string> | undefined)?.['retry-after'];
+  const asked = Number(header);
+  const base = Number.isFinite(asked) && asked > 0 ? asked * 1000 : 10_000 * config._throttleAttempt;
+  const delayMs = Math.min(base, THROTTLE_MAX_WAIT_MS) + Math.random() * 3000;
+  await new Promise((resolve) => setTimeout(resolve, delayMs));
+  return axiosInstance(config);
+}
 
 function isServerWaking(error: AxiosError): boolean {
   const config = error.config as RetryableConfig | undefined;
@@ -103,7 +132,10 @@ axiosInstance.interceptors.response.use(
   async (error: AxiosError) => {
     const originalRequest = error.config as InternalAxiosRequestConfig & { _retry?: boolean };
 
-    if (isServerWaking(error)) {
+    if (isThrottled(error)) {
+      const retried = await retryAfterThrottle(error);
+      if (retried) return retried;
+    } else if (isServerWaking(error)) {
       const retried = await retryWhileWaking(error);
       if (retried) return retried;
     }
