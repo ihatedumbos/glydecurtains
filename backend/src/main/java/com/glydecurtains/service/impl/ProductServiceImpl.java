@@ -363,6 +363,7 @@ public class ProductServiceImpl implements ProductService {
                 specification.setSpecKey(spec.getSpecKey());
                 specification.setSpecValue(spec.getSpecValue());
                 specification.setSortOrder(spec.getSortOrder() != null ? spec.getSortOrder() : sortIndex);
+                specification.setShowToCustomers(!Boolean.FALSE.equals(spec.getShowToCustomers()));
                 product.getSpecifications().add(specification);
                 sortIndex++;
             }
@@ -542,6 +543,7 @@ public class ProductServiceImpl implements ProductService {
             s.setSpecKey(spec.getSpecKey());
             s.setSpecValue(spec.getSpecValue());
             s.setSortOrder(spec.getSortOrder());
+            s.setShowToCustomers(spec.isShownToCustomers());
             copy.getSpecifications().add(s);
         }
         for (ProductVariant variant : source.getVariants()) {
@@ -906,6 +908,7 @@ public class ProductServiceImpl implements ProductService {
                 .specKey(spec.getSpecKey())
                 .specValue(spec.getSpecValue())
                 .sortOrder(spec.getSortOrder())
+                .showToCustomers(spec.isShownToCustomers())
                 .build();
     }
 

@@ -37,7 +37,31 @@ interface Media {
   isThumbnail?: boolean;
   sortOrder?: number;
 }
-interface Spec { specKey: string; specValue: string; }
+interface Spec { specKey: string; specValue: string; showToCustomers: boolean; sortOrder?: number; }
+
+/** Starter rows; the admin fills in the values and can rename or remove any row. */
+const SPEC_PRESETS: { label: string; match: RegExp; rows: { key: string; hint: string }[] }[] = [
+  {
+    label: 'Track weights',
+    match: /track(?!\s*runner)/i,
+    rows: [
+      { key: 'Track weight without PVC (per metre)', hint: 'e.g. 380 g' },
+      { key: 'PVC insert weight (per metre)', hint: 'e.g. 70 g' },
+      { key: 'Combined weight per metre', hint: 'e.g. 450 g' },
+    ],
+  },
+  {
+    label: 'Runner weight and wheel',
+    match: /runner/i,
+    rows: [
+      { key: 'Weight', hint: 'e.g. 4 g' },
+      { key: 'Wheel diameter', hint: 'e.g. 12 mm' },
+    ],
+  },
+];
+const SPEC_HINTS: Record<string, string> = Object.fromEntries(
+  SPEC_PRESETS.flatMap((p) => p.rows.map((r) => [r.key, r.hint])),
+);
 interface Variant { size?: string | null; color?: string | null; price: number; material?: string | null; stockQuantity?: number; }
 
 interface Form {
@@ -228,6 +252,20 @@ export default function ProductEditorPage() {
   const blocker = useBlocker(({ currentLocation, nextLocation }) => dirty && !saving && currentLocation.pathname !== nextLocation.pathname);
 
   const touch = () => { setDirty(true); setSaved(false); };
+  const setSpec = (i: number, patch: Partial<Spec>) => { setSpecs((s) => s.map((x, j) => (j === i ? { ...x, ...patch } : x))); touch(); };
+  const addSpecPreset = (keys: string[]) => {
+    setSpecs((s) => {
+      const have = new Set(s.map((x) => x.specKey.trim().toLowerCase()));
+      return [...s, ...keys.filter((k) => !have.has(k.toLowerCase())).map((k) => ({ specKey: k, specValue: '', showToCustomers: true }))];
+    });
+    touch();
+  };
+  // Category, sub-category and name decide which quick-add button is highlighted.
+  const specCategoryText = [
+    categories.find((c) => c.id === form.categoryId)?.name,
+    subCategories.find((c) => c.id === form.subCategoryId)?.name,
+    form.name,
+  ].filter(Boolean).join(' ');
   const update = <K extends keyof Form>(key: K, value: Form[K]) => { setForm((f) => ({ ...f, [key]: value })); touch(); };
 
   // ─── Load ───────────────────────────────────────────────────────────────
@@ -286,7 +324,9 @@ export default function ProductEditorPage() {
       });
       setPrices(grid);
       setSinglePrice(Number(p.basePrice) > 0 && variants.length === 0 ? String(Number(p.basePrice)) : '');
-      setSpecs((p.specifications ?? []).map((s: Spec) => ({ specKey: s.specKey, specValue: s.specValue })));
+      setSpecs([...(p.specifications ?? [])]
+        .sort((a: Spec, b: Spec) => (a.sortOrder ?? 0) - (b.sortOrder ?? 0))
+        .map((s: Spec) => ({ specKey: s.specKey, specValue: s.specValue, showToCustomers: s.showToCustomers !== false })));
       setMedia(p.images ?? []);
       const tr = trRes.data.data ?? {};
       setTranslations({
@@ -502,7 +542,7 @@ export default function ProductEditorPage() {
       if (!idToUse) throw new Error('No product id');
       await axiosInstance.put(`/products/${idToUse}/variants`, variants);
       await axiosInstance.put(`/products/${idToUse}/specifications`,
-        specs.filter((s) => s.specKey.trim() && s.specValue.trim()).map((s, i) => ({ ...s, sortOrder: i })));
+        specs.filter((s) => s.specKey.trim() && s.specValue.trim()).map((s, i) => ({ ...s, specKey: s.specKey.trim(), specValue: s.specValue.trim(), sortOrder: i })));
       for (const lang of ['hi', 'gu'] as const) {
         const t = translations[lang];
         const filled = Object.fromEntries(Object.entries(t).filter(([, v]) => v.trim()));
@@ -806,21 +846,50 @@ export default function ProductEditorPage() {
 
           {/* Specifications */}
           <Panel
-            title="Details table"
-            description="Facts shown under the product, like material, finish or load capacity."
-            actions={<Button size="small" onClick={() => { setSpecs((s) => [...s, { specKey: '', specValue: '' }]); touch(); }}>Add a row</Button>}
+            title="Specifications"
+            description="Your own rows, like weights or wheel size. Type the name and the value; switch a row to “Hidden” to keep it for the shop only."
+            actions={<Button size="small" onClick={() => { setSpecs((s) => [...s, { specKey: '', specValue: '', showToCustomers: true }]); touch(); }}>Add a row</Button>}
           >
+            <div className="mb-3 flex flex-wrap items-center gap-2">
+              <span className="text-xs text-[#4b5b63]">Quick add:</span>
+              {SPEC_PRESETS.map((preset) => {
+                const suggested = preset.match.test(specCategoryText);
+                return (
+                  <Chip
+                    key={preset.label}
+                    size="small"
+                    label={`+ ${preset.label}`}
+                    color={suggested ? 'primary' : 'default'}
+                    variant={suggested ? 'filled' : 'outlined'}
+                    onClick={() => addSpecPreset(preset.rows.map((r) => r.key))}
+                  />
+                );
+              })}
+            </div>
             {specs.length === 0 ? (
-              <p className="text-sm text-[#4b5b63]">No details yet.</p>
+              <p className="text-sm text-[#4b5b63]">No specifications yet.</p>
             ) : (
-              <div className="space-y-2">
+              <div className="space-y-3">
                 {specs.map((spec, i) => (
-                  <div key={i} className="flex items-center gap-2">
-                    <TextField size="small" placeholder="e.g. Material" value={spec.specKey} onChange={(e) => { setSpecs((s) => s.map((x, j) => (j === i ? { ...x, specKey: e.target.value } : x))); touch(); }} sx={{ flex: 1 }} />
-                    <TextField size="small" placeholder="e.g. Aluminium" value={spec.specValue} onChange={(e) => { setSpecs((s) => s.map((x, j) => (j === i ? { ...x, specValue: e.target.value } : x))); touch(); }} sx={{ flex: 1.4 }} />
-                    <IconButton size="small" onClick={() => { setSpecs((s) => s.filter((_, j) => j !== i)); touch(); }} aria-label="Remove row"><CloseIcon fontSize="small" /></IconButton>
+                  <div key={i} className="flex flex-wrap items-center gap-2 sm:flex-nowrap">
+                    <TextField size="small" placeholder="Name, e.g. PVC weight" value={spec.specKey} onChange={(e) => setSpec(i, { specKey: e.target.value })} inputProps={{ 'aria-label': 'Specification name' }} sx={{ flex: '1 1 180px' }} />
+                    <TextField size="small" placeholder={SPEC_HINTS[spec.specKey] ?? 'Value, e.g. 450 g'} value={spec.specValue} onChange={(e) => setSpec(i, { specValue: e.target.value })} inputProps={{ 'aria-label': 'Specification value' }} sx={{ flex: '1 1 140px' }} />
+                    <div className="flex items-center">
+                      <Tooltip title={spec.showToCustomers ? 'Shown on the website' : 'Hidden: only you see this row'}>
+                        <FormControlLabel
+                          sx={{ m: 0 }}
+                          control={<Switch size="small" checked={spec.showToCustomers} onChange={(e) => setSpec(i, { showToCustomers: e.target.checked })} />}
+                          label={<span className={`w-12 text-right text-xs ${spec.showToCustomers ? 'text-[#4b5b63]' : 'font-semibold text-[#b45309]'}`}>{spec.showToCustomers ? 'Website' : 'Hidden'}</span>}
+                          labelPlacement="start"
+                        />
+                      </Tooltip>
+                      <IconButton size="small" onClick={() => { setSpecs((s) => s.filter((_, j) => j !== i)); touch(); }} aria-label="Remove row"><CloseIcon fontSize="small" /></IconButton>
+                    </div>
                   </div>
                 ))}
+                {specs.some((s) => !s.showToCustomers) && (
+                  <p className="text-xs text-[#4b5b63]">“Hidden” rows stay in the admin panel and on supplier quotation sheets; customers never see them.</p>
+                )}
               </div>
             )}
           </Panel>

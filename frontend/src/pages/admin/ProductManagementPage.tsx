@@ -5,9 +5,11 @@ import AddIcon from '@mui/icons-material/Add';
 import SearchIcon from '@mui/icons-material/Search';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
+import RequestQuoteOutlinedIcon from '@mui/icons-material/RequestQuoteOutlined';
 import axiosInstance from '@/api/axiosInstance';
 import { EmptyState, PageHeader, Pill } from '@/components/admin/AdminUi';
 import { formatPrice } from '@/utils/price';
+import SupplierQuoteDialog from '@/components/admin/SupplierQuoteDialog';
 
 interface ProductRow {
   id: number;
@@ -72,6 +74,7 @@ export default function ProductManagementPage() {
   const [categories, setCategories] = useState<Category[]>([]);
   const [toggling, setToggling] = useState<number | null>(null);
   const [copying, setCopying] = useState<number | null>(null);
+  const [quoteOpen, setQuoteOpen] = useState(false);
 
   useEffect(() => {
     axiosInstance.get('/products', { params: { page: 0, size: 500 } })
@@ -143,7 +146,17 @@ export default function ProductManagementPage() {
       <PageHeader
         title="Products"
         subtitle="Everything listed on the website. Open a product to change its photos, sizes, colours and prices."
-        actions={<Button component={Link} to="/admin/products/new" variant="contained" startIcon={<AddIcon />}>Add a product</Button>}
+        actions={<>
+          <Button variant="outlined" startIcon={<RequestQuoteOutlinedIcon />} disabled={!products?.length} onClick={() => setQuoteOpen(true)}>Ask suppliers for rates</Button>
+          <Button component={Link} to="/admin/products/new" variant="contained" startIcon={<AddIcon />}>Add a product</Button>
+        </>}
+      />
+
+      <SupplierQuoteDialog
+        open={quoteOpen}
+        onClose={() => setQuoteOpen(false)}
+        products={products ?? []}
+        initiallySelected={visible.map((p) => p.id)}
       />
 
       <div className="mb-4 flex flex-wrap gap-2" role="tablist" aria-label="Filter products">

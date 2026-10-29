@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Request for quotation</title>
+    <style>
+        @page {
+            size: A4 landscape;
+            margin: 12mm 12mm 16mm 12mm;
+            @bottom-center {
+                content: "Page " counter(page) " of " counter(pages);
+                font-family: Helvetica, Arial, sans-serif;
+                font-size: 8px;
+                color: #6b7a80;
+            }
+        }
+        body { font-family: Helvetica, Arial, sans-serif; font-size: 10px; color: #14232b; margin: 0; }
+        .head { width: 100%; border-bottom: 2px solid #a8400f; padding-bottom: 6px; margin-bottom: 8px; }
+        .head td { vertical-align: bottom; }
+        .shop { font-size: 16px; font-weight: bold; }
+        .muted { color: #4b5b63; }
+        .title { font-size: 13px; font-weight: bold; text-align: right; color: #a8400f; }
+        .meta { width: 100%; margin-bottom: 8px; }
+        .meta td { padding: 2px 0; }
+        .fill { border-bottom: 1px solid #9aa5aa; display: inline-block; width: 70mm; }
+        .note { background: #f4efe9; padding: 6px 8px; margin-bottom: 8px; }
+        table.items { width: 100%; border-collapse: collapse; -fs-table-paginate: paginate; }
+        table.items th { background: #14232b; color: #ffffff; text-align: left; padding: 5px; font-size: 9px; }
+        table.items td { border: 1px solid #c9d0d3; padding: 5px; vertical-align: top; }
+        table.items tr { page-break-inside: avoid; }
+        .name { font-weight: bold; font-size: 10.5px; }
+        .small { font-size: 8.5px; color: #4b5b63; }
+        .spec { margin: 0 0 2px 0; }
+        .spec b { color: #14232b; }
+        .blank { background: #fffdf5; }
+        .sign { width: 100%; margin-top: 14px; }
+        .sign td { width: 33%; padding-top: 18px; }
+    </style>
+</head>
+<body>
+<table class="head">
+    <tr>
+        <td>
+            <div class="shop" th:text="${shop}">Glyde</div>
+            <div class="muted" th:text="${shopContact}">Pune</div>
+        </td>
+        <td class="title">REQUEST FOR QUOTATION<br/><span class="muted" style="font-size:10px;font-weight:normal" th:text="${date}">1 Jan 2026</span></td>
+    </tr>
+</table>
+
+<table class="meta">
+    <tr>
+        <td style="width:50%">Supplier: <b th:if="${supplierName}" th:text="${supplierName}">Name</b><span th:unless="${supplierName}" class="fill">&#160;</span></td>
+        <td>Please fill in your rate for each item and send this sheet back to us.</td>
+    </tr>
+</table>
+
+<div class="note" th:if="${note}" th:text="${note}">Note</div>
+
+<table class="items">
+    <thead>
+    <tr>
+        <th style="width:6mm">No.</th>
+        <th style="width:62mm">Product</th>
+        <th>Specifications</th>
+        <th th:if="${includePrices}" style="width:24mm">Our price</th>
+        <th style="width:30mm">Your rate (Rs.)</th>
+        <th style="width:24mm">Rate per</th>
+        <th style="width:40mm">Remarks</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="line : ${lines}">
+        <td th:text="${line.number()}">1</td>
+        <td>
+            <div class="name" th:text="${line.name()}">Product</div>
+            <div class="small" th:if="${!line.code().isEmpty()}" th:text="'Code: ' + ${line.code()}">Code</div>
+            <div class="small" th:if="${!line.category().isEmpty()}" th:text="${line.category()}">Category</div>
+            <div class="small" th:if="${!line.optionsText().isEmpty()}" th:text="${line.optionsText()}">Sizes</div>
+        </td>
+        <td>
+            <div class="spec" th:each="spec : ${line.specs()}"><b th:text="${spec.name()} + ':'">Weight:</b> <span th:text="${spec.value()}">450 g</span></div>
+            <div class="small" th:if="${line.specs().isEmpty()}">No specifications</div>
+        </td>
+        <td th:if="${includePrices}" th:text="${line.ourPrice()}">Rs. 100</td>
+        <td class="blank">&#160;</td>
+        <td class="blank">&#160;</td>
+        <td class="blank">&#160;</td>
+    </tr>
+    </tbody>
+</table>
+
+<table class="sign">
+    <tr>
+        <td>GST no.: <span class="fill" style="width:50mm">&#160;</span></td>
+        <td>Delivery time: <span class="fill" style="width:45mm">&#160;</span></td>
+        <td>Signature and date: <span class="fill" style="width:40mm">&#160;</span></td>
+    </tr>
+</table>
+</body>
+</html>

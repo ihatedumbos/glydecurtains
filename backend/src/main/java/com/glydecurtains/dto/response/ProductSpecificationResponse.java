@@ -15,4 +15,5 @@ public class ProductSpecificationResponse {
     private String specKey;
     private String specValue;
     private Integer sortOrder;
+    private Boolean showToCustomers;
 }
