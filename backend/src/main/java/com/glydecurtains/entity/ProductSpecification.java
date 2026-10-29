@@ -31,4 +31,12 @@ public class ProductSpecification {
 
     @Column(name = "sort_order")
     private Integer sortOrder = 0;
+
+    /** Hidden rows stay in the admin panel only; null (rows saved before this flag) counts as shown. */
+    @Column(name = "show_to_customers", columnDefinition = "BOOLEAN DEFAULT TRUE")
+    private Boolean showToCustomers = true;
+
+    public boolean isShownToCustomers() {
+        return !Boolean.FALSE.equals(showToCustomers);
+    }
 }

@@ -19,4 +19,7 @@ public class SpecificationRequest {
     private String specValue;
 
     private Integer sortOrder;
+
+    /** Defaults to shown when left out. */
+    private Boolean showToCustomers;
 }

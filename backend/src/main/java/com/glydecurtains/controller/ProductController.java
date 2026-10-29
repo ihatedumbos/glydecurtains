@@ -149,6 +149,7 @@ public class ProductController {
             @RequestHeader(value = "Accept-Language", required = false) String language) {
         ProductDetailResponse response = productService.getProduct(id, language);
         response.setInternalName(null);
+        hideAdminOnlySpecifications(response);
         return ResponseEntity.ok(ApiResponse.success(response));
     }
 
@@ -193,6 +194,15 @@ public class ProductController {
     public ResponseEntity<ApiResponse<Void>> deleteProductTranslations(@PathVariable Long id) {
         productService.deleteProductTranslations(id);
         return ResponseEntity.ok(ApiResponse.success("Translations deleted successfully", null));
+    }
+
+    /** Specification rows the shop marked "not shown on the website" never leave the admin panel. */
+    private static void hideAdminOnlySpecifications(ProductDetailResponse response) {
+        if (response.getSpecifications() != null) {
+            response.setSpecifications(response.getSpecifications().stream()
+                    .filter(s -> !Boolean.FALSE.equals(s.getShowToCustomers()))
+                    .toList());
+        }
     }
 
     /** The internal name is for the shop only; public endpoints never send it. */
