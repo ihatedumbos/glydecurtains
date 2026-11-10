@@ -25,10 +25,15 @@ public class BusinessContactUpgrader implements ApplicationRunner {
 
     private final StoreLocationRepository storeLocationRepository;
     private final SiteSettingsRepository siteSettingsRepository;
+    private final SeedOnce seedOnce;
 
     @Override
     @Transactional
     public void run(ApplicationArguments args) {
+        seedOnce.run("business-contact-v1", this::seed);
+    }
+
+    private void seed() {
         replaceDemoStores();
         replaceDemoSiteSettings();
     }

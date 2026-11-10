@@ -32,8 +32,7 @@ public class ProductImage {
     private Long entityId;
 
     @NotNull
-    @Lob
-    @Column(name = "base64_data", nullable = false, columnDefinition = "CLOB")
+    @Column(name = "base64_data", nullable = false, columnDefinition = "TEXT")
     private String base64Data;
 
     @NotBlank

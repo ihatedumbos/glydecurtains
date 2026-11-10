@@ -34,7 +34,6 @@ public class Enquiry extends BaseEntity {
     @Column(name = "subject", nullable = false)
     private String subject;
 
-    @Lob
     @Column(name = "message", nullable = false, columnDefinition = "TEXT")
     private String message;
 

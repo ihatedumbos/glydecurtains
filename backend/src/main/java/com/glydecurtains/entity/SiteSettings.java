@@ -18,23 +18,18 @@ public class SiteSettings extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Lob
     @Column(name = "logo_header_base64", columnDefinition = "TEXT")
     private String logoHeaderBase64;
 
-    @Lob
     @Column(name = "logo_footer_base64", columnDefinition = "TEXT")
     private String logoFooterBase64;
 
-    @Lob
     @Column(name = "logo_mobile_base64", columnDefinition = "TEXT")
     private String logoMobileBase64;
 
-    @Lob
     @Column(name = "logo_admin_base64", columnDefinition = "TEXT")
     private String logoAdminBase64;
 
-    @Lob
     @Column(name = "favicon_base64", columnDefinition = "TEXT")
     private String faviconBase64;
 
@@ -47,7 +42,6 @@ public class SiteSettings extends BaseEntity {
     @Column(name = "address")
     private String address;
 
-    @Lob
     @Column(name = "social_links", columnDefinition = "TEXT")
     private String socialLinks;
 

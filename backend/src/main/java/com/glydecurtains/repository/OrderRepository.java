@@ -31,8 +31,9 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
     @Query("SELECT o FROM Order o WHERE " +
             "(:status IS NULL OR o.status = :status) AND " +
             "(:customerId IS NULL OR o.userId = :customerId) AND " +
-            "(:dateFrom IS NULL OR o.createdAt >= :dateFrom) AND " +
-            "(:dateTo IS NULL OR o.createdAt <= :dateTo) AND " +
+            // cast: Postgres can't tell the type of a null date parameter on its own
+            "(CAST(:dateFrom AS LocalDateTime) IS NULL OR o.createdAt >= :dateFrom) AND " +
+            "(CAST(:dateTo AS LocalDateTime) IS NULL OR o.createdAt <= :dateTo) AND " +
             "(:orderNumber IS NULL OR o.orderNumber LIKE %:orderNumber%)")
     Page<Order> findAllWithFilters(
             @Param("status") OrderStatus status,

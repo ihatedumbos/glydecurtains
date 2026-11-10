@@ -42,11 +42,9 @@ public class StoreLocation extends BaseEntity {
     @Column(name = "longitude")
     private Double longitude;
 
-    @Lob
     @Column(name = "operating_hours", columnDefinition = "TEXT")
     private String operatingHours;
 
-    @Lob
     @Column(name = "image_base64", columnDefinition = "TEXT")
     private String imageBase64;
 

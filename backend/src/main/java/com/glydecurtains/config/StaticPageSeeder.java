@@ -21,10 +21,15 @@ import org.springframework.transaction.annotation.Transactional;
 public class StaticPageSeeder implements ApplicationRunner {
 
     private final StaticPageRepository staticPageRepository;
+    private final SeedOnce seedOnce;
 
     @Override
     @Transactional
     public void run(ApplicationArguments args) {
+        seedOnce.run("static-pages-v1", this::seed);
+    }
+
+    private void seed() {
         createIfMissing("about-us", "About Us", PageType.ABOUT_US, """
                 <p>Glyde Curtain Track &amp; Accessories manufactures curtain track runners, ceiling and wall \
                 fittings, end caps and curtain tapes in Pune, Maharashtra.</p>

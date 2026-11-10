@@ -21,7 +21,6 @@ public class ThemePreset extends BaseEntity {
     @Column(name = "name", nullable = false)
     private String name;
 
-    @Lob
     @Column(name = "config", nullable = false, columnDefinition = "TEXT")
     private String config;
 

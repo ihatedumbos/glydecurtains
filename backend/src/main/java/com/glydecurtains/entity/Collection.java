@@ -24,7 +24,6 @@ public class Collection extends BaseEntity {
     @Column(name = "description")
     private String description;
 
-    @Lob
     @Column(name = "image_base64", columnDefinition = "TEXT")
     private String imageBase64;
 

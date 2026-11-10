@@ -27,7 +27,6 @@ public class StaticPage extends BaseEntity {
     @Column(name = "slug", nullable = false, unique = true)
     private String slug;
 
-    @Lob
     @Column(name = "content", columnDefinition = "TEXT")
     private String content;
 

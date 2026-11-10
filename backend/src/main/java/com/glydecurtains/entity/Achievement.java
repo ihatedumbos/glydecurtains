@@ -25,7 +25,6 @@ public class Achievement extends BaseEntity {
     @Column(name = "description", length = 500)
     private String description;
 
-    @Lob
     @Column(name = "icon_base64", columnDefinition = "TEXT")
     private String iconBase64;
 

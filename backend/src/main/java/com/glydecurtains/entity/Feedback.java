@@ -33,7 +33,6 @@ public class Feedback extends BaseEntity {
     @Column(name = "title", nullable = false)
     private String title;
 
-    @Lob
     @Column(name = "comment", nullable = false, columnDefinition = "TEXT")
     private String comment;
 
@@ -41,7 +40,6 @@ public class Feedback extends BaseEntity {
     @Column(name = "status", nullable = false)
     private FeedbackStatus status = FeedbackStatus.PENDING_REVIEW;
 
-    @Lob
     @Column(name = "admin_reply", columnDefinition = "TEXT")
     private String adminReply;
 
