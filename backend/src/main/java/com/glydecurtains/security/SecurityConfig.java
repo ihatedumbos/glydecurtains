@@ -1,5 +1,6 @@
 package com.glydecurtains.security;
 
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -54,6 +55,15 @@ public class SecurityConfig {
                                 .policyDirectives("default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; frame-ancestors 'self'")
                         )
                 );
+
+        // A missing or expired token is 401, so the site refreshes it or asks to sign in again.
+        // (Spring's default here is a bare 403, which the site shows as "no permission".)
+        http.exceptionHandling(ex -> ex.authenticationEntryPoint((request, response, authException) -> {
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            response.setContentType("application/json");
+            response.getWriter().write("{\"status\":401,\"errorCode\":\"UNAUTHORIZED\","
+                    + "\"message\":\"Please sign in again.\"}");
+        }));
 
         // Rate limiter should always run
         http.addFilterBefore(rateLimitFilter, UsernamePasswordAuthenticationFilter.class);
