@@ -18,7 +18,9 @@ public class ProductSpecification {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "product_id", nullable = false)
+    @JoinColumn(name = "product_id", nullable = false,
+            // no database foreign key: on Supabase, products is a view over the Hisaab app's items
+            foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
     private Product product;
 
     @NotBlank

@@ -25,12 +25,14 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Service
 @RequiredArgsConstructor
@@ -380,31 +382,46 @@ public class ProductServiceImpl implements ProductService {
                         "PRODUCT_NOT_FOUND",
                         HttpStatus.NOT_FOUND));
 
-        // Remove existing variants
-        variantRepository.deleteByProductId(productId);
-        product.getVariants().clear();
-
-        // Add new variants
-        if (variants != null && !variants.isEmpty()) {
+        // Keep rows whose size/colour/material is unchanged (only their price changes), so each option keeps its id.
+        // On Supabase these rows are the Hisaab app's sizes, which its saved bills point to.
+        Map<String, ProductVariant> existing = new HashMap<>();
+        product.getVariants().forEach(v -> existing.putIfAbsent(variantKey(v.getSize(), v.getColor(), v.getMaterial()), v));
+        List<ProductVariant> kept = new ArrayList<>();
+        if (variants != null) {
             for (VariantPriceRequest variantReq : variants) {
-                ProductVariant variant = new ProductVariant();
-                variant.setProduct(product);
+                ProductVariant variant = existing.remove(
+                        variantKey(variantReq.getSize(), variantReq.getColor(), variantReq.getMaterial()));
+                if (variant == null) {
+                    variant = new ProductVariant();
+                    variant.setProduct(product);
+                }
                 variant.setMaterial(variantReq.getMaterial());
                 variant.setSize(variantReq.getSize());
                 variant.setColor(variantReq.getColor());
                 variant.setPrice(variantReq.getPrice());
                 variant.setStockQuantity(variantReq.getStockQuantity() != null ? variantReq.getStockQuantity() : 0);
-                product.getVariants().add(variant);
+                kept.add(variant);
             }
+        }
+        product.getVariants().clear();
+        product.getVariants().addAll(kept);
+
+        if (!kept.isEmpty()) {
             // List the product at its default option's price, and offer every variant's size and colour.
             VariantDefaults.defaultVariant(product.getVariants()).ifPresent(v -> product.setBasePrice(v.getPrice()));
             product.setColors(toJson(mergeOptions(fromJson(product.getColors()),
                     product.getVariants().stream().map(ProductVariant::getColor).toList())));
             product.setSizes(toJson(mergeOptions(fromJson(product.getSizes()),
                     product.getVariants().stream().map(ProductVariant::getSize).toList())));
-            productRepository.save(product);
         }
+        productRepository.save(product);
         logProductChange("PRODUCT_PRICES_UPDATED", product);
+    }
+
+    private static String variantKey(String size, String color, String material) {
+        return Stream.of(size, color, material)
+                .map(part -> part == null ? "" : part.trim().toLowerCase(java.util.Locale.ROOT))
+                .collect(Collectors.joining("|"));
     }
 
     private static List<String> mergeOptions(List<String> existing, List<String> fromVariants) {

@@ -432,5 +432,43 @@ class ProductServiceTest {
             assertThat(sampleProduct.getStatus()).isEqualTo(ProductStatus.ACTIVE);
             assertThat(sampleProduct.getImages()).hasSize(1);
         }
+
+        @Test
+        @DisplayName("should keep unchanged size options (same row, new price) and replace the rest")
+        void updateVariantPricing_shouldKeepMatchingRows() {
+            com.glydecurtains.entity.ProductVariant eight = new com.glydecurtains.entity.ProductVariant();
+            eight.setId(11L);
+            eight.setProduct(sampleProduct);
+            eight.setSize("8 ft");
+            eight.setColor("White");
+            eight.setPrice(new BigDecimal("520"));
+            com.glydecurtains.entity.ProductVariant ten = new com.glydecurtains.entity.ProductVariant();
+            ten.setId(12L);
+            ten.setProduct(sampleProduct);
+            ten.setSize("10 ft");
+            ten.setColor("White");
+            ten.setPrice(new BigDecimal("650"));
+            sampleProduct.getVariants().addAll(List.of(eight, ten));
+            when(productRepository.findById(1L)).thenReturn(Optional.of(sampleProduct));
+
+            com.glydecurtains.dto.request.VariantPriceRequest newEight = new com.glydecurtains.dto.request.VariantPriceRequest();
+            newEight.setSize(" 8 FT ");
+            newEight.setColor("white");
+            newEight.setPrice(new BigDecimal("560"));
+            com.glydecurtains.dto.request.VariantPriceRequest twelve = new com.glydecurtains.dto.request.VariantPriceRequest();
+            twelve.setSize("12 ft");
+            twelve.setColor("White");
+            twelve.setPrice(new BigDecimal("800"));
+
+            productService.updateVariantPricing(1L, List.of(newEight, twelve));
+
+            assertThat(sampleProduct.getVariants()).hasSize(2);
+            assertThat(sampleProduct.getVariants().get(0)).isSameAs(eight);
+            assertThat(eight.getPrice()).isEqualByComparingTo("560");
+            assertThat(sampleProduct.getVariants().get(1).getId()).isNull();
+            assertThat(sampleProduct.getVariants()).doesNotContain(ten);
+            verify(variantRepository, never()).deleteByProductId(anyLong());
+            verify(productRepository).save(sampleProduct);
+        }
     }
 }
