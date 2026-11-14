@@ -26,10 +26,15 @@ public class ProductPlaceholderImageUpgrader implements ApplicationRunner {
     static final String PLACEHOLDER_PATH = "/products/accessories/placeholder/photo-coming-soon.jpg";
 
     private final ProductImageRepository productImageRepository;
+    private final SeedOnce seedOnce;
 
     @Override
     @Transactional
     public void run(ApplicationArguments args) {
+        seedOnce.run("product-placeholder-images-v1", this::seed);
+    }
+
+    private void seed() {
         List<ProductImage> placeholders = productImageRepository.findWithDataNoLongerThan(PlaceholderMedia.MAX_LENGTH)
                 .stream()
                 .filter(image -> image.getMediaType() == MediaType.IMAGE)

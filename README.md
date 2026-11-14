@@ -10,6 +10,10 @@ This repository contains a full-stack e-commerce application for Glyde Curtains 
 - Spring Web, JPA, H2, security config, JWT support classes
 - Maven build
 - Embedded H2 database for local development
+- PostgreSQL (Supabase) in production when `SPRING_DATASOURCE_URL`, `SPRING_DATASOURCE_USERNAME`,
+  `SPRING_DATASOURCE_PASSWORD` and `SPRING_DATASOURCE_DRIVER_CLASS_NAME=org.postgresql.Driver` are set.
+  The website's tables live in their own `website` schema (the database login's default schema).
+  Start-up seeders run once per database (`seed_markers` table), so admin edits survive restarts.
 
 ### Frontend
 - React 18

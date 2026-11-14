@@ -27,7 +27,6 @@ public class EnquiryResponse {
     @Column(name = "responder_id", nullable = false)
     private Long responderId;
 
-    @Lob
     @Column(name = "message", nullable = false, columnDefinition = "TEXT")
     private String message;
 

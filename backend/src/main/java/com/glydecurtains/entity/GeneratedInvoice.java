@@ -31,8 +31,7 @@ public class GeneratedInvoice {
     @Column(name = "invoice_number", nullable = false, unique = true, length = 30)
     private String invoiceNumber;
 
-    @Lob
-    @Column(name = "pdf_base64", nullable = false, columnDefinition = "CLOB")
+    @Column(name = "pdf_base64", nullable = false, columnDefinition = "TEXT")
     private String pdfBase64;
 
     @Column(name = "generated_at", nullable = false)

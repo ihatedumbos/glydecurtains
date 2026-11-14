@@ -34,10 +34,15 @@ public class SampleProductPriceUpgrader implements ApplicationRunner {
             "GC-ACC-002", new BigDecimal("449"));
 
     private final ProductRepository productRepository;
+    private final SeedOnce seedOnce;
 
     @Override
     @Transactional
     public void run(ApplicationArguments args) {
+        seedOnce.run("sample-product-prices-v1", this::seed);
+    }
+
+    private void seed() {
         int cleared = 0;
         for (Map.Entry<String, BigDecimal> entry : INVENTED_PRICES.entrySet()) {
             Product product = productRepository.findBySku(entry.getKey()).orElse(null);

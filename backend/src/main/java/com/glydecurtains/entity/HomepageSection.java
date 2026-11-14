@@ -35,7 +35,6 @@ public class HomepageSection extends BaseEntity {
     @Column(name = "sort_order", nullable = false)
     private Integer sortOrder = 0;
 
-    @Lob
     @Column(name = "config", columnDefinition = "TEXT")
     private String config;
 

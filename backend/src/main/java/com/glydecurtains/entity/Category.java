@@ -24,11 +24,9 @@ public class Category extends BaseEntity {
     @Column(name = "description")
     private String description;
 
-    @Lob
     @Column(name = "icon_base64", columnDefinition = "TEXT")
     private String iconBase64;
 
-    @Lob
     @Column(name = "image_base64", columnDefinition = "TEXT")
     private String imageBase64;
 

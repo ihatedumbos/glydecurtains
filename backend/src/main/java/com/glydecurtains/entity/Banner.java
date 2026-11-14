@@ -28,7 +28,6 @@ public class Banner extends BaseEntity {
     @Column(name = "subtitle")
     private String subtitle;
 
-    @Lob
     @Column(name = "image_base64", nullable = false, columnDefinition = "TEXT")
     private String imageBase64;
 

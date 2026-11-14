@@ -42,10 +42,15 @@ public class OfficialCatalogSeeder implements ApplicationRunner {
     private final ProductRepository productRepository;
     private final ProductImageRepository productImageRepository;
     private final SubCategoryRepository subCategoryRepository;
+    private final SeedOnce seedOnce;
 
     @Override
     @Transactional
     public void run(org.springframework.boot.ApplicationArguments args) {
+        seedOnce.run("official-catalogue-v1", this::seed);
+    }
+
+    private void seed() {
         Category accessories = category("Accessories", "Essential curtain accessories and hardware", 4);
         SubCategory runners = subCategory(accessories, "Track Runners", 1);
         SubCategory ceiling = subCategory(accessories, "Ceiling Fittings", 2);

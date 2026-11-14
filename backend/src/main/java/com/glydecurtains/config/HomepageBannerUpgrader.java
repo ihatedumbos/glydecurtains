@@ -27,10 +27,15 @@ public class HomepageBannerUpgrader implements ApplicationRunner {
 
     private final HomepageSectionRepository homepageSectionRepository;
     private final BannerRepository bannerRepository;
+    private final SeedOnce seedOnce;
 
     @Override
     @Transactional
     public void run(ApplicationArguments args) {
+        seedOnce.run("homepage-banners-v1", this::seed);
+    }
+
+    private void seed() {
         HomepageSection hero = homepageSectionRepository.findBySectionType(SectionType.HERO_BANNER).orElse(null);
         if (hero == null) {
             return;
