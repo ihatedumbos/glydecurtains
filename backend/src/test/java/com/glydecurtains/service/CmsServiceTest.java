@@ -3,6 +3,7 @@ package com.glydecurtains.service;
 import com.glydecurtains.dto.request.StaticPageCreateRequest;
 import com.glydecurtains.dto.request.StaticPageUpdateRequest;
 import com.glydecurtains.dto.response.StaticPageResponse;
+import com.glydecurtains.entity.SiteSettings;
 import com.glydecurtains.entity.StaticPage;
 import com.glydecurtains.entity.enums.PageType;
 import com.glydecurtains.exception.BusinessException;
@@ -369,6 +370,32 @@ class CmsServiceTest {
                         assertThat(bex.getErrorCode()).isEqualTo("SLUG_EXISTS");
                         assertThat(bex.getHttpStatus()).isEqualTo(HttpStatus.CONFLICT);
                     });
+        }
+    }
+
+    @Nested
+    @DisplayName("Site settings")
+    class SiteSettingsTests {
+
+        @Test
+        @DisplayName("uses the existing settings row even when its id is not 1")
+        void getSiteSettings_shouldUseRowWithAnyId() {
+            SiteSettings settings = new SiteSettings();
+            settings.setId(7L);
+            settings.setContactPhone("+91 81490 66661");
+            when(siteSettingsRepository.findFirstByOrderByIdAsc()).thenReturn(Optional.of(settings));
+
+            assertThat(cmsService.getSiteSettings().getContactPhone()).isEqualTo("+91 81490 66661");
+            verify(siteSettingsRepository, never()).save(any());
+        }
+
+        @Test
+        @DisplayName("shows defaults without writing when no settings row exists yet")
+        void getSiteSettings_shouldNotWriteWhenEmpty() {
+            when(siteSettingsRepository.findFirstByOrderByIdAsc()).thenReturn(Optional.empty());
+
+            assertThat(cmsService.getSiteSettings()).isNotNull();
+            verify(siteSettingsRepository, never()).save(any());
         }
     }
 }

@@ -189,7 +189,8 @@ public class CmsServiceImpl implements CmsService {
     @Override
     @Transactional(readOnly = true)
     public SiteSettingsResponse getSiteSettings() {
-        SiteSettings settings = getOrCreateSiteSettings();
+        // Read-only: before the first start has saved the settings, show defaults instead of failing.
+        SiteSettings settings = siteSettingsRepository.findFirstByOrderByIdAsc().orElseGet(SiteSettings::new);
         return mapSiteSettingsToResponse(settings);
     }
 
@@ -333,12 +334,9 @@ public class CmsServiceImpl implements CmsService {
     // ==================== Private Helpers ====================
 
     private SiteSettings getOrCreateSiteSettings() {
-        return siteSettingsRepository.findById(1L)
-                .orElseGet(() -> {
-                    SiteSettings settings = new SiteSettings();
-                    settings.setId(1L);
-                    return siteSettingsRepository.save(settings);
-                });
+        // The row's id is not always 1: on PostgreSQL an interrupted first start uses up ids.
+        return siteSettingsRepository.findFirstByOrderByIdAsc()
+                .orElseGet(() -> siteSettingsRepository.save(new SiteSettings()));
     }
 
     private HomepageSectionResponse mapSectionToResponse(HomepageSection section, String language) {
